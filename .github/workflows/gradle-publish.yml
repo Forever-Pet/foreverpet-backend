@@ -1,0 +1,87 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Make Gradlew executable
+        run: chmod +x gradlew
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.HOME }}/.m2/repository
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-m2-
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.HOME }}/.gradle
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build project
+        run: ./gradlew clean build
+
+      - name: Prepare deployment
+        run: |
+          mkdir -p before-deploy
+          cp scripts/*.sh before-deploy/
+          cp appspec.yml before-deploy/
+          cp build/libs/*.jar before-deploy/
+          cd before-deploy && zip -r before-deploy *
+          cd ../ && mkdir -p deploy
+          mv before-deploy/before-deploy.zip deploy/foreverpet.zip
+
+      - name: Deploy to S3
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        run: |
+          aws s3 cp deploy/foreverpet.zip s3://foreverpets3/
+        
+      - name: Deploy to CodeDeploy
+        uses: aws-actions/aws-codedeploy-appspec@v1
+        with:
+          application-name: foreverpet
+          deployment-group-name: foreverpet-group
+          region: ap-northeast-2
+          wait-until-deployed: true
+          appspec: appspec.yml
+          bundle-location: s3://foreverpets3/foreverpet.zip
+
+      - name: Send notification
+        uses: dawidd6/action-send-mail@v2
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: Build and Deploy Status
+          body: |
+            The build and deployment process has completed successfully.
+
+            Commit: ${{ github.sha }}
+            Repository: ${{ github.repository }}
