@@ -1,6 +1,6 @@
 env:  
   S3_BUCKET_NAME: foreverpets3
-  PROJECT_NAME: foreverpet
+  PROJECT_NAME: foreverpet-backend
   CODE_DEPLOY_APP_NAME: foreverpet
   CODE_DEPLOY_GROUP_NAME: foreverpet-group
 
