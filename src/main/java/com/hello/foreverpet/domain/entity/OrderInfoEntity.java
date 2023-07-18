@@ -26,22 +26,28 @@ public class OrderInfoEntity {
     @Column(name = "order_no")
     private Long order_no; // 주문번호
 
+    @NotNull
     private Long order_payment_no; // 결제번호
 
+    @NotNull
     private Address address;
 
+    @NotNull
     private String payment_cd; // 결제방법
 
+    @NotNull
     private String user_no; // 주문한 유저번호 ( FK 설정해야함 )
     // 비회원주문도 가능 -> 비회원주문할때 유저번호 하나 생성하면 될듯
     // userType같은 컬럼을 만들어서 소셜회원 ( N , K , G ), 회원, 비회원으로 나누는 방안
 
     private String contents; // 요청사항
-    
+
     private String memo; // 메모
 
+    @NotNull
     private Long order_process; // 상품 배송 상황
 
+    @NotNull
     private Long purchase_no; // 상품번호 ( FK 설정해야함 )
 
 }
