@@ -1,5 +1,7 @@
 package com.hello.foreverpet.domain.entity;
 
+import com.hello.foreverpet.auditing.BaseTimeEntity;
+import com.hello.foreverpet.domain.dto.Address;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -10,7 +12,7 @@ import java.util.Date;
 @Entity
 @Table(name = "user_info")
 @Getter
-public class UserInfo {
+public class UserInfo extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +33,8 @@ public class UserInfo {
     private String userPhone;
 
     @NotNull
-    @Column(name = "user_address")
-    private String userAddress;
+    @Embedded
+    private Address userAddress;
 
     @NotNull
     @Column(name = "user_zipcode")
@@ -43,14 +45,6 @@ public class UserInfo {
 
     @Column(name = "user_access_token")
     private String userAccessToken;
-
-    @NotNull
-    @Column(name = "user_joindate")
-    private LocalDate userJoindate;
-
-    @NotNull
-    @Column(name = "user_modifydate")
-    private LocalDate userModifydate;
 
     @NotNull
     @Column(name = "user_delete_yn")
