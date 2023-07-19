@@ -34,7 +34,6 @@ public class Product extends BaseTimeEntity {
     @NotNull
     private Long productPrice;
 
-
     private Long numberOfSold;
 
     private String productImage;

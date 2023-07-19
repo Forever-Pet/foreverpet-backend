@@ -2,10 +2,8 @@ package com.hello.foreverpet.repository;
 
 import static com.hello.foreverpet.domain.entity.QProduct.product;
 
-import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.entity.Product;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.EnumPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +23,20 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
                         containsProductName(search),
                         containsDescription(search)
                 )
+                .fetch();
+    }
+
+    @Override
+    public List<Product> findProductOrderBySold() {
+        return jpaQueryFactory.selectFrom(product)
+                .orderBy(product.numberOfSold.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<Product> findProductOrderByNew() {
+        return jpaQueryFactory.selectFrom(product)
+                .orderBy(product.createDate.asc())
                 .fetch();
     }
 
