@@ -16,6 +16,7 @@ public class ProductResponse {
     private Long productPrice;
     private Long numberOfSold;
     private String productImage;
+    private String brandName;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -27,6 +28,7 @@ public class ProductResponse {
         this.productPrice = product.getProductPrice();
         this.numberOfSold = product.getNumberOfSold();
         this.productImage = product.getProductImage();
+        this.brandName = product.getBrandName();
         this.createdDate = product.getCreateDate();
         this.modifiedDate = product.getModifiedDate();
     }

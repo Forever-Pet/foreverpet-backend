@@ -38,6 +38,8 @@ public class Product extends BaseTimeEntity {
 
     private String productImage;
 
+    private String brandName;
+
     // 회원과 찜목록 연관관계 매핑 필요
 //    @ManyToOne
 //    private Member member;
@@ -47,13 +49,14 @@ public class Product extends BaseTimeEntity {
 //    private Order order;
 
     @Builder
-    public Product(String productName, String productDescription, Categories categories, Long productPrice,String productImage) {
+    public Product(String productName, String productDescription, Categories categories, Long productPrice,String productImage,String brandName) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.categories = categories;
         this.productPrice = productPrice;
         this.numberOfSold = 0L;
         this.productImage = productImage;
+        this.brandName = brandName;
     }
 
     public Product updateProductByUpdateRequest(UpdateProductRequest updateProductRequest) {
