@@ -19,21 +19,25 @@ public class NewProductRequest {
 
     private String productImage;
 
+    private String brandName;
+
     public Product toEntity() {
         return Product.builder().productName(this.productName)
                 .productDescription(this.productDescription)
                 .categories(Categories.valueOf(this.categories))
                 .productPrice(this.productPrice)
                 .productImage(this.productImage)
+                .brandName(this.brandName)
                 .build();
     }
 
     public NewProductRequest(String productName, String productDescription, String categories, Long productPrice,
-                             String productImage) {
+                             String productImage,String brandName) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.categories = categories;
         this.productPrice = productPrice;
         this.productImage = productImage;
+        this.brandName = brandName;
     }
 }

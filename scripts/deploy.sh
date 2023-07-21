@@ -33,4 +33,5 @@ echo "> $JAR_NAME 실행"
         $JAR_NAME > $REPOSITORY/nohup.out 2>&1 &
 
 echo "> Nginx restart"
+sudo service nginx start
 sudo service nginx restart
