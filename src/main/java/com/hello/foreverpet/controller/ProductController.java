@@ -44,26 +44,40 @@ public class ProductController {
 
     @Operation(summary = "id로 상품 조회",description = "id 값으로 특정 상품을 찾습니다.")
     @GetMapping("/products/{id}")
-    public ProductResponse findProductById(@PathVariable Long id) {
-        return productService.findProductById(id);
+    public ResponseEntity<ProductResponse> findProductById(@PathVariable Long id) {
+        return ResponseEntity.ok(productService.findProductById(id));
     }
 
     @Operation(summary = "상품 수정",description = "id 로 원하는 상품을 선택하고 수정합니다.")
     @PutMapping("/products/{id}")
-    public void updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest updateProductRequest) {
+    public ResponseEntity<Long> updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest updateProductRequest) {
         productService.updateProduct(id,updateProductRequest);
+        return ResponseEntity.ok(id);
     }
 
     @Operation(summary = "상품 삭제",description = "id 로 상품을 삭제합니다.")
     @DeleteMapping("/products/{id}")
-    public void deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Long> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+        return ResponseEntity.ok(id);
     }
 
     @Operation(summary = "상품 검색", description = "검색어를 포함하는 결과 반환")
     @GetMapping("/products/search")
-    public List<ProductResponse> searchProduct(@RequestParam("search") String search) {
-        return productService.searchProduct(search);
+    public ResponseEntity<List<ProductResponse>> searchProduct(@RequestParam("search") String search) {
+        return ResponseEntity.ok(productService.searchProduct(search));
+    }
+
+    @Operation(summary = "베스트 상품", description = "많이 팔린 상품 순으로 정렬합니다.")
+    @GetMapping("/products/best")
+    public ResponseEntity<List<ProductResponse>> bestProducts() {
+        return ResponseEntity.ok(productService.orderBySold());
+    }
+
+    @Operation(summary = "새로운 상품", description = "신규 등록 상품 순으로 정렬합니다.")
+    @GetMapping("/products/new")
+    public ResponseEntity<List<ProductResponse>> newProducts() {
+        return ResponseEntity.ok(productService.orderByNew());
     }
 
 }
