@@ -51,4 +51,14 @@ public class ProductService {
         return customProductRepository.findProductBySearch(search).stream()
                 .map(ProductResponse::new).collect(Collectors.toList());
     }
+
+    public List<ProductResponse> orderBySold() {
+        return customProductRepository.findProductOrderBySold().stream()
+                .map(ProductResponse::new).collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> orderByNew() {
+        return customProductRepository.findProductOrderByNew().stream()
+                .map(ProductResponse::new).collect(Collectors.toList());
+    }
 }

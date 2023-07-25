@@ -7,4 +7,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CustomProductRepository {
     List<Product> findProductBySearch(String search);
+
+    List<Product> findProductOrderBySold();
+
+    List<Product> findProductOrderByNew();
 }
