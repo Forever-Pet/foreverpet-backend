@@ -62,10 +62,10 @@ public class Product extends BaseTimeEntity {
     public Product updateProductByUpdateRequest(UpdateProductRequest updateProductRequest) {
         this.productName = updateProductRequest.getProductName();
         this.productDescription = updateProductRequest.getProductDescription();
-        this.categories = updateProductRequest.getCategories();
+        this.categories = Categories.valueOf(updateProductRequest.getCategories());
         this.productPrice = updateProductRequest.getProductPrice();
         this.productImage = updateProductRequest.getProductImage();
-
+        this.brandName = updateProductRequest.getBrandName();
         return this;
     }
 }

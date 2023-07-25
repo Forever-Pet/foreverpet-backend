@@ -50,7 +50,7 @@ public class ProductController {
 
     @Operation(summary = "상품 수정",description = "id 로 원하는 상품을 선택하고 수정합니다.")
     @PutMapping("/products/{id}")
-    public ResponseEntity<Long> updateProduct(@PathVariable Long id, @RequestBody UpdateProductRequest updateProductRequest) {
+    public ResponseEntity<Long> updateProduct(@PathVariable Long id, @RequestBody @Valid UpdateProductRequest updateProductRequest) {
         productService.updateProduct(id,updateProductRequest);
         return ResponseEntity.ok(id);
     }
