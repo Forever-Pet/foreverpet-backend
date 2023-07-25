@@ -70,5 +70,6 @@ public class AuthControllerTest {
     @Test
     void test(){
         int test;
+        int test3;
     }
 }
