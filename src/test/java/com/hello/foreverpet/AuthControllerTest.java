@@ -66,4 +66,9 @@ public class AuthControllerTest {
 
         verify(oAuthLoginService);
     }
+
+    @Test
+    void test(){
+
+    }
 }
