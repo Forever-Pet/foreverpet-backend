@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum Categories {
-    스낵, 비타, 간식;
+    SNACK,BITA,FOOD
 }
