@@ -199,19 +199,22 @@ public class InitDataService {
                 "네츄럴코어"
         };
 
-        String[] categories = {"스낵", "비타", "간식"};
+        String[] categories = {"SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK",
+                "BITA","BITA","BITA","BITA","BITA","BITA","BITA","BITA","BITA","BITA",
+                "FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD"};
 
         int categoriesIndex = 0;
 
         if (productService.getAllProducts().size() < 10 || productService.findProductById(0L)==null) {
             for (int i = 0; i < productNames.length; i++) {
-                NewProductRequest newProductRequest = new NewProductRequest(
-                        productNames[i],
-                        productDescriptions[i],
-                        "스낵",
-                        (long) productPrices[i],
-                        productImages[i],
-                        brandName[i]);
+                NewProductRequest newProductRequest = NewProductRequest.builder()
+                        .productName(productNames[i])
+                        .productDescription(productDescriptions[i])
+                        .categories(categories[i])
+                        .productPrice((long) productPrices[i])
+                        .productImage(productImages[i])
+                        .brandName(brandName[i])
+                        .build();
                 productService.createProduct(newProductRequest);
             }
         }
