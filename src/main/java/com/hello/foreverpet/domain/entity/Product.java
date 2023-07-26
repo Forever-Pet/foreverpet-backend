@@ -3,6 +3,7 @@ package com.hello.foreverpet.domain.entity;
 import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,6 +28,7 @@ public class Product extends BaseTimeEntity {
     @NotNull
     private String productName;
     @NotNull
+    @Column(length = 500)
     private String productDescription;
     @NotNull
     @Enumerated(EnumType.STRING)
