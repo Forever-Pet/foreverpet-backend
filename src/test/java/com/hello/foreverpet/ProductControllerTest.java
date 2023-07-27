@@ -36,7 +36,7 @@ public class ProductControllerTest {
         NewProductRequest newProductRequest = new NewProductRequest(
                 "test",
                 "테스트중임",
-                "CATEGORIES1",
+                "SNACK",
                 5000L,
                 "https://e7.pngegg.com/pngimages/981/872/png-clipart-computer-terminal-computer-icons-linux-console-terminal-emulator-linux-logo-desktop-wallpaper.png",
                 "포에버펫");

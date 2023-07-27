@@ -38,8 +38,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo(){
         return new ApiInfoBuilder()
-                .title("test")
-                .description("description")
+                .title("Forever-Pet-API")
+                .description("Forever-Pet API 입니다.")
                 .version("1.0.0")
                 .build();
     }
