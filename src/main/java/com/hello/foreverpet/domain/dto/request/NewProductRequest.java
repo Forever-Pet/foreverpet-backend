@@ -4,6 +4,7 @@ import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.entity.Product;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
@@ -32,6 +33,7 @@ public class NewProductRequest {
                 .build();
     }
 
+    @Builder
     public NewProductRequest(String productName, String productDescription, String categories, Long productPrice,
                              String productImage,String brandName) {
         this.productName = productName;
