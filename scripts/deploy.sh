@@ -1,6 +1,6 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/app/foreverpetProejct
+REPOSITORY=/home/ec2-user/app/foreverpetProject
 PROJECT_NAME=foreverpet-backend
 
 echo "> Build 파일 복사"
