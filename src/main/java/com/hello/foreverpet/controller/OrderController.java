@@ -1,0 +1,45 @@
+package com.hello.foreverpet.controller;
+
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.hello.foreverpet.domain.dto.OrderRequest;
+import com.hello.foreverpet.domain.entity.BillingInfo;
+import com.hello.foreverpet.service.BillingService;
+import com.hello.foreverpet.service.OrderService;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+public class OrderController {
+    /*  
+
+        C = createOrder ( 주문 생성 ) - 완
+        R = orderList ( 주문 목록 조회 및 검색 조회 ) - 4 검색값
+        R = orderDetail ( 주문 단건 조회 ) - 3  param => orderNo
+        U = orderUpdate ( 주문 요청 사항 수정 ) - 2 param => orderNo , 수정 값 
+        D = orderDelete ( 주문 삭제 ) - 1 Param => orderNo
+        + 주문완료시 이메일발송 ? 
+
+    */
+
+    private final OrderService orderService;
+
+    private final BillingService billingService;
+
+
+    @PostMapping("/order")
+    public ResponseEntity<Long> createOrder(@RequestBody @Valid OrderRequest orderRequest ) {
+
+        BillingInfo newBilling = billingService.createBilling(orderRequest.getBillingInfoRequest());
+
+        Long orderNo = orderService.createOrder(orderRequest.getOrderInfoRequest(), newBilling, orderRequest.getProductNoList());
+
+        return ResponseEntity.ok(orderNo);
+    }  
+} 
