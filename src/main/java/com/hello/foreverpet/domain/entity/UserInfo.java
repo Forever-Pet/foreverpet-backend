@@ -27,65 +27,57 @@ public class UserInfo extends BaseTimeEntity {
 
     @NotNull
     @Column(name = "user_nickname")
-    private String userNickName;
+    private String userNickname;
 
-    @NotNull
     @Column(name = "user_email")
     private String userEmail;
 
-//    @NotNull
     @Column(name = "user_pw")
-    private String userPw;
+    private String userPassword;
 
-//    @NotNull
     @Column(name = "user_phone")
     private String userPhone;
 
-//    @NotNull
     @Embedded
     private Address userAddress;
 
-//    @NotNull
-//    @Column(name = "user_social_type")
-//    private String userSocialType;
+    @Column(name = "user_social_type")
+    private String userSocialType;
 
-    @Column(name = "user_access_token")
-    private String userAccessToken;
+//    @Column(name = "user_access_token")
+//    private String userAccessToken;
+//
+//    @Column(name = "user_refresh_token")
+//    private String userRefreshToken;
 
-    @Column(name = "user_refresh_token")
-    private String userRefreshToken;
-
-//    @NotNull
     @Column(name = "user_delete_yn")
     private Boolean userDeleteYn;
 
-//    @NotNull
     @Column(name = "user_point")
     private Integer userPoint;
 
-//    @NotNull
-    @Column(name = "user_profile_image")
-    private String userProfileImage;
+//    @Column(name = "user_profile_image")
+//    private String userProfileImage;
 
     @OneToMany
     private List<Product> cart = new ArrayList<>();
 
-    private OAuthProvider oAuthProvider;
+        private OAuthProvider oAuthProvider;
 
     @Builder
-    public UserInfo(String userNickname, String userEmail, String userPw, String userPhone, Address userAddress,
-                    String userAccessToken, String userRefreshToken,
-                    Boolean userDeleteYn, Integer userPoint, String userProfileImage, OAuthProvider oAuthProvider){
-        this.userNickName = userNickname;
+    public UserInfo(String userNickname, String userEmail, String userPassword, String userPhone, Address userAddress,
+                String userAccessToken, String userRefreshToken,
+                Boolean userDeleteYn, Integer userPoint, String userProfileImage, OAuthProvider oAuthProvider){
+            this.userNickname = userNickname;
         this.userEmail = userEmail;
-        this.userPw = userPw;
+        this.userPassword = userPassword;
         this.userPhone = userPhone;
         this.userAddress = userAddress;
-        this.userAccessToken= userAccessToken;
-        this.userRefreshToken = userRefreshToken;
+//        this.userAccessToken= userAccessToken;
+//        this.userRefreshToken = userRefreshToken;
         this.userDeleteYn = userDeleteYn;
         this.userPoint = userPoint;
-        this.userProfileImage = userProfileImage;
+//        this.userProfileImage = userProfileImage;
         this.oAuthProvider = oAuthProvider;
     }
 
