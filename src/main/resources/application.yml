@@ -1,0 +1,26 @@
+spring:
+  datasource:
+    url: jdbc:mariadb://foreverpet-mariadb.cerwgfjzzflp.ap-northeast-2.rds.amazonaws.com:3306/foreverpet
+    username: admin
+    password: foreverpet
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+jwt:
+  header: Authorization
+  secret: a2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbXRva2FyaW10b2thcmltdG9rYXJpbQ==
+  token-validity-in-seconds: 86400
+oauth:
+  kakao:
+    client-id: ef70ead256236ff245dd289a71f416f3
+    url:
+      auth: https://kauth.kakao.com/
+      api: https://kapi.kakao.com/
+
+  profiles:
+    active: local
