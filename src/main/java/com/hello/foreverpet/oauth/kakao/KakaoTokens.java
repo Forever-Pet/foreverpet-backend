@@ -1,0 +1,31 @@
+package com.hello.foreverpet.oauth.kakao;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@NoArgsConstructor
+public class KakaoTokens {
+
+    // https://kauth.kakao.com/oauth/token 요청 결과값
+    // https://developers.kakao.com/docs/latest/ko/kakaologin/rest-api#request-token-response 참고
+
+    @JsonProperty("access_token")
+    private String accessToken;
+
+    @JsonProperty("token_type")
+    private String tokenType;
+
+    @JsonProperty("refresh_token")
+    private String refreshToken;
+
+    @JsonProperty("expires_in")
+    private String expiresIn;
+
+    @JsonProperty("refresh_token_expires_in")
+    private String refreshTokenExpiresIn;
+
+    @JsonProperty("scope")
+    private String scope;
+}

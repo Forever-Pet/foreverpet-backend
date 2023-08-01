@@ -39,6 +39,7 @@ public class ProductController {
     @Operation(summary = "모든 상품 조회",description = "id 순으로 모든 상품을 조회합니다.")
     @GetMapping("/products")
     public ResponseEntity<List<ProductResponse>> allProducts() {
+
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
