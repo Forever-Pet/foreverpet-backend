@@ -8,11 +8,12 @@ import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
 import lombok.Data;
 
 @Data
-public class OrderRequest {
+public class CreateOrderRequest {
 
     private BillingInfoRequest billingInfoRequest;
 
     private OrderInfoRequest orderInfoRequest;
 
     private List<Long> productNoList;
+
 }

@@ -22,9 +22,7 @@ public class OrderService {
 
     private final ProductJpaRepository productJpaRepository;
 
-
-
-    public Long createOrder(OrderInfoRequest orderInfoRequest , BillingInfo newBilling , List<Long> ProductNoList) {
+    public Long createOrder(OrderInfoRequest orderInfoRequest, BillingInfo newBilling, List<Long> ProductNoList) {
         
         List<Product> productList = new ArrayList<>();
 
@@ -35,13 +33,13 @@ public class OrderService {
         }
         
         OrderInfo newOrder = orderInfoRequest.toEntity();
-        newOrder.setBillingNo(newBilling);
+        newOrder.setBillingId(newBilling);
         newOrder.setOrderProducts(productList);
         orderJpaRepository.save(newOrder);
 
         // log.info();
   
-        return newOrder.getOrderNo();
+        return newOrder.getOrderId();
     }
 
     

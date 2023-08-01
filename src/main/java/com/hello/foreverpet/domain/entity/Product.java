@@ -52,7 +52,7 @@ public class Product extends BaseTimeEntity {
 
     //주문과의 연관관계 매핑 필요
     @ManyToMany
-    private List<OrderInfoEntity> orders = new ArrayList<>();
+    private List<OrderInfo> orders = new ArrayList<>();
 
     //재고처리를 한다면
 //    private Long stock;
@@ -83,7 +83,7 @@ public class Product extends BaseTimeEntity {
     // 주문이 들어올때
     // 주문 상품들에 대한 List 가 있을것이다.
     // numberOfSold 를 ++ 해주고 order 를 같이 지정해줄수 있나 ?
-    public void soldProducts(OrderInfoEntity orderInfo) {
+    public void soldProducts(OrderInfo orderInfo) {
         // 주문시 판매수량 ++
         this.numberOfSold++;
         // 주문시 orderInfo add

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hello.foreverpet.domain.dto.OrderRequest;
+import com.hello.foreverpet.domain.dto.CreateOrderRequest;
 import com.hello.foreverpet.domain.entity.BillingInfo;
 import com.hello.foreverpet.service.BillingService;
 import com.hello.foreverpet.service.OrderService;
@@ -34,11 +34,11 @@ public class OrderController {
 
 
     @PostMapping("/order")
-    public ResponseEntity<Long> createOrder(@RequestBody @Valid OrderRequest orderRequest ) {
+    public ResponseEntity<Long> createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest ) {
 
-        BillingInfo newBilling = billingService.createBilling(orderRequest.getBillingInfoRequest());
+        BillingInfo newBilling = billingService.createBilling(createOrderRequest.getBillingInfoRequest());
 
-        Long orderNo = orderService.createOrder(orderRequest.getOrderInfoRequest(), newBilling, orderRequest.getProductNoList());
+        Long orderNo = orderService.createOrder(createOrderRequest.getOrderInfoRequest(), newBilling, createOrderRequest.getProductNoList());
 
         return ResponseEntity.ok(orderNo);
     }  

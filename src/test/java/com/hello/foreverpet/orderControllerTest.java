@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import com.hello.foreverpet.controller.OrderController;
 import com.hello.foreverpet.domain.dto.Address;
-import com.hello.foreverpet.domain.dto.OrderRequest;
+import com.hello.foreverpet.domain.dto.CreateOrderRequest;
 import com.hello.foreverpet.domain.dto.request.BillingInfoRequest;
 import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
 
@@ -59,7 +59,7 @@ public class orderControllerTest {
         Long expectedId = 1L;
         BillingInfo billingInfo = billingService.createBilling(billingInfoRequest);
         
-        OrderRequest orderRequest = new OrderRequest();
+        CreateOrderRequest orderRequest = new CreateOrderRequest();
         orderRequest.setBillingInfoRequest(billingInfoRequest);
         orderRequest.setOrderInfoRequest(orderInfoRequest);
         orderRequest.setProductNoList(productNoList);
@@ -70,7 +70,8 @@ public class orderControllerTest {
         // 실행
         ResponseEntity<Long> response = orderController.createOrder(orderRequest);
 
-        log.info(null);
+        log.info(null);  
+        
         // 단언
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedId, response.getBody());

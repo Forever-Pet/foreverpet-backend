@@ -11,8 +11,8 @@ import lombok.Data;
 public class BillingInfoRequest {
 
     @NotNull
-    @Column(name = "billing_nm")
-    private String billingNm;
+    @Column(name = "billing_name")
+    private String billingName;
 
     @NotNull
     @Column(name = "payment_gateway")
@@ -28,16 +28,16 @@ public class BillingInfoRequest {
      * @return
     */
     public BillingInfo toEntity() {
-        return BillingInfo.builder().billingNm(this.billingNm)
+        return BillingInfo.builder().billingName(this.billingName)
                 .paymentGateway(this.paymentGateway)
                 .paymentMethod(this.paymentMethod)
                 .build();
     }
 
 
-    public BillingInfoRequest( String billingNm, String paymentGateway,
+    public BillingInfoRequest( String billingName, String paymentGateway,
        String paymentMethod){
-            this.billingNm = billingNm;
+            this.billingName = billingName;
             this.paymentGateway = paymentGateway;
             this.paymentMethod = paymentMethod;
     }

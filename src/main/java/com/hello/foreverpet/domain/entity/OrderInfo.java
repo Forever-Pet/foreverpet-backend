@@ -29,14 +29,14 @@ public class OrderInfo extends BaseTimeEntity {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_no")
-    private Long orderNo;               // 주문번호
+    @Column(name = "order_id")
+    private Long orderId;               // 주문번호
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "billing_no")
+    @JoinColumn(name = "billing_id")
     @Setter
-    private BillingInfo billingNo;      // 결제고유번호
+    private BillingInfo billingId;      // 결제고유번호
 
     @NotNull
     @Embedded
@@ -44,15 +44,14 @@ public class OrderInfo extends BaseTimeEntity {
     private Address address;            // 주소 
 
     @NotNull
-    @Column(name = "price")
-    private Long price;    
+    @Column(name = "total_price")
+    private Long totalPrice;    
 
 
     @NotNull
     @Column(name ="user_no")
     private Long userNo;                // 주문한 유저번호 ( fk 설정할 경우 유저정보 조회 시 데이터 과다 )
                                         // Long vs Entity 맵핑 관계 조회 데이터 분석 
-
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name ="order_process")
@@ -64,17 +63,20 @@ public class OrderInfo extends BaseTimeEntity {
     private List<Product> orderProducts; // 상품번호 ( FK 설정 , 한개의 주문정보에 많은 상품이 있을 수 있음 )
     // querydsl patch join
 
+    @NotNull
+    private Long amount;                // 총 수량 
+
     @Builder
-    public OrderInfo(Long orderNo, BillingInfo billingNo, Address address,
-        Long userNo,List<Product> orderProducts , Long price) {
-            this.price = price;
-            this.orderNo = orderNo;
-            this.billingNo = billingNo;
+    public OrderInfo(Long orderId, BillingInfo billingId, Address address,
+        Long userNo, List<Product> orderProducts, Long totalPrice) {
+            this.totalPrice = totalPrice;
+            this.orderId = orderId;
+            this.billingId = billingId;
             this.address = address;
             this.userNo = userNo;
             this.orderProcess = OrderProcess.ORDER;      // 배송상황 = 주문완료처리로 고정
             this.orderProducts = orderProducts;
-
+            this.amount = (long) orderProducts.size();
     }
 
 }

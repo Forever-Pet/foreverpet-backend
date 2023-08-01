@@ -21,7 +21,7 @@ public class OrderInfoRequest {
     private Long userNo; // 주문한 유저번호
 
     @NotNull
-    private Long price; // 가격
+    private Long totalPrice; // 가격
 
 
     /**
@@ -32,6 +32,7 @@ public class OrderInfoRequest {
     public OrderInfo toEntity() {
         return OrderInfo.builder().address(this.address)
                 .userNo(this.userNo)
+                .totalPrice(this.totalPrice)
                 .build();
     }
 
@@ -40,5 +41,6 @@ public class OrderInfoRequest {
        Long UserNo, List<Product>purchaseNo){
             this.address = address;
             this.userNo = userNo;
+            this.totalPrice = totalPrice;
     }
 }
