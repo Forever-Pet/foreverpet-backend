@@ -73,10 +73,10 @@ public class UserInfo extends BaseTimeEntity {
     private OAuthProvider oAuthProvider;
 
     @Builder
-    public UserInfo(String userNickName, String userEmail, String userPw, String userPhone, Address userAddress,
+    public UserInfo(String userNickname, String userEmail, String userPw, String userPhone, Address userAddress,
                     String userAccessToken, String userRefreshToken,
                     Boolean userDeleteYn, Integer userPoint, String userProfileImage, OAuthProvider oAuthProvider){
-        this.userNickName = userNickName;
+        this.userNickName = userNickname;
         this.userEmail = userEmail;
         this.userPw = userPw;
         this.userPhone = userPhone;
