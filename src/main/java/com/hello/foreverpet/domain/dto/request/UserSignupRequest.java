@@ -20,7 +20,7 @@ public class UserSignupRequest {
 
     private String userEmail;
 
-    private String userPw;
+    private String userPassword;
 
     private String userPhone;
 
@@ -30,17 +30,17 @@ public class UserSignupRequest {
     public UserInfo toEntity() {
         return UserInfo.builder().userNickname(this.userNickName)
                 .userEmail(this.userEmail)
-                .userPw(this.userPw)
+                .userPassword(this.userPassword)
                 .userPhone(this.userPhone)
                 .userAddress(this.userAddress)
                 .build();
     }
 
     @Builder
-    public UserSignupRequest(String userNickName, String userEmail, String userPw, String userPhone, Address userAddress){
+    public UserSignupRequest(String userNickName, String userEmail, String userPassword, String userPhone, Address userAddress){
         this.userNickName = userNickName;
         this.userEmail = userEmail;
-        this.userPw = userPw;
+        this.userPassword = userPassword;
         this.userPhone = userPhone;
         this.userAddress = userAddress;
     }

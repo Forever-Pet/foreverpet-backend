@@ -61,8 +61,6 @@ public class UserControllerTest {
                 address
         );
 
-        when(userService.userSignup(userSignupRequest)).thenReturn(1L);
-
         // 실행
         Long userNoOne = userService.userSignup(userSignupRequest);
 
