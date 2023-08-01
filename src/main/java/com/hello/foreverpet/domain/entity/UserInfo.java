@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
@@ -64,6 +66,9 @@ public class UserInfo extends BaseTimeEntity {
 //    @NotNull
     @Column(name = "user_profile_image")
     private String userProfileImage;
+
+    @OneToMany
+    private List<Product> cart = new ArrayList<>();
 
     private OAuthProvider oAuthProvider;
 

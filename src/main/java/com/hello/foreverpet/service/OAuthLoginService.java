@@ -35,15 +35,14 @@ public class OAuthLoginService {
     }
 
     private Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
-        return userInfoJpaRepository.findByUserEmail(oAuthInfoResponse.getEmail())
+        return userInfoJpaRepository.findByUserNickname(oAuthInfoResponse.getNickname())
                 .map(UserInfo::getUserNo)
                 .orElseGet(() -> newMember(oAuthInfoResponse));
     }
 
     public Long newMember(OAuthInfoResponse oAuthInfoResponse) {
         UserInfo userInfo = UserInfo.builder()
-                .userEmail(oAuthInfoResponse.getEmail())
-                .userNickName(oAuthInfoResponse.getNickname())
+                .userNickname(oAuthInfoResponse.getNickname())
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
                 .build();
 

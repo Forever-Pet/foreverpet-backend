@@ -63,13 +63,6 @@ public class AuthControllerTest {
 
         // 단언
         assertEquals(true, memberTestTF);
-
         verify(oAuthLoginService);
-    }
-
-    @Test
-    void test(){
-        int test;
-        int test3;
     }
 }

@@ -3,12 +3,7 @@ package com.hello.foreverpet.domain.entity;
 import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,12 +16,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Product extends BaseTimeEntity {
 
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
     @NotNull
     private String productName;
     @NotNull
+    @Column(length = 500)
     private String productDescription;
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -62,10 +59,10 @@ public class Product extends BaseTimeEntity {
     public Product updateProductByUpdateRequest(UpdateProductRequest updateProductRequest) {
         this.productName = updateProductRequest.getProductName();
         this.productDescription = updateProductRequest.getProductDescription();
-        this.categories = updateProductRequest.getCategories();
+        this.categories = Categories.valueOf(updateProductRequest.getCategories());
         this.productPrice = updateProductRequest.getProductPrice();
         this.productImage = updateProductRequest.getProductImage();
-
+        this.brandName = updateProductRequest.getBrandName();
         return this;
     }
 }
