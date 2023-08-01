@@ -38,9 +38,10 @@ public class ProductService {
         });
     }
 
-    public void deleteProduct(Long id) {
+    public Long deleteProduct(Long id) {
         Optional<Product> wantDeleteProduct = productJpaRepository.findById(id);
         wantDeleteProduct.ifPresent(productJpaRepository::delete);
+        return id;
     }
 
     public ProductResponse findProductById(Long id) {
