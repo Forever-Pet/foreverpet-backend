@@ -6,7 +6,6 @@ build/
 !**/src/test/**/build/
 
 
-application.yml
 application.properites
 application-oauth.properties
 application-real-db.yml
