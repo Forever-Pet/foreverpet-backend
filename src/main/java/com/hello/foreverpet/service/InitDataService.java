@@ -2,6 +2,7 @@ package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.repository.ProductJpaRepository;
+import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ public class InitDataService {
 
     private final ProductService productService;
     private final ProductJpaRepository productJpaRepository;
+
+    private final UserInfoJpaRepository userInfoJpaRepository;
 
     @PostConstruct
     public void init() {
@@ -220,7 +223,5 @@ public class InitDataService {
                 productService.createProduct(newProductRequest);
             }
         }
-
-
     }
 }
