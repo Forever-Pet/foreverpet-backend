@@ -45,7 +45,7 @@ public class OrderInfo extends BaseTimeEntity {
 
     @NotNull
     @Column(name = "total_price")
-    private Long totalPrice;    
+    private Long totalPrice;            // 총 가격
 
 
     @NotNull
@@ -60,7 +60,7 @@ public class OrderInfo extends BaseTimeEntity {
     @NotNull
     @OneToMany
     @Setter
-    private List<Product> orderProducts; // 상품번호 ( FK 설정 , 한개의 주문정보에 많은 상품이 있을 수 있음 )
+    private List<OrderProductList> orderProducts; // 상품번호 ( FK 설정 , 한개의 주문정보에 많은 상품이 있을 수 있음 )
     // querydsl patch join
 
     @NotNull
@@ -68,7 +68,7 @@ public class OrderInfo extends BaseTimeEntity {
 
     @Builder
     public OrderInfo(Long orderId, BillingInfo billingId, Address address,
-        Long userNo, List<Product> orderProducts, Long totalPrice) {
+        Long userNo, List<OrderProductList> orderProducts, Long totalPrice) {
             this.totalPrice = totalPrice;
             this.orderId = orderId;
             this.billingId = billingId;

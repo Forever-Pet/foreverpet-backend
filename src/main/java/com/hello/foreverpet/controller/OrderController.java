@@ -1,6 +1,8 @@
 package com.hello.foreverpet.controller;
 
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hello.foreverpet.domain.dto.CreateOrderRequest;
 import com.hello.foreverpet.domain.entity.BillingInfo;
+import com.hello.foreverpet.domain.entity.OrderProductList;
 import com.hello.foreverpet.service.BillingService;
+import com.hello.foreverpet.service.OrderProductListService;
 import com.hello.foreverpet.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -32,13 +36,17 @@ public class OrderController {
 
     private final BillingService billingService;
 
+    private final OrderProductListService orderProductListService;
+
 
     @PostMapping("/order")
     public ResponseEntity<Long> createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest ) {
 
+        List<OrderProductList> orderproductList = orderProductListService.createOrderProductList(createOrderRequest.getProductNoList());
+
         BillingInfo newBilling = billingService.createBilling(createOrderRequest.getBillingInfoRequest());
 
-        Long orderNo = orderService.createOrder(createOrderRequest.getOrderInfoRequest(), newBilling, createOrderRequest.getProductNoList());
+        Long orderNo = orderService.createOrder(createOrderRequest.getOrderInfoRequest(), newBilling, orderproductList);
 
         return ResponseEntity.ok(orderNo);
     }  

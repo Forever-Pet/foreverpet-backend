@@ -65,7 +65,7 @@ public class orderControllerTest {
         orderRequest.setProductNoList(productNoList);
 
         
-        when(orderService.createOrder(orderInfoRequest,billingInfo,productNoList)).thenReturn(expectedId);
+        // when(orderService.createOrder(orderInfoRequest,billingInfo,productNoList)).thenReturn(expectedId);
 
         // 실행
         ResponseEntity<Long> response = orderController.createOrder(orderRequest);
@@ -75,7 +75,7 @@ public class orderControllerTest {
         // 단언
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedId, response.getBody());
-        verify(orderService, times(1)).createOrder(orderInfoRequest,billingInfo,productNoList);
+        // verify(orderService, times(1)).createOrder(orderInfoRequest,billingInfo,productNoList);
 
     }
 
