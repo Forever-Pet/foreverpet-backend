@@ -60,7 +60,6 @@ public class OrderInfo extends BaseTimeEntity {
     @NotNull
     @OneToMany
     @Setter 
-    // orderproductlist
     private List<OrderProduct> orderProductList;   // 상품번호 ( FK 설정 , 한개의 주문정보에 많은 상품이 있을 수 있음 )  // querydsl patch join
 
 
