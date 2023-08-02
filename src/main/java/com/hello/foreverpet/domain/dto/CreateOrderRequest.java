@@ -10,10 +10,14 @@ import lombok.Data;
 @Data
 public class CreateOrderRequest {
 
-    private BillingInfoRequest billingInfoRequest;
+    private BillingInfoRequest billingInfoRequest;      // 결제정보
 
-    private OrderInfoRequest orderInfoRequest;
+    private OrderInfoRequest orderInfoRequest;          // 주문정보
 
-    private List<Long> productNoList;
+    private List<Long> productNoList;                   // 상품 번호 목록
+
+    public CreateOrderRequest() {
+
+    }
 
 }

@@ -23,8 +23,10 @@ import com.hello.foreverpet.domain.dto.request.BillingInfoRequest;
 import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
 
 import com.hello.foreverpet.domain.entity.BillingInfo;
+import com.hello.foreverpet.domain.entity.OrderProductList;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.service.BillingService;
+import com.hello.foreverpet.service.OrderProductListService;
 import com.hello.foreverpet.service.OrderService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,9 @@ public class orderControllerTest {
     @Mock
     private BillingService billingService;
 
+    @Mock
+    private OrderProductListService orderProductListService;
+
     @InjectMocks
     private OrderController orderController;
 
@@ -50,32 +55,41 @@ public class orderControllerTest {
 
     @Test
     void createOrder_shouldReturnCreatedOrderNo(){
+        BillingInfoRequest billingInfoRequest = new BillingInfoRequest("billingNm", "paymentGateway","paymentMethod");
+        // BillingInfo billing = billingService.createBilling(billingInfoRequest);
+        List < Long > ProductIdList = new ArrayList<>();
+        ProductIdList.add(1L);
+        ProductIdList.add(2L);
+        ProductIdList.add(1L);
+        // List<OrderProductList> products = orderProductListService.createOrderProductList(ProductIdList);
         Address address = new Address();
-        List<Product> list = new ArrayList();
-        BillingInfoRequest billingInfoRequest = new BillingInfoRequest("abc", "abc", "abc"); 
-        OrderInfoRequest orderInfoRequest = new OrderInfoRequest(address, 1L, list
-        );
-        List<Long>productNoList = new ArrayList();
-        Long expectedId = 1L;
-        BillingInfo billingInfo = billingService.createBilling(billingInfoRequest);
+        OrderInfoRequest orderInfoRequest = new OrderInfoRequest();
+        orderInfoRequest.setAddress(address);
+        orderInfoRequest.setUserNo(1L);
         
-        CreateOrderRequest orderRequest = new CreateOrderRequest();
-        orderRequest.setBillingInfoRequest(billingInfoRequest);
-        orderRequest.setOrderInfoRequest(orderInfoRequest);
-        orderRequest.setProductNoList(productNoList);
+        Long expectedId = 0L;
+
+        CreateOrderRequest createOrderRequest = new CreateOrderRequest();
+        createOrderRequest.setBillingInfoRequest(billingInfoRequest);
+        createOrderRequest.setOrderInfoRequest(orderInfoRequest);
+        createOrderRequest.setProductNoList(ProductIdList);
 
         
-        // when(orderService.createOrder(orderInfoRequest,billingInfo,productNoList)).thenReturn(expectedId);
 
         // 실행
-        ResponseEntity<Long> response = orderController.createOrder(orderRequest);
+        ResponseEntity<Long> response = orderController.createOrder(createOrderRequest);
 
-        log.info(null);  
+        
+
+        orderInfoRequest.setBillingId(billingService.createBilling(billingInfoRequest));
+        orderInfoRequest.setOrderproducts(orderProductListService.createOrderProductList(ProductIdList));
+
+        when(orderService.createOrder(orderInfoRequest)).thenReturn(expectedId);
         
         // 단언
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedId, response.getBody());
-        // verify(orderService, times(1)).createOrder(orderInfoRequest,billingInfo,productNoList);
+        verify(orderService, times(1)).createOrder(orderInfoRequest);
 
     }
 

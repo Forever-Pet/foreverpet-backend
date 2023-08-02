@@ -3,10 +3,12 @@ package com.hello.foreverpet.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -39,19 +41,19 @@ public class OrderProductList {
     private Long orderProductPrice;                     // 가격
 
     @NotNull
-    @OneToMany
+    @OneToOne(fetch = FetchType.EAGER)
     @Setter
-    private Product orderProductList;                   // 상품정보
+    private Product orderProduct;                   // 상품정보
 
     @Builder
     public OrderProductList(Long orderProductListId, Long orderProductId, Long orderProductAmount,
-    Long orderProductPrice, Product orderProductList) {
+    Long orderProductPrice, Product orderProduct) {
 
         this.orderProductListId = orderProductListId;
         this.orderProductId = orderProductId;
         this.orderProductAmount = orderProductAmount;
         this.orderProductPrice = orderProductPrice;
-        this.orderProductList = orderProductList;
+        this.orderProduct = orderProduct;
 
     }
 }

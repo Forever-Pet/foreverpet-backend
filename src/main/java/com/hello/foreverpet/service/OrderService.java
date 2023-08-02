@@ -18,12 +18,11 @@ public class OrderService {
 
     private final OrderJpaRepository orderJpaRepository;
 
-    public Long createOrder(OrderInfoRequest orderInfoRequest, BillingInfo newBilling, List<OrderProductList> orderProductList) {
+    public Long createOrder(OrderInfoRequest orderInfoRequest) {
 
         // 엔티티로 변경         
         OrderInfo newOrder = orderInfoRequest.toEntity();
-        newOrder.setBillingId(newBilling);
-        newOrder.setOrderProducts(orderProductList);
+
         orderJpaRepository.save(newOrder);
 
         // log.info();

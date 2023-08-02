@@ -24,7 +24,7 @@ public class BillingInfo extends BaseTimeEntity {
 
     @NotNull
     @Column(name = "billing_name")
-    private String billingName;           // 결제 리턴 번호 ( PG사 / UNIQUE / uuid_날짜 )
+    private String billingName;         // 결제 리턴 번호 ( uuid_날짜 )
 
     @NotNull
     @Column(name = "payment_gateway")

@@ -30,45 +30,52 @@ public class OrderInfo extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    private Long orderId;               // 주문번호
+    private Long orderId;                           // 주문번호
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "billing_id")
     @Setter
-    private BillingInfo billingId;      // 결제고유번호
+    private BillingInfo billingId;                  // 결제고유번호
 
     @NotNull
     @Embedded
     @Column(name = "address")
-    private Address address;            // 주소 
+    private Address address;                        // 주소 
 
     @NotNull
     @Column(name = "total_price")
-    private Long totalPrice;            // 총 가격
+    private Long totalPrice;                        // 총 가격
 
 
     @NotNull
     @Column(name ="user_no")
-    private Long userNo;                // 주문한 유저번호 ( fk 설정할 경우 유저정보 조회 시 데이터 과다 )
-                                        // Long vs Entity 맵핑 관계 조회 데이터 분석 
+    private Long userNo;                            // 주문한 유저번호 ( fk 설정할 경우 유저정보 조회 시 데이터 과다 ) // Long vs Entity 맵핑 관계 조회 데이터 분석 
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name ="order_process")
-    private OrderProcess orderProcess;  // 상품 배송 상황
+    private OrderProcess orderProcess;              // 상품 배송 상황
 
     @NotNull
     @OneToMany
     @Setter
-    private List<OrderProductList> orderProducts; // 상품번호 ( FK 설정 , 한개의 주문정보에 많은 상품이 있을 수 있음 )
-    // querydsl patch join
+    private List<OrderProductList> orderProducts;   // 상품번호 ( FK 설정 , 한개의 주문정보에 많은 상품이 있을 수 있음 )  // querydsl patch join
+
 
     @NotNull
-    private Long amount;                // 총 수량 
+    private Long amount;                            // 총 수량 
 
     @Builder
     public OrderInfo(Long orderId, BillingInfo billingId, Address address,
-        Long userNo, List<OrderProductList> orderProducts, Long totalPrice) {
+        Long userNo, List<OrderProductList> orderProducts ) {
+            // 총 수량 계산
+            Long amount = 0L;
+            Long totalPrice = 0L;
+            for(int i =0; i<orderProducts.size(); i++ ){
+                amount = amount + orderProducts.get(i).getOrderProductAmount();
+                totalPrice = totalPrice + orderProducts.get(i).getOrderProductPrice();
+            }
             this.totalPrice = totalPrice;
             this.orderId = orderId;
             this.billingId = billingId;
@@ -76,7 +83,7 @@ public class OrderInfo extends BaseTimeEntity {
             this.userNo = userNo;
             this.orderProcess = OrderProcess.ORDER;      // 배송상황 = 주문완료처리로 고정
             this.orderProducts = orderProducts;
-            this.amount = (long) orderProducts.size();
+            this.amount = amount;
     }
 
 }

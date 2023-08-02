@@ -18,6 +18,7 @@ public class BillingService {
      public BillingInfo createBilling(BillingInfoRequest billingInfoRequest) {
 
         BillingInfo newBilling = billingInfoRequest.toEntity();
+        
         billingJpaRepository.save(newBilling);
 
         // log.info();

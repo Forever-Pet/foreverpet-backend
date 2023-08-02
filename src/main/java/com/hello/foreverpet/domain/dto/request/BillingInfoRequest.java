@@ -12,15 +12,21 @@ public class BillingInfoRequest {
 
     @NotNull
     @Column(name = "billing_name")
-    private String billingName;
+    private String billingName;             // 날짜정보_UUID 
 
     @NotNull
     @Column(name = "payment_gateway")
-    private String paymentGateway;
+    private String paymentGateway;          // PG사 정보
 
     @NotNull
     @Column(name = "payment_method")
-    private String paymentMethod;
+    private String paymentMethod;           // 결제방법
+
+    
+    //JSON 형태로 데이터를 요청하는데 Object, 즉, 해당 클래스에 딱 매핑시켜서 출력이 되어야 하기 위함
+    public BillingInfoRequest () {
+
+    }
 
     /**
      * BillingInfo -> Entity 형식으로 변환

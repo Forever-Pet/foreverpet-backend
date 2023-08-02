@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.hello.foreverpet.domain.dto.CreateOrderRequest;
+import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
 import com.hello.foreverpet.domain.entity.BillingInfo;
 import com.hello.foreverpet.domain.entity.OrderProductList;
 import com.hello.foreverpet.service.BillingService;
@@ -17,9 +18,11 @@ import com.hello.foreverpet.service.OrderService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class OrderController {
     /*  
 
@@ -40,13 +43,21 @@ public class OrderController {
 
 
     @PostMapping("/order")
-    public ResponseEntity<Long> createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest ) {
+    public ResponseEntity<Long> createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest) {
 
+        // 주문상품 개별 저장
         List<OrderProductList> orderproductList = orderProductListService.createOrderProductList(createOrderRequest.getProductNoList());
 
+        // 결제정보 저장
         BillingInfo newBilling = billingService.createBilling(createOrderRequest.getBillingInfoRequest());
 
-        Long orderNo = orderService.createOrder(createOrderRequest.getOrderInfoRequest(), newBilling, orderproductList);
+        // 주문정보 엔티티 생성  
+        OrderInfoRequest orderInfoRequest = createOrderRequest.getOrderInfoRequest();
+        orderInfoRequest.setBillingId(newBilling);
+        orderInfoRequest.setOrderproducts(orderproductList);
+
+        // 주문정보 저장
+        Long orderNo = orderService.createOrder(orderInfoRequest);
 
         return ResponseEntity.ok(orderNo);
     }  

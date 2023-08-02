@@ -7,19 +7,18 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
 import com.hello.foreverpet.domain.dto.request.OrderProductListRequest;
-import com.hello.foreverpet.domain.entity.BillingInfo;
-import com.hello.foreverpet.domain.entity.OrderInfo;
 import com.hello.foreverpet.domain.entity.OrderProductList;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.repository.OrderProductListJpaRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class OrderProductListService {
 
     private final ProductJpaRepository productJpaRepository;
@@ -28,8 +27,10 @@ public class OrderProductListService {
 
     public List<OrderProductList> createOrderProductList (List<Long> ProductNoList) {
 
+        // return 값 
         List<OrderProductList> orderproductList = new ArrayList<>();
 
+        // 중복사항 처리 map
         Map<Long, Integer> ProductIDmap = new HashMap();
 
         // 중복사항 처리
@@ -41,6 +42,7 @@ public class OrderProductListService {
             }
         }
 
+        // List 적재
         for( Map.Entry<Long, Integer> elem : ProductIDmap.entrySet() ){
             
             if ( productJpaRepository.findById(elem.getKey()).isPresent() ) {
@@ -64,7 +66,7 @@ public class OrderProductListService {
                 orderproductList.add(orderProductListJpaRepository.save(newOrderProduct));
             }
         }
-        
+
         return orderproductList;
     }
 

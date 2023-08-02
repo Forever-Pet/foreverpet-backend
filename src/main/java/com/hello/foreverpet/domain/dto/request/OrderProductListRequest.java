@@ -20,7 +20,7 @@ public class OrderProductListRequest {
     private Long orderProductPrice;                     // 가격
 
     @NotNull
-    private Product orderProductList;             // 상품정보D
+    private Product orderProduct;                   // 상품정보
 
 
     /**
@@ -32,16 +32,16 @@ public class OrderProductListRequest {
         return OrderProductList.builder().orderProductId(this.orderProductId)
                 .orderProductAmount(this.orderProductAmount)
                 .orderProductPrice(this.orderProductPrice)
-                .orderProductList(this.orderProductList)
+                .orderProduct(this.orderProduct)
                 .build();
     }
 
 
     public OrderProductListRequest( Long orderProductId, Long orderProductAmount,
-     Long orderProductPrice, Product orderProductList){
+     Long orderProductPrice, Product orderProduct){
             this.orderProductId = orderProductId;
             this.orderProductAmount = orderProductAmount;
             this.orderProductPrice = orderProductPrice;
-            this.orderProductList = orderProductList;
+            this.orderProduct = orderProduct;
     }
 }
