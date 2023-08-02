@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hello.foreverpet.domain.dto.CreateOrderRequest;
 import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
-import com.hello.foreverpet.domain.entity.BillingInfo;
-import com.hello.foreverpet.domain.entity.OrderProductList;
-import com.hello.foreverpet.service.BillingService;
-import com.hello.foreverpet.service.OrderProductListService;
+import com.hello.foreverpet.domain.entity.PaymentInfo;
+import com.hello.foreverpet.domain.entity.OrderProduct;
+import com.hello.foreverpet.service.PaymentService;
+import com.hello.foreverpet.service.OrderProductService;
 import com.hello.foreverpet.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -37,24 +37,24 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    private final BillingService billingService;
+    private final PaymentService paymentService;
 
-    private final OrderProductListService orderProductListService;
+    private final OrderProductService orderProductService;
 
 
     @PostMapping("/order")
     public ResponseEntity<Long> createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest) {
 
         // 주문상품 개별 저장
-        List<OrderProductList> orderproductList = orderProductListService.createOrderProductList(createOrderRequest.getProductNoList());
+        List<OrderProduct> orderproductList = orderProductService.createOrderProductList(createOrderRequest.getOrderProductRequest());
 
         // 결제정보 저장
-        BillingInfo newBilling = billingService.createBilling(createOrderRequest.getBillingInfoRequest());
+        PaymentInfo newPayment = paymentService.createPayment(createOrderRequest.getPaymentInfoRequest());
 
         // 주문정보 엔티티 생성  
         OrderInfoRequest orderInfoRequest = createOrderRequest.getOrderInfoRequest();
-        orderInfoRequest.setBillingId(newBilling);
-        orderInfoRequest.setOrderproducts(orderproductList);
+        orderInfoRequest.setPaymentId(newPayment);
+        orderInfoRequest.setOrderProductList(orderproductList);
 
         // 주문정보 저장
         Long orderNo = orderService.createOrder(orderInfoRequest);

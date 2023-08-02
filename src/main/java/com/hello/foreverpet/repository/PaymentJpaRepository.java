@@ -3,9 +3,9 @@ package com.hello.foreverpet.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.hello.foreverpet.domain.entity.BillingInfo;
+import com.hello.foreverpet.domain.entity.PaymentInfo;
 
 @Repository
-public interface BillingJpaRepository extends JpaRepository<BillingInfo,Long> {
+public interface PaymentJpaRepository extends JpaRepository<PaymentInfo,Long> {
 }
     

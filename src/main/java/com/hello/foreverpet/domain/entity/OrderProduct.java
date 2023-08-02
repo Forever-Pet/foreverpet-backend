@@ -18,17 +18,12 @@ import lombok.Setter;
 @Entity
 @Table(name = "order_product")
 @Getter
-public class OrderProductList {
+public class OrderProduct {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_product_list_id")
-    private Long orderProductListId;                    // 리스트 id 
-
-    @NotNull
     @Column(name = "order_product_id")
-    @Setter
-    private Long orderProductId;                        // 상품번호
+    private Long orderProductId;                    // 리스트 id 
 
     @NotNull
     @Column(name = "order_product_amount")
@@ -46,11 +41,9 @@ public class OrderProductList {
     private Product orderProduct;                   // 상품정보
 
     @Builder
-    public OrderProductList(Long orderProductListId, Long orderProductId, Long orderProductAmount,
+    public OrderProduct(Long orderProductAmount,
     Long orderProductPrice, Product orderProduct) {
 
-        this.orderProductListId = orderProductListId;
-        this.orderProductId = orderProductId;
         this.orderProductAmount = orderProductAmount;
         this.orderProductPrice = orderProductPrice;
         this.orderProduct = orderProduct;

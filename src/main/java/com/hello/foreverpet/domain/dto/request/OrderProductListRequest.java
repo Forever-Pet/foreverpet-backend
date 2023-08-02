@@ -1,12 +1,13 @@
 package com.hello.foreverpet.domain.dto.request;
 
 
-import com.hello.foreverpet.domain.entity.OrderProductList;
+import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.domain.entity.Product;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+// 사용 중단 
 @Data
 public class OrderProductListRequest {
 
@@ -28,18 +29,16 @@ public class OrderProductListRequest {
      * 
      * @return
     */
-    public OrderProductList toEntity() {
-        return OrderProductList.builder().orderProductId(this.orderProductId)
-                .orderProductAmount(this.orderProductAmount)
+    public OrderProduct toEntity() {
+        return OrderProduct.builder().orderProductAmount(this.orderProductAmount)
                 .orderProductPrice(this.orderProductPrice)
                 .orderProduct(this.orderProduct)
                 .build();
     }
 
 
-    public OrderProductListRequest( Long orderProductId, Long orderProductAmount,
+    public OrderProductListRequest( Long orderProductAmount,
      Long orderProductPrice, Product orderProduct){
-            this.orderProductId = orderProductId;
             this.orderProductAmount = orderProductAmount;
             this.orderProductPrice = orderProductPrice;
             this.orderProduct = orderProduct;

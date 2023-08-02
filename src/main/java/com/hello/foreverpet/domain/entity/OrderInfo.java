@@ -34,9 +34,9 @@ public class OrderInfo extends BaseTimeEntity {
 
     @NotNull
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "billing_id")
+    @JoinColumn(name = "payment_id")
     @Setter
-    private BillingInfo billingId;                  // 결제고유번호
+    private PaymentInfo paymentId;                  // 결제고유번호
 
     @NotNull
     @Embedded
@@ -59,30 +59,31 @@ public class OrderInfo extends BaseTimeEntity {
 
     @NotNull
     @OneToMany
-    @Setter
-    private List<OrderProductList> orderProducts;   // 상품번호 ( FK 설정 , 한개의 주문정보에 많은 상품이 있을 수 있음 )  // querydsl patch join
+    @Setter 
+    // orderproductlist
+    private List<OrderProduct> orderProductList;   // 상품번호 ( FK 설정 , 한개의 주문정보에 많은 상품이 있을 수 있음 )  // querydsl patch join
 
 
     @NotNull
     private Long amount;                            // 총 수량 
 
     @Builder
-    public OrderInfo(Long orderId, BillingInfo billingId, Address address,
-        Long userNo, List<OrderProductList> orderProducts ) {
+    public OrderInfo(Long orderId, PaymentInfo paymentId, Address address,
+        Long userNo, List<OrderProduct> orderProductList ) {
             // 총 수량 계산
             Long amount = 0L;
             Long totalPrice = 0L;
-            for(int i =0; i<orderProducts.size(); i++ ){
-                amount = amount + orderProducts.get(i).getOrderProductAmount();
-                totalPrice = totalPrice + orderProducts.get(i).getOrderProductPrice();
+            for(int i =0; i<orderProductList.size(); i++ ){
+                amount = amount + orderProductList.get(i).getOrderProductAmount();
+                totalPrice = totalPrice + orderProductList.get(i).getOrderProductPrice();
             }
             this.totalPrice = totalPrice;
             this.orderId = orderId;
-            this.billingId = billingId;
+            this.paymentId = paymentId;
             this.address = address;
             this.userNo = userNo;
             this.orderProcess = OrderProcess.ORDER;      // 배송상황 = 주문완료처리로 고정
-            this.orderProducts = orderProducts;
+            this.orderProductList = orderProductList;
             this.amount = amount;
     }
 

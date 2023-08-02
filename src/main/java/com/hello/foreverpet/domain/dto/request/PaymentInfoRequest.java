@@ -1,18 +1,18 @@
 package com.hello.foreverpet.domain.dto.request;
 
 
-import com.hello.foreverpet.domain.entity.BillingInfo;
+import com.hello.foreverpet.domain.entity.PaymentInfo;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class BillingInfoRequest {
+public class PaymentInfoRequest {
 
     @NotNull
-    @Column(name = "billing_name")
-    private String billingName;             // 날짜정보_UUID 
+    @Column(name = "payment_name")
+    private String paymentName;             // 날짜정보_UUID 
 
     @NotNull
     @Column(name = "payment_gateway")
@@ -24,26 +24,26 @@ public class BillingInfoRequest {
 
     
     //JSON 형태로 데이터를 요청하는데 Object, 즉, 해당 클래스에 딱 매핑시켜서 출력이 되어야 하기 위함
-    public BillingInfoRequest () {
+    public PaymentInfoRequest () {
 
     }
 
     /**
-     * BillingInfo -> Entity 형식으로 변환
+     * PaymentInfo -> Entity 형식으로 변환
      * 
      * @return
     */
-    public BillingInfo toEntity() {
-        return BillingInfo.builder().billingName(this.billingName)
+    public PaymentInfo toEntity() {
+        return PaymentInfo.builder().paymentName(this.paymentName)
                 .paymentGateway(this.paymentGateway)
                 .paymentMethod(this.paymentMethod)
                 .build();
     }
 
 
-    public BillingInfoRequest( String billingName, String paymentGateway,
+    public PaymentInfoRequest( String paymentName, String paymentGateway,
        String paymentMethod){
-            this.billingName = billingName;
+            this.paymentName = paymentName;
             this.paymentGateway = paymentGateway;
             this.paymentMethod = paymentMethod;
     }

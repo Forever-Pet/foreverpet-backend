@@ -19,14 +19,14 @@ import org.springframework.http.ResponseEntity;
 import com.hello.foreverpet.controller.OrderController;
 import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.dto.CreateOrderRequest;
-import com.hello.foreverpet.domain.dto.request.BillingInfoRequest;
+import com.hello.foreverpet.domain.dto.request.PaymentInfoRequest;
 import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
-
-import com.hello.foreverpet.domain.entity.BillingInfo;
-import com.hello.foreverpet.domain.entity.OrderProductList;
+import com.hello.foreverpet.domain.dto.request.OrderProductRequest;
+import com.hello.foreverpet.domain.entity.PaymentInfo;
+import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.domain.entity.Product;
-import com.hello.foreverpet.service.BillingService;
-import com.hello.foreverpet.service.OrderProductListService;
+import com.hello.foreverpet.service.PaymentService;
+import com.hello.foreverpet.service.OrderProductService;
 import com.hello.foreverpet.service.OrderService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -39,10 +39,10 @@ public class orderControllerTest {
     private OrderService orderService;
 
     @Mock
-    private BillingService billingService;
+    private PaymentService paymentService;
 
     @Mock
-    private OrderProductListService orderProductListService;
+    private OrderProductService orderProductService;
 
     @InjectMocks
     private OrderController orderController;
@@ -55,24 +55,40 @@ public class orderControllerTest {
 
     @Test
     void createOrder_shouldReturnCreatedOrderNo(){
-        BillingInfoRequest billingInfoRequest = new BillingInfoRequest("billingNm", "paymentGateway","paymentMethod");
-        // BillingInfo billing = billingService.createBilling(billingInfoRequest);
-        List < Long > ProductIdList = new ArrayList<>();
-        ProductIdList.add(1L);
-        ProductIdList.add(2L);
-        ProductIdList.add(1L);
-        // List<OrderProductList> products = orderProductListService.createOrderProductList(ProductIdList);
+        // Payment test data 
+        PaymentInfoRequest paymentInfoRequest = new PaymentInfoRequest("paymentName", "paymentGateway","paymentMethod");
+        
+        // OrderProduct test data
+        List < OrderProductRequest > ProductIdList = new ArrayList<>();
+        OrderProductRequest orderProductRequest = new OrderProductRequest();
+        orderProductRequest.setOrderProductAmount(4);
+        orderProductRequest.setOrderProductId(1L);
+        ProductIdList.add(orderProductRequest);
+        orderProductRequest.setOrderProductAmount(2);
+        orderProductRequest.setOrderProductId(2L);
+        ProductIdList.add(orderProductRequest);
+        orderProductRequest.setOrderProductAmount(4);
+        orderProductRequest.setOrderProductId(1L);
+        ProductIdList.add(orderProductRequest);
+
+        // OrderInfo test data
         Address address = new Address();
+        address.setCity("test");
+        address.setStreet("test");
+        address.setZipcode("test");
+
+
         OrderInfoRequest orderInfoRequest = new OrderInfoRequest();
         orderInfoRequest.setAddress(address);
         orderInfoRequest.setUserNo(1L);
+
         
         Long expectedId = 0L;
 
         CreateOrderRequest createOrderRequest = new CreateOrderRequest();
-        createOrderRequest.setBillingInfoRequest(billingInfoRequest);
+        createOrderRequest.setPaymentInfoRequest(paymentInfoRequest);
         createOrderRequest.setOrderInfoRequest(orderInfoRequest);
-        createOrderRequest.setProductNoList(ProductIdList);
+        createOrderRequest.setOrderProductRequest(ProductIdList);
 
         
 
@@ -81,8 +97,8 @@ public class orderControllerTest {
 
         
 
-        orderInfoRequest.setBillingId(billingService.createBilling(billingInfoRequest));
-        orderInfoRequest.setOrderproducts(orderProductListService.createOrderProductList(ProductIdList));
+        orderInfoRequest.setPaymentId(paymentService.createPayment(paymentInfoRequest));
+        orderInfoRequest.setOrderProductList(orderProductService.createOrderProductList(ProductIdList));
 
         when(orderService.createOrder(orderInfoRequest)).thenReturn(expectedId);
         

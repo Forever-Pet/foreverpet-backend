@@ -4,9 +4,9 @@ package com.hello.foreverpet.domain.dto.request;
 import java.util.List;
 
 import com.hello.foreverpet.domain.dto.Address;
-import com.hello.foreverpet.domain.entity.BillingInfo;
+import com.hello.foreverpet.domain.entity.PaymentInfo;
 import com.hello.foreverpet.domain.entity.OrderInfo;
-import com.hello.foreverpet.domain.entity.OrderProductList;
+import com.hello.foreverpet.domain.entity.OrderProduct;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -22,10 +22,10 @@ public class OrderInfoRequest {
     private Long userNo;                            // 주문한 유저번호
 
     @NotNull
-    private List<OrderProductList> orderproducts;   // 주문한 상품의 개별 리스트
+    private List<OrderProduct> orderProductList;   // 주문한 상품의 개별 리스트
 
     @NotNull
-    private BillingInfo billingId;                  // 주문 정보
+    private PaymentInfo paymentId;                  // 주문 정보
 
 
     
@@ -42,17 +42,17 @@ public class OrderInfoRequest {
     public OrderInfo toEntity() {
         return OrderInfo.builder().address(this.address)
                 .userNo(this.userNo)
-                .orderProducts(this.orderproducts)
-                .billingId(this.billingId)
+                .orderProductList(this.orderProductList)
+                .paymentId(this.paymentId)
                 .build();
     }
 
 
     public OrderInfoRequest( Address address,
-       Long userNo, List<OrderProductList> orderproducts, BillingInfo billingId){
+       Long userNo, List<OrderProduct> orderproductList, PaymentInfo paymentId){
             this.address = address;
             this.userNo = userNo;
-            this.orderproducts = orderproducts;
-            this.billingId = billingId;
+            this.orderProductList = orderproductList;
+            this.paymentId = paymentId;
     }
 }

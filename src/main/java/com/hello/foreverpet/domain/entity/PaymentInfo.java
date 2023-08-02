@@ -13,18 +13,18 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Entity
-@Table(name = "billing_info")
+@Table(name = "payment_info")
 @Getter
-public class BillingInfo extends BaseTimeEntity {
+public class PaymentInfo extends BaseTimeEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "billing_id")
-    private Long billingId;             // 결제 고유 번호
+    @Column(name = "payment_id")
+    private Long paymentId;             // 결제 고유 번호
 
     @NotNull
-    @Column(name = "billing_name")
-    private String billingName;         // 결제 리턴 번호 ( uuid_날짜 )
+    @Column(name = "payment_name")
+    private String paymentName;         // 결제 리턴 번호 ( uuid_날짜 )
 
     @NotNull
     @Column(name = "payment_gateway")
@@ -35,11 +35,11 @@ public class BillingInfo extends BaseTimeEntity {
     private String paymentMethod;       // 결제방법
 
     @Builder
-    public BillingInfo(Long billingId, String billingName,
+    public PaymentInfo(Long paymentId, String paymentName,
         String paymentGateway,String paymentMethod) {
 
-            this.billingId = billingId;
-            this.billingName = billingName;
+            this.paymentId = paymentId;
+            this.paymentName = paymentName;
             this.paymentGateway = paymentGateway;
             this.paymentMethod = paymentMethod;
 
