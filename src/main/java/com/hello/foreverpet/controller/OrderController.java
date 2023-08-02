@@ -13,6 +13,9 @@ import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
 import com.hello.foreverpet.domain.entity.PaymentInfo;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.service.PaymentService;
+
+import io.swagger.v3.oas.annotations.Operation;
+
 import com.hello.foreverpet.service.OrderProductService;
 import com.hello.foreverpet.service.OrderService;
 
@@ -43,6 +46,7 @@ public class OrderController {
 
 
     @PostMapping("/order")
+    @Operation(summary = "주문 등록 ",description = " 결제 , 상품정보확인 후 주문 등록 ")
     public ResponseEntity<Long> createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest) {
 
         // 주문상품 개별 저장
