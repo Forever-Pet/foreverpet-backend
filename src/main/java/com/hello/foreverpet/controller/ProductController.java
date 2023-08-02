@@ -29,10 +29,10 @@ public class ProductController {
     // 상품 등록
     @Operation(summary = "상품 등록",description = "상품을 등록합니다.")
     @PostMapping("/products")
-    public ResponseEntity<Long> createProduct(@RequestBody @Valid NewProductRequest newProductRequest) {
-        Long productId = productService.createProduct(newProductRequest);
+    public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid NewProductRequest newProductRequest) {
+        ProductResponse product = productService.createProduct(newProductRequest);
 
-        return ResponseEntity.ok(productId);
+        return ResponseEntity.ok(product);
     }
 
     // 모든 상품 조회
@@ -51,9 +51,9 @@ public class ProductController {
 
     @Operation(summary = "상품 수정",description = "id 로 원하는 상품을 선택하고 수정합니다.")
     @PutMapping("/products/{id}")
-    public ResponseEntity<Long> updateProduct(@PathVariable Long id, @RequestBody @Valid UpdateProductRequest updateProductRequest) {
-        productService.updateProduct(id,updateProductRequest);
-        return ResponseEntity.ok(id);
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody @Valid UpdateProductRequest updateProductRequest) {
+        ProductResponse productResponse = productService.updateProduct(id, updateProductRequest);
+        return ResponseEntity.ok(productResponse);
     }
 
     @Operation(summary = "상품 삭제",description = "id 로 상품을 삭제합니다.")
