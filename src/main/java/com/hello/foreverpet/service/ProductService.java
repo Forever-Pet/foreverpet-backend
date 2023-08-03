@@ -21,6 +21,9 @@ public class ProductService {
 
     @Transactional
     public ProductResponse createProduct(NewProductRequest newProductRequest) {
+        if (productJpaRepository.findByProductName(newProductRequest.getProductName()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 상품입니다.");
+        }
         Product newProduct = newProductRequest.toEntity();
         productJpaRepository.save(newProduct);
 
@@ -34,12 +37,16 @@ public class ProductService {
 
     @Transactional
     public ProductResponse updateProduct(Long id, UpdateProductRequest updateProductRequest) {
-        productJpaRepository.findById(id).ifPresent(product -> {
-            Product updatedProduct = product.updateProductByUpdateRequest(updateProductRequest);
-        });
-        Product product = productJpaRepository.findById(id).get();
 
-        return new ProductResponse(product);
+        Optional<Product> productById = productJpaRepository.findById(id);
+
+        if (productById.isPresent()) {
+            Product updateProduct = productById.get().updateProductByUpdateRequest(updateProductRequest);
+            return new ProductResponse(updateProduct);
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 상품 ID 입니다.");
+        }
+
     }
 
     public Long deleteProduct(Long id) {
