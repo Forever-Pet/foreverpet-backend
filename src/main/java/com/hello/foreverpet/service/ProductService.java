@@ -7,7 +7,6 @@ import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.repository.CustomProductRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,22 +36,22 @@ public class ProductService {
 
     @Transactional
     public ProductResponse updateProduct(Long id, UpdateProductRequest updateProductRequest) {
-
-        Optional<Product> productById = productJpaRepository.findById(id);
-
-        if (productById.isPresent()) {
-            Product updateProduct = productById.get().updateProductByUpdateRequest(updateProductRequest);
-            return new ProductResponse(updateProduct);
-        } else {
-            throw new IllegalArgumentException("존재하지 않는 상품 ID 입니다.");
-        }
-
+        return productJpaRepository.findById(id)
+                .map(product -> {
+                    Product updateProduct = product.updateProductByUpdateRequest(updateProductRequest);
+                    return new ProductResponse(updateProduct);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 ID 입니다."));
     }
 
+
     public Long deleteProduct(Long id) {
-        Optional<Product> wantDeleteProduct = productJpaRepository.findById(id);
-        wantDeleteProduct.ifPresent(productJpaRepository::delete);
-        return id;
+        return productJpaRepository.findById(id)
+                .map(product -> {
+                    productJpaRepository.delete(product);
+                    return id;
+                })
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 ID 입니다."));
     }
 
     public ProductResponse findProductById(Long id) {
