@@ -3,8 +3,8 @@ package com.hello.foreverpet.service;
 
 import org.springframework.stereotype.Service;
 
-import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
-import com.hello.foreverpet.domain.entity.OrderInfo;
+import com.hello.foreverpet.domain.dto.request.OrderRequest;
+import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.repository.OrderJpaRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -15,10 +15,10 @@ public class OrderService {
 
     private final OrderJpaRepository orderJpaRepository;
 
-    public Long createOrder(OrderInfoRequest orderInfoRequest) {
+    public Long createOrder(OrderRequest orderInfoRequest) {
 
         // 엔티티로 변경         
-        OrderInfo newOrder = orderInfoRequest.toEntity();
+        Order newOrder = orderInfoRequest.toEntity();
 
         orderJpaRepository.save(newOrder);
   
