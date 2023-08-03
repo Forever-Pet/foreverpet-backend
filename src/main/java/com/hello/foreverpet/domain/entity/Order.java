@@ -13,7 +13,7 @@ import lombok.*;
 @Entity
 @Table(name = "order_info")
 @Getter
-public class OrderInfo extends BaseTimeEntity {
+public class Order extends BaseTimeEntity {
     
     // @NotNull 의 장점 = 데이터베이스에 SQL 쿼리를 보내기 전에 예외가 발생한다 즉 DB에 값이 넘어가기 전에 예외가 발생한다는 것
     // !
@@ -36,7 +36,7 @@ public class OrderInfo extends BaseTimeEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
     @Setter
-    private PaymentInfo paymentId;                  // 결제고유번호
+    private Payment paymentId;                  // 결제고유번호
 
     @NotNull
     @Embedded
@@ -50,7 +50,7 @@ public class OrderInfo extends BaseTimeEntity {
 
     @NotNull
     @Column(name ="user_no")
-    private Long userNo;                            // 주문한 유저번호 ( fk 설정할 경우 유저정보 조회 시 데이터 과다 ) // Long vs Entity 맵핑 관계 조회 데이터 분석 
+    private Long userNo;                            // 주문한 유저번호
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -60,24 +60,24 @@ public class OrderInfo extends BaseTimeEntity {
     @NotNull
     @OneToMany
     @Setter 
-    private List<OrderProduct> orderProductList;   // 상품번호 ( FK 설정 , 한개의 주문정보에 많은 상품이 있을 수 있음 )  // querydsl patch join
+    private List<OrderProduct> orderProductList;   // 주문한 상품 상세정보
 
 
     @NotNull
     private Long amount;                            // 총 수량 
 
     @Builder
-    public OrderInfo(Long orderId, PaymentInfo paymentId, Address address,
+    public Order(Payment paymentId, Address address,
         Long userNo, List<OrderProduct> orderProductList ) {
             // 총 수량 계산
             Long amount = 0L;
             Long totalPrice = 0L;
             for(int i =0; i<orderProductList.size(); i++ ){
-                amount = amount + orderProductList.get(i).getOrderProductAmount();
-                totalPrice = totalPrice + orderProductList.get(i).getOrderProductPrice();
+                amount += orderProductList.get(i).getOrderProductAmount();
+                totalPrice += orderProductList.get(i).getOrderProductPrice();
             }
+
             this.totalPrice = totalPrice;
-            this.orderId = orderId;
             this.paymentId = paymentId;
             this.address = address;
             this.userNo = userNo;

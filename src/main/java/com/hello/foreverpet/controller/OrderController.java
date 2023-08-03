@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hello.foreverpet.domain.dto.CreateOrderRequest;
-import com.hello.foreverpet.domain.dto.request.OrderInfoRequest;
-import com.hello.foreverpet.domain.entity.PaymentInfo;
+import com.hello.foreverpet.domain.dto.OrderRequestBody;
+import com.hello.foreverpet.domain.dto.request.OrderRequest;
+import com.hello.foreverpet.domain.entity.Payment;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.service.PaymentService;
 
@@ -47,22 +47,22 @@ public class OrderController {
 
     @PostMapping("/order")
     @Operation(summary = "주문 등록 ",description = " 결제 , 상품정보확인 후 주문 등록 ")
-    public ResponseEntity<Long> createOrder(@RequestBody @Valid CreateOrderRequest createOrderRequest) {
+    public ResponseEntity<Long> createOrder(@RequestBody @Valid OrderRequestBody orderRequestBody) {
 
         // 주문상품 개별 저장
-        List<OrderProduct> orderproductList = orderProductService.createOrderProductList(createOrderRequest.getOrderProductRequest());
+        List<OrderProduct> orderproductList = orderProductService.createOrderProductList(orderRequestBody.getOrderProductListRequest());
 
         // 결제정보 저장
-        PaymentInfo newPayment = paymentService.createPayment(createOrderRequest.getPaymentInfoRequest());
+        Payment newPayment = paymentService.createPayment(orderRequestBody.getPaymentRequest());
 
         // 주문정보 엔티티 생성  
-        OrderInfoRequest orderInfoRequest = createOrderRequest.getOrderInfoRequest();
-        orderInfoRequest.setPaymentId(newPayment);
-        orderInfoRequest.setOrderProductList(orderproductList);
+        OrderRequest orderRequest = orderRequestBody.getOrderRequest();
+        orderRequest.setPaymentId(newPayment);
+        orderRequest.setOrderProductList(orderproductList);
 
         // 주문정보 저장
-        Long orderNo = orderService.createOrder(orderInfoRequest);
+        Long orderId = orderService.createOrder(orderRequest);
 
-        return ResponseEntity.ok(orderNo);
+        return ResponseEntity.ok(orderId);
     }  
 } 

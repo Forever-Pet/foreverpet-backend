@@ -7,7 +7,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +32,7 @@ public class OrderProduct {
     @NotNull
     @Column(name = "order_product_price")
     @Setter
-    private Long orderProductPrice;                     // 가격
+    private Long orderProductPrice;                   // 가격
 
     @NotNull
     @OneToOne(fetch = FetchType.EAGER)

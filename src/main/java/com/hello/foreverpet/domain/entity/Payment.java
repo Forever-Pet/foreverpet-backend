@@ -15,7 +15,7 @@ import lombok.Getter;
 @Entity
 @Table(name = "payment_info")
 @Getter
-public class PaymentInfo extends BaseTimeEntity {
+public class Payment extends BaseTimeEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class PaymentInfo extends BaseTimeEntity {
     private String paymentMethod;       // 결제방법
 
     @Builder
-    public PaymentInfo(Long paymentId, String paymentName,
+    public Payment(Long paymentId, String paymentName,
         String paymentGateway,String paymentMethod) {
 
             this.paymentId = paymentId;
