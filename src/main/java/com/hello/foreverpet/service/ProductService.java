@@ -19,11 +19,12 @@ public class ProductService {
     private final ProductJpaRepository productJpaRepository;
     private final CustomProductRepository customProductRepository;
 
-    public Long createProduct(NewProductRequest newProductRequest) {
+    @Transactional
+    public ProductResponse createProduct(NewProductRequest newProductRequest) {
         Product newProduct = newProductRequest.toEntity();
         productJpaRepository.save(newProduct);
 
-        return newProduct.getProductId();
+        return new ProductResponse(newProduct);
     }
 
     public List<ProductResponse> getAllProducts() {
@@ -32,10 +33,13 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(Long id, UpdateProductRequest updateProductRequest) {
+    public ProductResponse updateProduct(Long id, UpdateProductRequest updateProductRequest) {
         productJpaRepository.findById(id).ifPresent(product -> {
             Product updatedProduct = product.updateProductByUpdateRequest(updateProductRequest);
         });
+        Product product = productJpaRepository.findById(id).get();
+
+        return new ProductResponse(product);
     }
 
     public Long deleteProduct(Long id) {

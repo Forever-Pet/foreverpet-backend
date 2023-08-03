@@ -3,7 +3,6 @@ package com.hello.foreverpet.service;
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,7 @@ public class InitDataService {
 
     private final UserInfoJpaRepository userInfoJpaRepository;
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
 
         String[] productNames = {
@@ -205,8 +204,6 @@ public class InitDataService {
         String[] categories = {"SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK",
                 "BITA","BITA","BITA","BITA","BITA","BITA","BITA","BITA","BITA","BITA",
                 "FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD"};
-
-        int categoriesIndex = 0;
 
 
 
