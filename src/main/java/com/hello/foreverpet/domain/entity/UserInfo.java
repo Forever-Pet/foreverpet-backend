@@ -11,8 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-
 @Entity
 @Table(name = "user_info")
 @Getter
@@ -59,16 +57,21 @@ public class UserInfo extends BaseTimeEntity {
 //    @Column(name = "user_profile_image")
 //    private String userProfileImage;
 
-    @OneToMany
+
+    // 상복님 장바구니 , 찜목록 관련 이쪽에 작업하겠습니다.
+    @OneToMany(fetch = FetchType.LAZY)
     private List<Product> cart = new ArrayList<>();
 
-        private OAuthProvider oAuthProvider;
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Product> wish = new ArrayList<>();
+
+    private OAuthProvider oAuthProvider;
 
     @Builder
     public UserInfo(String userNickname, String userEmail, String userPassword, String userPhone, Address userAddress,
-                String userAccessToken, String userRefreshToken,
-                Boolean userDeleteYn, Integer userPoint, String userProfileImage, OAuthProvider oAuthProvider){
-            this.userNickname = userNickname;
+                    String userAccessToken, String userRefreshToken,
+                    Boolean userDeleteYn, Integer userPoint, String userProfileImage, OAuthProvider oAuthProvider) {
+        this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
         this.userPhone = userPhone;
@@ -79,6 +82,14 @@ public class UserInfo extends BaseTimeEntity {
         this.userPoint = userPoint;
 //        this.userProfileImage = userProfileImage;
         this.oAuthProvider = oAuthProvider;
+    }
+
+    public void addProductInCart(Product product) {
+        this.cart.add(product);
+    }
+
+    public void addProductInWish(Product product) {
+        this.wish.add(product);
     }
 
 }
