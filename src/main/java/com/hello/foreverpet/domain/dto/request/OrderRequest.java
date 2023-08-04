@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.entity.Payment;
+import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 
@@ -19,7 +20,7 @@ public class OrderRequest {
     private Address address;                        // 주소
 
     @NotNull
-    private Long userNo;                            // 주문한 유저번호
+    private UserInfo userInfo;                            // 주문한 유저번호
 
     @NotNull
     private List<OrderProduct> orderProductList;   // 주문한 상품의 개별 리스트
@@ -41,7 +42,7 @@ public class OrderRequest {
     */
     public Order toEntity() {
         return Order.builder().address(this.address)
-                .userNo(this.userNo)
+                .userInfo(this.userInfo)
                 .orderProductList(this.orderProductList)
                 .paymentId(this.paymentId)
                 .build();
@@ -49,9 +50,9 @@ public class OrderRequest {
 
 
     public OrderRequest( Address address,
-       Long userNo, List<OrderProduct> orderproductList, Payment paymentId){
+       UserInfo userInfo, List<OrderProduct> orderproductList, Payment paymentId){
             this.address = address;
-            this.userNo = userNo;
+            this.userInfo = userInfo;
             this.orderProductList = orderproductList;
             this.paymentId = paymentId;
     }

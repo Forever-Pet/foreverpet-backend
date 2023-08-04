@@ -18,6 +18,8 @@ public class OrderRequestBody {
 
     private List<OrderProductListRequest> OrderProductListRequest;                 // 상품 목록
 
+    private Long userNo;
+
     public OrderRequestBody() {
 
     }

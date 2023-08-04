@@ -49,8 +49,9 @@ public class Order extends BaseTimeEntity {
 
 
     @NotNull
-    @Column(name ="user_no")
-    private Long userNo;                            // 주문한 유저번호
+    @JoinColumn(name ="user_no")
+    @ManyToOne
+    private UserInfo userInfo;                            // 주문한 유저번호
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -68,7 +69,7 @@ public class Order extends BaseTimeEntity {
 
     @Builder
     public Order(Payment paymentId, Address address,
-        Long userNo, List<OrderProduct> orderProductList ) {
+        UserInfo userInfo, List<OrderProduct> orderProductList ) {
             // 총 수량 계산
             Long amount = 0L;
             Long totalPrice = 0L;
@@ -80,7 +81,7 @@ public class Order extends BaseTimeEntity {
             this.totalPrice = totalPrice;
             this.paymentId = paymentId;
             this.address = address;
-            this.userNo = userNo;
+            this.userInfo = userInfo;
             this.orderProcess = OrderProcess.ORDER;      // 배송상황 = 주문완료처리로 고정
             this.orderProductList = orderProductList;
             this.amount = amount;
