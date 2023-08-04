@@ -83,4 +83,10 @@ public class ProductController {
         return ResponseEntity.ok(productService.orderByNew());
     }
 
+    @Operation(summary = "카테고리 검색", description = "상품을 카테고리별로 반환합니다.")
+    @GetMapping("/products/categories")
+    public ResponseEntity<List<ProductResponse>> searchProductByCategories(@RequestParam("categories") String categories) {
+        return ResponseEntity.ok(productService.productByCategories(categories));
+    }
+
 }

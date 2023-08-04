@@ -1,5 +1,6 @@
 package com.hello.foreverpet.service;
 
+import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
@@ -70,6 +71,12 @@ public class ProductService {
 
     public List<ProductResponse> orderByNew() {
         return customProductRepository.findProductOrderByNew().stream()
+                .map(ProductResponse::new).collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> productByCategories(String categories) {
+        Categories wantFindCategories = Categories.valueOf(categories);
+        return customProductRepository.findProductByCategories(wantFindCategories).stream()
                 .map(ProductResponse::new).collect(Collectors.toList());
     }
 }

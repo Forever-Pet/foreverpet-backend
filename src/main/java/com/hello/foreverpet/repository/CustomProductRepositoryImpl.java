@@ -2,6 +2,7 @@ package com.hello.foreverpet.repository;
 
 import static com.hello.foreverpet.domain.entity.QProduct.product;
 
+import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.entity.Product;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -40,6 +41,15 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
                 .fetch();
     }
 
+    @Override
+    public List<Product> findProductByCategories(Categories categories) {
+        return jpaQueryFactory.selectFrom(product)
+                .where(
+                        eqCategories(categories)
+                )
+                .fetch();
+    }
+
     private BooleanExpression containsProductName(String productName) {
         if (productName != null && !productName.isEmpty()) {
             return product.productName.contains(productName);
@@ -57,6 +67,13 @@ public class CustomProductRepositoryImpl implements CustomProductRepository{
     private BooleanExpression eqPrice(String price) {
         if (price != null && !price.isEmpty()) {
             return product.productPrice.eq(Long.parseLong(price));
+        }
+        return null;
+    }
+
+    private BooleanExpression eqCategories(Categories categories) {
+        if (categories != null) {
+            return product.categories.eq(categories);
         }
         return null;
     }
