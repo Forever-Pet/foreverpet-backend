@@ -10,10 +10,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,8 +49,8 @@ public class Product extends BaseTimeEntity {
 //    private Member member;
 
     //주문과의 연관관계 매핑 필요
-    @ManyToMany
-    private List<OrderInfoEntity> orders = new ArrayList<>();
+//    @ManyToMany
+//    private List<OrderInfoEntity> orders = new ArrayList<>();
 
     //재고처리를 한다면
 //    private Long stock;
@@ -61,7 +58,8 @@ public class Product extends BaseTimeEntity {
     // 재고처리를 한다면 주문시 재고확인 작업이 먼저 필요하다.
 
     @Builder
-    public Product(String productName, String productDescription, Categories categories, Long productPrice,String productImage,String brandName) {
+    public Product(String productName, String productDescription, Categories categories, Long productPrice,
+                   String productImage, String brandName) {
         this.productName = productName;
         this.productDescription = productDescription;
         this.categories = categories;
@@ -84,19 +82,19 @@ public class Product extends BaseTimeEntity {
     // 주문이 들어올때
     // 주문 상품들에 대한 List 가 있을것이다.
     // numberOfSold 를 ++ 해주고 order 를 같이 지정해줄수 있나 ?
-    public void soldProducts(OrderInfoEntity orderInfo) {
+//    public void soldProducts(OrderInfoEntity orderInfo) {
         // 주문시 판매수량 ++
-        this.numberOfSold++;
+//        this.numberOfSold++;
         // 주문시 orderInfo add
-        this.orders.add(orderInfo);
-    }
+//        this.orders.add(orderInfo);
+//    }
 
     //주문취소시 판매수량 -
-    public void cancelOrder() {
-        if (this.numberOfSold > 0) {
-            this.numberOfSold--;
-        }
-    }
+//    public void cancelOrder() {
+//        if (this.numberOfSold > 0) {
+//            this.numberOfSold--;
+//        }
+//    }
 
     // 재고 확인 메서드
 //    public boolean checkStock(Long wantOrderQuantity) {
