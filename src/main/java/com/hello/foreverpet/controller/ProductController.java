@@ -6,6 +6,7 @@ import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -39,9 +40,9 @@ public class ProductController {
     // 모든 상품 조회
     @Operation(summary = "모든 상품 조회",description = "id 순으로 모든 상품을 조회합니다.")
     @GetMapping("/products")
-    public ResponseEntity<List<ProductResponse>> allProducts() {
+    public ResponseEntity<List<ProductResponse>> allProducts(HttpServletRequest httpServletRequest) {
 
-        return ResponseEntity.ok(productService.getAllProducts());
+        return ResponseEntity.ok(productService.getAllProducts(httpServletRequest));
     }
 
     @Operation(summary = "id로 상품 조회",description = "id 값으로 특정 상품을 찾습니다.")

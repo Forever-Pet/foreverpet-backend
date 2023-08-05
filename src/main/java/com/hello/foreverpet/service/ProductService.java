@@ -5,8 +5,12 @@ import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.entity.Product;
+import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.repository.CustomProductRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
+import com.hello.foreverpet.repository.UserInfoJpaRepository;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
     private final ProductJpaRepository productJpaRepository;
     private final CustomProductRepository customProductRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserInfoJpaRepository userInfoJpaRepository;
 
     @Transactional
     public ProductResponse createProduct(NewProductRequest newProductRequest) {
@@ -30,9 +36,36 @@ public class ProductService {
         return new ProductResponse(newProduct);
     }
 
-    public List<ProductResponse> getAllProducts() {
-        return productJpaRepository.findAll().stream().map(ProductResponse::new)
+    public List<ProductResponse> getAllProducts(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+
+        boolean isLoggedIn = token != null;
+
+        List<Product> cart = new ArrayList<>();
+        List<Product> wish = new ArrayList<>();
+        if (isLoggedIn) {
+            String userId = jwtTokenProvider.extractSubject(token);
+            userInfoJpaRepository.findById(Long.valueOf(userId)).ifPresent(userInfo -> {
+                cart.addAll(userInfo.getCart());
+                wish.addAll(userInfo.getWish());
+            });
+        }
+
+        return productJpaRepository.findAll().stream()
+                .map(product -> {
+                    ProductResponse productResponse = new ProductResponse(product);
+
+                    if (isLoggedIn && cart.contains(product)) {
+                        productResponse.changeInCart();
+                    }
+
+                    if (isLoggedIn && wish.contains(product)) {
+                        productResponse.changeInWish();
+                    }
+                    return productResponse;
+                })
                 .collect(Collectors.toList());
+
     }
 
     @Transactional
