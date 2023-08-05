@@ -36,6 +36,12 @@ public class ProductService {
         return new ProductResponse(newProduct);
     }
 
+
+    // 현재는 ProductResponse 에 inCart , inWish 변수를 넣어서 처리 하였다.
+    // 로그인 한 유저와 안한 유저 에게 같은 ProductResponse 로 값을 보내는 것이 맞을까 고민이 된다.
+    // Controller 단에서 요청분리로 처리를 해야할지
+    // 지금처럼 Service 에서 나눠서 처리해야할지 만약 Service 에서 나누어 처리하고 서로 다른 응답 객체로 값을 보내려고 한다면
+    // 서비스 내에 두개의 메서드를 만들어서 controller 에서 토큰값을 확인하여 각각 다른값을 반환해줘야 할지
     public List<ProductResponse> getAllProducts(HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("Authorization");
 

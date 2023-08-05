@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-@Schema(description = "상품 응답 DTO")
+@Schema(description = "상품 응답")
 public class ProductResponse {
     private Long id;
     private String productName;
