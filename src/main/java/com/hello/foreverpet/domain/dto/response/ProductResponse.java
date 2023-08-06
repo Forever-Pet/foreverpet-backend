@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 @Data
-@Schema(description = "상품 응답 DTO")
+@Schema(description = "상품 응답")
 public class ProductResponse {
     private Long id;
     private String productName;
@@ -17,6 +17,8 @@ public class ProductResponse {
     private Long numberOfSold;
     private String productImage;
     private String brandName;
+    private boolean inCart;
+    private boolean inWish;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
@@ -29,7 +31,19 @@ public class ProductResponse {
         this.numberOfSold = product.getNumberOfSold();
         this.productImage = product.getProductImage();
         this.brandName = product.getBrandName();
+        this.inCart = false;
+        this.inWish = false;
         this.createdDate = product.getCreateDate();
         this.modifiedDate = product.getModifiedDate();
     }
+
+    public void changeInCart() {
+        this.inCart = true;
+    }
+
+    public void changeInWish() {
+        this.inWish = true;
+    }
+
+
 }

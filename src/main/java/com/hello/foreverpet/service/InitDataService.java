@@ -2,7 +2,7 @@ package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.repository.ProductJpaRepository;
-import com.hello.foreverpet.repository.UserInfoJpaRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +13,7 @@ public class InitDataService {
     private final ProductService productService;
     private final ProductJpaRepository productJpaRepository;
 
-    private final UserInfoJpaRepository userInfoJpaRepository;
-
-//    @PostConstruct
+    @PostConstruct
     public void init() {
 
         String[] productNames = {
@@ -207,7 +205,7 @@ public class InitDataService {
 
 
 
-        if (productJpaRepository.findAll().size() == 0) {
+        if (productJpaRepository.findAll().isEmpty()) {
             for (int i = 0; i < productNames.length; i++) {
                 NewProductRequest newProductRequest = NewProductRequest.builder()
                         .productName(productNames[i])
