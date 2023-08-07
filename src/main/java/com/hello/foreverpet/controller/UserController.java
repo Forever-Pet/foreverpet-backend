@@ -1,19 +1,21 @@
 package com.hello.foreverpet.controller;
 
+import com.hello.foreverpet.domain.dto.request.NewProductRequest;
+import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
 import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
+import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.entity.UserInfo;
+import com.hello.foreverpet.service.ProductService;
 import com.hello.foreverpet.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "User Login API",description = "User Login API 입니다")
 @RestController
@@ -22,22 +24,55 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "일반 회원가입",description = "일반 회원가입 진행.")
+    @CrossOrigin(origins="*")
+    @Operation(summary = "일반 회원가입",description = "회원가입 성공시 true, 실패시 false.")
     @PostMapping("/signup")
-    public ResponseEntity<Long> signup(@RequestBody @Valid UserSignupRequest userSignupRequest) {
+    public ResponseEntity<Boolean> signup(@RequestBody UserSignupRequest userSignupRequest) {
 
         Long userNo = userService.userSignup(userSignupRequest);
 
-        return ResponseEntity.ok(userNo);
+        Boolean signCheck = false;
+
+        if(userNo > 0){
+            signCheck = true;
+        }
+
+        // true false 로 처리;
+        return ResponseEntity.ok(signCheck);
     }
 
-    @Operation(summary = "일반 회원가입",description = "일반 회원가입 진행.")
-    @GetMapping("/login")
-    public ResponseEntity<UserInfo> login(@RequestBody @Valid UserSignupRequest userSignupRequest) {
+    @Operation(summary = "로그인",description = "로그인 진행.")
+    @PostMapping("/login")
+    public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
 
-        UserInfo user = new UserInfo();
+         UserLoginResponse userLoginResponse = userService.userLogin(userLoginRequest);
 
-        return ResponseEntity.ok(null);
+        return new ResponseEntity<>(userLoginResponse, userLoginResponse.getHttpHeaders(), HttpStatus.OK);
+    }
+
+    @Operation(summary = "이메일 중복 확인", description = "true의 경우 이메일 사용가능, false의 경우 이메일 사용불가")
+    @PostMapping("/emailCheck")
+    public ResponseEntity<Boolean> emailCheck(@RequestBody UserLoginRequest userLoginRequest){
+
+        // true의 경우 사용가능, false의 경우 이메일이 사용불가능
+        Boolean userEmailCheck = userService.emailCheck(userLoginRequest);
+
+        return new ResponseEntity<>(userEmailCheck, HttpStatus.OK);
+    }
+
+    @Operation(summary = "로그인 테스트용",description = "로그인 테스트 진행.")
+    @PostMapping("/loginAdmin")
+    public ResponseEntity<String> loginTestAdmin() {
+
+        // ROLE_ADMIN이 아니면 403 에러 배출
+        return new ResponseEntity<>("Admin On",HttpStatus.OK);
+    }
+    @Operation(summary = "로그인 어드민 테스트용",description = "로그인 어드민 테스트 진행.")
+    @PostMapping("/loginUser")
+    public ResponseEntity<String> loginTestUser() {
+
+        // ROLE_USER 이 아니면 403 에러 배출
+        return new ResponseEntity<>("User On",HttpStatus.OK);
     }
 
     @Operation(summary = "장바구니에 상품 추가", description = "회원의 장바구니에 상품을 추가.")

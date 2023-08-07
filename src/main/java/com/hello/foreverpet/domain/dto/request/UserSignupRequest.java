@@ -11,8 +11,10 @@ import jakarta.persistence.Embedded;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 @Schema(description = "회원가입 요청DTO")
 public class UserSignupRequest {
 
@@ -28,7 +30,8 @@ public class UserSignupRequest {
 
 
     public UserInfo toEntity() {
-        return UserInfo.builder().userNickname(this.userNickName)
+        return UserInfo.builder()
+                .userNickname(this.userNickName)
                 .userEmail(this.userEmail)
                 .userPassword(this.userPassword)
                 .userPhone(this.userPhone)

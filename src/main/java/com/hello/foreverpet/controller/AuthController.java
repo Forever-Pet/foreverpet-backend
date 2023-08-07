@@ -4,6 +4,7 @@ import com.hello.foreverpet.oauth.AuthTokens;
 import com.hello.foreverpet.oauth.kakao.KakaoLoginParams;
 import com.hello.foreverpet.service.OAuthLoginService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Kakao Login API",description = "Kakao Login API 입니다")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
