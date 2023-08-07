@@ -7,7 +7,6 @@ import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -96,7 +95,7 @@ public class ProductController {
 
     @Operation(summary = "로그인 유저 모든 상품 조회", description = "로그인한 유저의 모든 상품 조회")
     @GetMapping("/user/products")
-    public ResponseEntity<List<LoginUserProductResponse>> loginUserGetAllProducts(HttpServletRequest httpServletRequest) {
-        return ResponseEntity.ok(productService.loginUserGetAllProducts(httpServletRequest));
+    public ResponseEntity<List<LoginUserProductResponse>> loginUserGetAllProducts(String token) {
+        return ResponseEntity.ok(productService.loginUserGetAllProducts(token));
     }
 }

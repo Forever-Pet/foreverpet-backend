@@ -10,7 +10,6 @@ import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.repository.CustomProductRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,8 +91,7 @@ public class ProductService {
                 .map(ProductResponse::new).collect(Collectors.toList());
     }
 
-    public List<LoginUserProductResponse> loginUserGetAllProducts(HttpServletRequest httpServletRequest) {
-        String token = httpServletRequest.getHeader("Authorization");
+    public List<LoginUserProductResponse> loginUserGetAllProducts(String token) {
 
         boolean isLoggedIn = token != null;
 

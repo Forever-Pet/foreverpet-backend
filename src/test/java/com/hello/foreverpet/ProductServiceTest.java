@@ -3,7 +3,6 @@ package com.hello.foreverpet;
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
-import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.service.ProductService;
 import jakarta.transaction.Transactional;
 import java.util.List;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.TestPropertySource;
 
 
@@ -22,14 +20,10 @@ import org.springframework.test.context.TestPropertySource;
 public class ProductServiceTest {
 
     @Autowired
-    private ProductJpaRepository productJpaRepository;
-
-    @Autowired
     private ProductService productService;
 
     @Test
     @DisplayName("상품 등록")
-    @Rollback(value = true)
     public void createProduct() {
         // given
         NewProductRequest newProductRequest = NewProductRequest.builder()
@@ -50,19 +44,17 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("모든 상품 조회")
-    @Rollback(value = true)
     public void getAllProducts() {
         //given
         //when
         List<ProductResponse> allProducts = productService.getAllProducts();
 
         //then
-        Assertions.assertEquals(allProducts.size(),0);
+        Assertions.assertEquals(allProducts.size(),30);
     }
 
     @Test
     @DisplayName("상품 수정")
-    @Rollback(value = true)
     public void updateProduct (){
         //given
 
@@ -75,7 +67,7 @@ public class ProductServiceTest {
                 .brandName("hello")
                 .build();
 
-        ProductResponse product = productService.createProduct(newProductRequest);
+        productService.createProduct(newProductRequest);
 
         UpdateProductRequest updateProductRequest = UpdateProductRequest.builder()
                 .productName("테스트상품")
@@ -95,21 +87,19 @@ public class ProductServiceTest {
 
     @Test
     @DisplayName("상품 삭제")
-    @Rollback(value = true)
     public void deleteProduct (){
         // given
         // when
         Long deleteProductId = productService.deleteProduct(1L);
         // then
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            productService.findProductById(1L);
-        });
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+            productService.findProductById(1L)
+        );
         Assertions.assertEquals(deleteProductId,1L);
     }
 
     @Test
     @DisplayName("Id로 상품 검색")
-    @Rollback(value = true)
     public void findProductById (){
         // given
         NewProductRequest newProductRequest = NewProductRequest.builder()
