@@ -6,7 +6,6 @@ import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +25,8 @@ public class UserService {
         return userNo;
     }
 
-    public boolean addProductInCart(HttpServletRequest httpServletRequest,Long id){
-        String token = httpServletRequest.getHeader("Authorization");
+    public boolean addProductInCart(String token,Long id){
+
         String userId = jwtTokenProvider.extractSubject(token);
 
 
@@ -43,8 +42,8 @@ public class UserService {
         return true;
     }
 
-    public boolean addProductInWish(HttpServletRequest httpServletRequest,Long id){
-        String token = httpServletRequest.getHeader("Authorization");
+    public boolean addProductInWish(String token,Long id){
+
         String userId = jwtTokenProvider.extractSubject(token);
 
         try {
