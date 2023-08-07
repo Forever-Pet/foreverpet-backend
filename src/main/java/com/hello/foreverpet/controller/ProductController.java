@@ -2,6 +2,7 @@ package com.hello.foreverpet.controller;
 
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
+import com.hello.foreverpet.domain.dto.response.LoginUserProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Product API",description = "상품관리 API 입니다")
+@Tag(name = "Product API", description = "상품관리 API 입니다")
 @RestController
 @RequiredArgsConstructor
 public class ProductController {
@@ -29,7 +30,7 @@ public class ProductController {
 
     // 상품 등록
     // 상품 등록은 관리자만 가능해야 한다.
-    @Operation(summary = "상품 등록",description = "상품을 등록합니다.")
+    @Operation(summary = "상품 등록", description = "상품을 등록합니다.")
     @PostMapping("/products")
     public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid NewProductRequest newProductRequest) {
         ProductResponse product = productService.createProduct(newProductRequest);
@@ -38,28 +39,30 @@ public class ProductController {
     }
 
     // 모든 상품 조회
-    @Operation(summary = "모든 상품 조회",description = "id 순으로 모든 상품을 조회합니다.")
+    @Operation(summary = "모든 상품 조회", description = "id 순으로 모든 상품을 조회합니다.")
     @GetMapping("/products")
-    public ResponseEntity<List<ProductResponse>> allProducts(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<ProductResponse>> allProducts() {
 
-        return ResponseEntity.ok(productService.getAllProducts(httpServletRequest));
+        return ResponseEntity.ok(productService.getAllProducts());
     }
 
-    @Operation(summary = "id로 상품 조회",description = "id 값으로 특정 상품을 찾습니다.")
+    @Operation(summary = "id로 상품 조회", description = "id 값으로 특정 상품을 찾습니다.")
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductResponse> findProductById(@PathVariable Long id) {
         return ResponseEntity.ok(productService.findProductById(id));
     }
 
     // 상품 수정의 경우 관리자만 가능해야 한다.
-    @Operation(summary = "상품 수정",description = "id 로 원하는 상품을 선택하고 수정합니다.")
+    @Operation(summary = "상품 수정", description = "id 로 원하는 상품을 선택하고 수정합니다.")
     @PutMapping("/products/{id}")
-    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id, @RequestBody @Valid UpdateProductRequest updateProductRequest) {
+    public ResponseEntity<ProductResponse> updateProduct(@PathVariable Long id,
+                                                         @RequestBody @Valid UpdateProductRequest updateProductRequest) {
         ProductResponse productResponse = productService.updateProduct(id, updateProductRequest);
         return ResponseEntity.ok(productResponse);
     }
+
     // 상품 삭제의 경우 관리자만 가능해야한다.
-    @Operation(summary = "상품 삭제",description = "id 로 상품을 삭제합니다.")
+    @Operation(summary = "상품 삭제", description = "id 로 상품을 삭제합니다.")
     @DeleteMapping("/products/{id}")
     public ResponseEntity<Long> deleteProduct(@PathVariable Long id) {
         Long deletedId = productService.deleteProduct(id);
@@ -86,8 +89,14 @@ public class ProductController {
 
     @Operation(summary = "카테고리 검색", description = "상품을 카테고리별로 반환합니다.")
     @GetMapping("/products/categories")
-    public ResponseEntity<List<ProductResponse>> searchProductByCategories(@RequestParam("categories") String categories) {
+    public ResponseEntity<List<ProductResponse>> searchProductByCategories(
+            @RequestParam("categories") String categories) {
         return ResponseEntity.ok(productService.productByCategories(categories));
     }
 
+    @Operation(summary = "로그인 유저 모든 상품 조회", description = "로그인한 유저의 모든 상품 조회")
+    @GetMapping("/user/products")
+    public ResponseEntity<List<LoginUserProductResponse>> loginUserGetAllProducts(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(productService.loginUserGetAllProducts(httpServletRequest));
+    }
 }

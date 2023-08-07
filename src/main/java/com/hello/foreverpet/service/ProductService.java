@@ -3,6 +3,7 @@ package com.hello.foreverpet.service;
 import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
+import com.hello.foreverpet.domain.dto.response.LoginUserProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.jwt.JwtTokenProvider;
@@ -42,36 +43,8 @@ public class ProductService {
     // Controller 단에서 요청분리로 처리를 해야할지
     // 지금처럼 Service 에서 나눠서 처리해야할지 만약 Service 에서 나누어 처리하고 서로 다른 응답 객체로 값을 보내려고 한다면
     // 서비스 내에 두개의 메서드를 만들어서 controller 에서 토큰값을 확인하여 각각 다른값을 반환해줘야 할지
-    public List<ProductResponse> getAllProducts(HttpServletRequest httpServletRequest) {
-        String token = httpServletRequest.getHeader("Authorization");
-
-        boolean isLoggedIn = token != null;
-
-        List<Product> cart = new ArrayList<>();
-        List<Product> wish = new ArrayList<>();
-        if (isLoggedIn) {
-            String userId = jwtTokenProvider.extractSubject(token);
-            userInfoJpaRepository.findById(Long.valueOf(userId)).ifPresent(userInfo -> {
-                cart.addAll(userInfo.getCart());
-                wish.addAll(userInfo.getWish());
-            });
-        }
-
-        return productJpaRepository.findAll().stream()
-                .map(product -> {
-                    ProductResponse productResponse = new ProductResponse(product);
-
-                    if (isLoggedIn && cart.contains(product)) {
-                        productResponse.changeInCart();
-                    }
-
-                    if (isLoggedIn && wish.contains(product)) {
-                        productResponse.changeInWish();
-                    }
-                    return productResponse;
-                })
-                .collect(Collectors.toList());
-
+    public List<ProductResponse> getAllProducts() {
+        return productJpaRepository.findAll().stream().map(ProductResponse::new).collect(Collectors.toList());
     }
 
     @Transactional
@@ -117,5 +90,36 @@ public class ProductService {
         Categories wantFindCategories = Categories.valueOf(categories);
         return customProductRepository.findProductByCategories(wantFindCategories).stream()
                 .map(ProductResponse::new).collect(Collectors.toList());
+    }
+
+    public List<LoginUserProductResponse> loginUserGetAllProducts(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+
+        boolean isLoggedIn = token != null;
+
+        List<Product> cart = new ArrayList<>();
+        List<Product> wish = new ArrayList<>();
+        if (isLoggedIn) {
+            String userId = jwtTokenProvider.extractSubject(token);
+            userInfoJpaRepository.findById(Long.valueOf(userId)).ifPresent(userInfo -> {
+                cart.addAll(userInfo.getCart());
+                wish.addAll(userInfo.getWish());
+            });
+        }
+
+        return productJpaRepository.findAll().stream()
+                .map(product -> {
+                    LoginUserProductResponse loginUserProductResponse = new LoginUserProductResponse(product);
+
+                    if (isLoggedIn && cart.contains(product)) {
+                        loginUserProductResponse.changeInCart();
+                    }
+
+                    if (isLoggedIn && wish.contains(product)) {
+                        loginUserProductResponse.changeInWish();
+                    }
+                    return loginUserProductResponse;
+                })
+                .collect(Collectors.toList());
     }
 }
