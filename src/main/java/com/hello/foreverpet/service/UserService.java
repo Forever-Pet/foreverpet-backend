@@ -1,6 +1,7 @@
 package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.config.SecurityUtil;
+import com.hello.foreverpet.domain.dto.AuthorityList;
 import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
 import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
@@ -42,7 +43,7 @@ public class UserService {
         // 가입되어 있지 않은 회원이면,
         // 권한 정보 만들고
         Authority authority = Authority.builder()
-                .authorityName("ROLE_USER")
+                .authorityName(String.valueOf(AuthorityList.ROLE_USER))
                 .build();
 
         // 유저 정보를 만들어서 save
@@ -52,14 +53,14 @@ public class UserService {
                 .userNickname(request.getUserNickName())
                 .userPhone(request.getUserPhone())
                 .userPoint(0)
-                .userDeleteYn(false)
+                .userDeleteFlag(false)
                 .userAddress(request.getUserAddress())
                 .authorities(Collections.singleton(authority))
                 .build();
 
-        Long userNo = userInfoJpaRepository.save(user).getUserNo();
+        Long userId = userInfoJpaRepository.save(user).getUserId();
 
-        return userNo;
+        return userId;
     }
 
     public UserLoginResponse userLogin(UserLoginRequest request){
@@ -76,7 +77,7 @@ public class UserService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
-        String jwt = tokenProvider.createToken(authentication, String.valueOf(userData.get().getUserNo()));
+        String jwt = tokenProvider.createToken(authentication, String.valueOf(userData.get().getUserId()));
 
         HttpHeaders httpHeaders = new HttpHeaders();
         // response header에 jwt token에 넣어줌

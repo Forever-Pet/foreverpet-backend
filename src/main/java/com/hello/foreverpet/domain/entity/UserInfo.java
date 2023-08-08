@@ -24,8 +24,8 @@ public class UserInfo extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_no")
-    private Long userNo;
+    @Column(name = "user_id")
+    private Long userId;
 
     @NotNull
     @Column(name = "user_nickname")
@@ -46,8 +46,8 @@ public class UserInfo extends BaseTimeEntity {
     @Column(name = "user_social_type")
     private String userSocialType;
 
-    @Column(name = "user_delete_yn")
-    private Boolean userDeleteYn;
+    @Column(name = "user_delete_flag")
+    private Boolean userDeleteFlag;
 
     @Column(name = "user_point")
     private Integer userPoint;
@@ -65,21 +65,21 @@ public class UserInfo extends BaseTimeEntity {
     @ManyToMany
     @JoinTable(
             name = "user_authority",
-            joinColumns = {@JoinColumn(name = "user_no", referencedColumnName = "user_no")},
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private Set<Authority> authorities;
 
     @Builder
     public UserInfo(String userNickname, String userEmail, String userPassword,
                     String userPhone, Address userAddress,
-                Boolean userDeleteYn, Integer userPoint, OAuthProvider oAuthProvider,
+                Boolean userDeleteFlag, Integer userPoint, OAuthProvider oAuthProvider,
                     Set<Authority> authorities, String username, String password){
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
         this.userPhone = userPhone;
         this.userAddress = userAddress;
-        this.userDeleteYn = userDeleteYn;
+        this.userDeleteFlag = userDeleteFlag;
         this.userPoint = userPoint;
         this.oAuthProvider = oAuthProvider;
         this.authorities = authorities;
