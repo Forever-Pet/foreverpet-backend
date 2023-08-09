@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Kakao Login API",description = "Kakao Login API 입니다")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
 public class AuthController {
     private final OAuthLoginService oAuthLoginService;
 
     @Operation(summary = "소셜 로그인",description = "소셜 로그인(카카오) 진행.")
-    @PostMapping("/kakao")
+    @PostMapping("/user/kakao")
     public ResponseEntity<AuthTokens> loginKakao(@RequestBody KakaoLoginParams params) {
+
         /* param에는 프론트에서 넘겨준 카카오 회원의 인가코드가 저장되어있다 */
         // https://kauth.kakao.com/oauth/authorize?client_id=ef70ead256236ff245dd289a71f416f3&redirect_uri=http://localhost:8080/kakao/callback&response_type=code
         return ResponseEntity.ok(oAuthLoginService.login(params));
