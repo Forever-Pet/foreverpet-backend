@@ -4,6 +4,9 @@ import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.OAuthProvider;
+import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
+import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
+import com.hello.foreverpet.domain.dto.request.UserUpdateRequest;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -83,6 +86,13 @@ public class UserInfo extends BaseTimeEntity {
         this.userPoint = userPoint;
         this.oAuthProvider = oAuthProvider;
         this.authorities = authorities;
+    }
+
+    public UserInfo updateUserData(UserUpdateRequest userSignupRequest){
+        this.userNickname = userSignupRequest.getUserNickName();
+        this.userPhone = userSignupRequest.getUserPhone();
+        this.userAddress = userSignupRequest.getUserAddress();
+        return this;
     }
 
     public void addProductInCart(Product product) {

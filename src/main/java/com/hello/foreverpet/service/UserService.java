@@ -2,8 +2,8 @@ package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.config.SecurityUtil;
 import com.hello.foreverpet.domain.dto.AuthorityList;
-import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
-import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
+import com.hello.foreverpet.domain.dto.request.*;
+import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.entity.Authority;
 import com.hello.foreverpet.domain.entity.Product;
@@ -92,6 +92,16 @@ public class UserService {
         return userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(username);
     }
 
+    @Transactional
+    public UserInfo updateUserInfo(Long id, UserUpdateRequest request) {
+
+        return userInfoJpaRepository.findById(id)
+                .map(userInfo -> {
+                    return userInfo.updateUserData(request);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
+    }
+
     // 현재 securityContext에 저장된 username의 정보만 가져오는 메소드
     @Transactional(readOnly = true)
     public Optional<UserInfo> getMyUserWithAuthorities() {
@@ -99,7 +109,7 @@ public class UserService {
                 .flatMap(userInfoJpaRepository::findOneWithAuthoritiesByUserEmail);
     }
 
-    public boolean emailCheck(UserLoginRequest request) {
+    public boolean emailCheck(UserEmailCheckRequest request) {
 
         Optional<UserInfo> user = userInfoJpaRepository.findByUserEmail(request.getUserEmail());
 
@@ -139,5 +149,4 @@ public class UserService {
             return false;
         }
     }
-
 }
