@@ -31,14 +31,14 @@ public class UserController {
 
     @CrossOrigin(origins="*")
     @Operation(summary = "일반 회원가입",description = "회원가입 성공시 true, 실패시 false.")
-    @PostMapping("/signup")
+    @PostMapping("/user/signup")
     public ResponseEntity<Boolean> signup(@RequestBody UserSignupRequest userSignupRequest) {
 
-        Long userNo = userService.userSignup(userSignupRequest);
+        Long userId = userService.userSignup(userSignupRequest);
 
         Boolean signCheck = false;
 
-        if(userNo > 0){
+        if(userId > 0){
             signCheck = true;
         }
 
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @Operation(summary = "로그인",description = "로그인 진행.")
-    @PostMapping("/login")
+    @PostMapping("/user/login")
     public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
 
          UserLoginResponse userLoginResponse = userService.userLogin(userLoginRequest);
@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @Operation(summary = "이메일 중복 확인", description = "true의 경우 이메일 사용가능, false의 경우 이메일 사용불가")
-    @PostMapping("/emailCheck")
+    @PostMapping("/user/emailCheck")
     public ResponseEntity<Boolean> emailCheck(@RequestBody UserEmailCheckRequest userEmailCheckRequest){
 
         // true의 경우 사용가능, false의 경우 이메일이 사용불가능
