@@ -32,6 +32,11 @@ dependencies {
 	implementation 'io.swagger:swagger-annotations:1.6.8'
 	implementation 'io.springfox:springfox-swagger2:3.0.0'
 
+	//h2
+	implementation 'com.h2database:h2'
+
+	runtimeOnly 'com.h2database:h2'
+
 
 	//mariadb
 	implementation('org.mariadb.jdbc:mariadb-java-client:3.1.2')
@@ -68,6 +73,13 @@ dependencies {
 	testImplementation('org.junit.jupiter:junit-jupiter')
 	testImplementation('org.junit.jupiter:junit-jupiter-api')
 	testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
+
+	// json setting
+//	implementation "com.fasterxml.jackson.core:jackson-core:2.9.9"
+//	implementation "com.fasterxml.jackson.core:jackson-annotations:2.9.9"
+//	implementation "com.fasterxml.jackson.core:jackson-databind:2.9.9"
+//	implementation "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.9"
+	implementation 'org.json:json:20200518'
 }
 
 tasks.named('test') {
