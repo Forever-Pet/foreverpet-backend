@@ -12,23 +12,9 @@ import springfox.documentation.spring.web.plugins.Docket;
 @Configuration
 public class SwaggerConfig {
 
-//    @Bean
-//    public GroupedOpenApi publicApi() {
-//        return GroupedOpenApi.builder()
-//                .addOpenApiCustomizer(openApi -> openApi
-//                        .info(new Info().title("ForeverPet Api")
-//                                .description("ForeverPet Project API 입니다")
-//                                .version("v1.0")
-//                        )
-//                )
-//                .group("ForeverPet Group")
-//                .displayName("Hello ForeverPet")
-//                .build();
-//    }
-
     @Bean
     public Docket api(){
-        return new Docket(DocumentationType.SWAGGER_2)
+        return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
                 .select()
                 .apis(RequestHandlerSelectors.any())
@@ -38,8 +24,8 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo(){
         return new ApiInfoBuilder()
-                .title("Forever-Pet-API")
-                .description("Forever-Pet API 입니다.")
+                .title("Forever Pet API")
+                .description("Forever Pet API 입니다.")
                 .version("1.0.0")
                 .build();
     }
