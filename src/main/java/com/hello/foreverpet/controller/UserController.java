@@ -8,7 +8,6 @@ import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.service.UserService;
-import io.jsonwebtoken.Header;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Tag(name = "User Login API",description = "User Login API 입니다")
 @RestController
@@ -50,7 +47,7 @@ public class UserController {
     @PostMapping("/user/login")
     public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
 
-         UserLoginResponse userLoginResponse = userService.userLogin(userLoginRequest);
+        UserLoginResponse userLoginResponse = userService.userLogin(userLoginRequest);
 
         return new ResponseEntity<>(userLoginResponse, userLoginResponse.getHttpHeaders(), HttpStatus.OK);
     }

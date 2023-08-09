@@ -94,7 +94,7 @@ public class ProductController {
     }
 
     @Operation(summary = "로그인 유저 모든 상품 조회", description = "로그인한 유저의 모든 상품 조회")
-    @GetMapping("/user/products")
+    @GetMapping("/products/login")
     public ResponseEntity<List<LoginUserProductResponse>> loginUserGetAllProducts(String token) {
         return ResponseEntity.ok(productService.loginUserGetAllProducts(token));
     }
