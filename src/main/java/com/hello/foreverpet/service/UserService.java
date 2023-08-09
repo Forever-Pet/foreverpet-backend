@@ -63,6 +63,9 @@ public class UserService {
         return userId;
     }
 
+
+    public boolean addProductInCart(HttpServletRequest httpServletRequest, Long id){
+
     public UserLoginResponse userLogin(UserLoginRequest request){
 
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -106,6 +109,7 @@ public class UserService {
         return user.isEmpty();
     }
     public boolean addProductInCart(HttpServletRequest httpServletRequest,Long id){
+
         String token = httpServletRequest.getHeader("Authorization");
         String userId = jwtTokenProvider.extractSubject(token);
 
