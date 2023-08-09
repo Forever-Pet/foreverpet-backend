@@ -1,21 +1,25 @@
 package com.hello.foreverpet.controller;
 
-import com.hello.foreverpet.domain.dto.request.NewProductRequest;
+import com.hello.foreverpet.domain.dto.request.UserEmailCheckRequest;
 import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
 import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
+import com.hello.foreverpet.domain.dto.request.UserUpdateRequest;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.entity.UserInfo;
-import com.hello.foreverpet.service.ProductService;
+import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.service.UserService;
+import io.jsonwebtoken.Header;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @Tag(name = "User Login API",description = "User Login API 입니다")
 @RestController
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final TokenProvider tokenProvider;
 
     @CrossOrigin(origins="*")
     @Operation(summary = "일반 회원가입",description = "회원가입 성공시 true, 실패시 false.")
@@ -52,12 +57,23 @@ public class UserController {
 
     @Operation(summary = "이메일 중복 확인", description = "true의 경우 이메일 사용가능, false의 경우 이메일 사용불가")
     @PostMapping("/emailCheck")
-    public ResponseEntity<Boolean> emailCheck(@RequestBody UserLoginRequest userLoginRequest){
+    public ResponseEntity<Boolean> emailCheck(@RequestBody UserEmailCheckRequest userEmailCheckRequest){
 
         // true의 경우 사용가능, false의 경우 이메일이 사용불가능
-        Boolean userEmailCheck = userService.emailCheck(userLoginRequest);
+        Boolean userEmailCheck = userService.emailCheck(userEmailCheckRequest);
 
         return new ResponseEntity<>(userEmailCheck, HttpStatus.OK);
+    }
+
+    @Operation(summary = "유저 정보 수정", description = "유저 정보 수정 기능")
+    @PutMapping("/user")
+    public ResponseEntity<UserInfo> modifyUserData(@RequestHeader HttpHeaders header, @Valid @RequestBody UserUpdateRequest userUpdateRequest){
+
+        String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
+
+        userService.updateUserInfo(Long.valueOf(tokenProvider.getAuthentication(token).getName()), userUpdateRequest);
+
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @Operation(summary = "로그인 테스트용",description = "로그인 테스트 진행.")
