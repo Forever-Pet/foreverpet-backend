@@ -91,7 +91,7 @@ public class InitDataService {
 
         };
 
-        int[]productPrices = {
+        int[] productPrices = {
                 //은
                 15000,
                 89000,
@@ -152,7 +152,7 @@ public class InitDataService {
                 "https://thumbnail9.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/44a7/3c6387c41e5a0d3333feef993e4faff4b9bc0cc9815e31b48ad4c3cd15cf.png",
                 //엘
                 "https://img.dogpre.com/mobile/dogpre/product/41/40576_original_01892171.png",
-                "https://img.dogpre.com/mobile/dogpre/product/18/17551_detail_01141911.png" ,
+                "https://img.dogpre.com/mobile/dogpre/product/18/17551_detail_01141911.png",
                 "https://img.dogpre.com/mobile/dogpre/product/82/81863_detail_01549482.png",
                 "https://img.dogpre.com/mobile/dogpre/product/79/78931_detail_01396836.png",
                 "https://img.dogpre.com/mobile/dogpre/product/56/55596_original_01256815.png",
@@ -163,7 +163,7 @@ public class InitDataService {
                 "https://img.dogpre.com/mobile/dogpre/product/85/84863_detail_01003993.png"
 
         };
-        String[]brandName = {
+        String[] brandName = {
                 //은
                 "고위드테일",
                 "고위드테일",
@@ -199,11 +199,9 @@ public class InitDataService {
                 "네츄럴코어"
         };
 
-        String[] categories = {"SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK","SNACK",
-                "BITA","BITA","BITA","BITA","BITA","BITA","BITA","BITA","BITA","BITA",
-                "FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD","FOOD"};
-
-
+        String[] categories = {"SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK",
+                "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA",
+                "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD"};
 
         if (productJpaRepository.findAll().isEmpty()) {
             for (int i = 0; i < productNames.length; i++) {
