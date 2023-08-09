@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.dto.OrderRequestBody;
-import com.hello.foreverpet.domain.dto.request.OrderRequest;
 import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.domain.entity.Payment;
