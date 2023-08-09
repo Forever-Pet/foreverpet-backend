@@ -38,7 +38,7 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final PasswordEncoder passwordEncoder;
 
-    public Long userSignup(UserSignupRequest request){
+    public Long userSignup(UserSignupRequest request) {
 
         // 가입되어 있지 않은 회원이면,
         // 권한 정보 만들고
@@ -64,9 +64,7 @@ public class UserService {
     }
 
 
-    public boolean addProductInCart(HttpServletRequest httpServletRequest, Long id){
-
-    public UserLoginResponse userLogin(UserLoginRequest request){
+    public UserLoginResponse userLogin(UserLoginRequest request) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.getUserEmail(), request.getUserPassword());
@@ -101,18 +99,18 @@ public class UserService {
                 .flatMap(userInfoJpaRepository::findOneWithAuthoritiesByUserEmail);
     }
 
-    public boolean emailCheck(UserLoginRequest request){
+    public boolean emailCheck(UserLoginRequest request) {
 
         Optional<UserInfo> user = userInfoJpaRepository.findByUserEmail(request.getUserEmail());
 
         // true의 경우 사용가능, false의 경우 이메일이 사용불가능
         return user.isEmpty();
     }
-    public boolean addProductInCart(HttpServletRequest httpServletRequest,Long id){
+
+    public boolean addProductInCart(HttpServletRequest httpServletRequest, Long id) {
 
         String token = httpServletRequest.getHeader("Authorization");
         String userId = jwtTokenProvider.extractSubject(token);
-
 
         try {
             UserInfo userInfoByJWTToken = userInfoJpaRepository.findById(Long.valueOf(userId))
@@ -126,7 +124,7 @@ public class UserService {
         return true;
     }
 
-    public boolean addProductInWish(HttpServletRequest httpServletRequest,Long id){
+    public boolean addProductInWish(HttpServletRequest httpServletRequest, Long id) {
         String token = httpServletRequest.getHeader("Authorization");
         String userId = jwtTokenProvider.extractSubject(token);
 
