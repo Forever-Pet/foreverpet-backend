@@ -105,13 +105,13 @@ public class UserController {
     }
 
     @Operation(summary = "로그인 유저의 장바구니 조회", description = "로그인한 유저의 장바구니 상품 리스트")
-    @GetMapping("/user/cart")
+    @PostMapping("/user/cart")
     public ResponseEntity<List<ProductResponse>> getLoginUserCart(HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(userService.getCart(httpServletRequest));
     }
 
     @Operation(summary = "로그인 유저의 찜목록 조회", description = "로그인한 유저의 찜목록 상품 리스트")
-    @GetMapping("/user/wish")
+    @PostMapping("/user/wish")
     public ResponseEntity<List<ProductResponse>> getLoginUserWish(HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(userService.getWish(httpServletRequest));
     }
