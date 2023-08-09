@@ -14,6 +14,8 @@ import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -148,5 +150,28 @@ public class UserService {
         } catch (IllegalArgumentException e) {
             return false;
         }
+    }
+
+    public List<ProductResponse> getCart(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        String userId = jwtTokenProvider.extractSubject(token);
+
+        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
+                .orElseThrow(IllegalArgumentException::new);
+
+        return userInfo.getCart().stream().map(ProductResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> getWish(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        String userId = jwtTokenProvider.extractSubject(token);
+
+        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
+                .orElseThrow(IllegalArgumentException::new);
+
+        return userInfo.getWish()
+                .stream().map(ProductResponse::new)
+                .collect(Collectors.toList());
     }
 }
