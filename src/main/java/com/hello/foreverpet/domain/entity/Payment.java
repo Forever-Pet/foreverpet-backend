@@ -23,7 +23,7 @@ public class Payment extends BaseTimeEntity {
     private Long paymentId;             // 결제 고유 번호
 
     @NotNull
-    @Column(name = "payment_name")
+    @Column(name = "payment_name", unique=true)
     private String paymentName;         // 결제 리턴 번호 ( uuid_날짜 )
 
     @NotNull

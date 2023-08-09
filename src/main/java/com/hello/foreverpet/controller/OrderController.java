@@ -2,6 +2,7 @@ package com.hello.foreverpet.controller;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +13,9 @@ import com.hello.foreverpet.domain.dto.OrderRequestBody;
 import com.hello.foreverpet.domain.dto.request.OrderRequest;
 import com.hello.foreverpet.domain.entity.Payment;
 import com.hello.foreverpet.domain.entity.UserInfo;
+import com.hello.foreverpet.repository.OrderJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
+import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.service.PaymentService;
 
@@ -48,31 +51,49 @@ public class OrderController {
 
     private final UserInfoJpaRepository userInfoJpaRepository;
 
+    private final OrderJpaRepository orderJpaRepository;
+
 
     @PostMapping("/order")
     @Operation(summary = "주문 등록 ",description = " 결제 , 상품정보확인 후 주문 등록 ")
-    public ResponseEntity<Long> createOrder(@RequestBody @Valid OrderRequestBody orderRequestBody) {
-
-        // 주문상품 개별 저장
-        List<OrderProduct> orderproductList = orderProductService.createOrderProductList(orderRequestBody.getOrderProductListRequest());
-
-        // 결제정보 저장
-        Payment newPayment = paymentService.createPayment(orderRequestBody.getPaymentRequest());
+    public ResponseEntity<String> createOrder(@RequestBody @Valid OrderRequestBody orderRequestBody) {
+        // result_msg
+        String result_msg = "";
 
         // 주문정보 엔티티 생성  
         OrderRequest orderRequest = orderRequestBody.getOrderRequest();
-        
-        // 유저정보 찾기
-        UserInfo userInfo = userInfoJpaRepository.findById(orderRequestBody.getUserNo()).get();
 
-        orderRequest.setUserInfo(userInfo);
-        orderRequest.setPaymentId(newPayment);
-        orderRequest.setOrderProductList(orderproductList);
+        // 주문상품 개별 저장
+        try {
+            List<OrderProduct> orderproductList = orderProductService.createOrderProductList(orderRequestBody.getOrderProductListRequest());
+            orderRequest.setOrderProductList(orderproductList);
+        } catch (Exception e) {
+            result_msg = " 존재하지 않는 상품번호 입니다. ";
+            return ResponseEntity.ok(result_msg);
+        }
 
+        // 결제정보 저장
+        try {
+            Payment newPayment = paymentService.createPayment(orderRequestBody.getPaymentRequest());
+            orderRequest.setPaymentId(newPayment);
+        } catch (Exception e) {
+            result_msg = " 중복된 PaymentName 입니다. ";
+            return ResponseEntity.ok(result_msg);
+        }
 
         // 주문정보 저장
+        try {
+            UserInfo userInfo = userInfoJpaRepository.findById(orderRequestBody.getUserNo()).get();
+            orderRequest.setUserInfo(userInfo);
+        } catch (Exception e) {
+             result_msg = " 존재하지 않는 userNo 입니다. ";
+            return ResponseEntity.ok(result_msg);
+        }
         Long orderId = orderService.createOrder(orderRequest);
 
-        return ResponseEntity.ok(orderId);
+        Order neworder = orderJpaRepository.findById(orderId).get();
+        log.info (neworder.toString());
+
+        return ResponseEntity.ok("성공");
     }  
 } 

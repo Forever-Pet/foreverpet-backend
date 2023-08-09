@@ -22,9 +22,6 @@ import com.hello.foreverpet.domain.dto.OrderRequestBody;
 import com.hello.foreverpet.domain.dto.request.PaymentRequest;
 import com.hello.foreverpet.domain.dto.request.OrderRequest;
 import com.hello.foreverpet.domain.dto.request.OrderProductListRequest;
-import com.hello.foreverpet.domain.entity.Payment;
-import com.hello.foreverpet.domain.entity.OrderProduct;
-import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import com.hello.foreverpet.service.PaymentService;
@@ -89,7 +86,7 @@ public class OrderControllerTest {
         orderInfoRequest.setUserInfo(userInfo);
 
         
-        Long expectedId = 0L;
+        String expectedId = "성공";
 
         OrderRequestBody createOrderRequest = new OrderRequestBody();
         createOrderRequest.setPaymentRequest(paymentInfoRequest);
@@ -99,21 +96,20 @@ public class OrderControllerTest {
         
 
         // 실행
-        ResponseEntity<Long> response = orderController.createOrder(createOrderRequest);
+        ResponseEntity<String> response = orderController.createOrder(createOrderRequest);
 
         
 
         orderInfoRequest.setPaymentId(paymentService.createPayment(paymentInfoRequest));
         orderInfoRequest.setOrderProductList(orderProductService.createOrderProductList(ProductIdList));
 
-        when(orderService.createOrder(orderInfoRequest)).thenReturn(expectedId);
+        // when(orderService.createOrder(orderInfoRequest)).thenReturn(expectedId);
         
         // 단언
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedId, response.getBody());
         verify(orderService, times(1)).createOrder(orderInfoRequest);
 
-    }
-
+    } 
+    
 }
-
