@@ -4,6 +4,7 @@ import com.hello.foreverpet.domain.dto.request.UserEmailCheckRequest;
 import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
 import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
 import com.hello.foreverpet.domain.dto.request.UserUpdateRequest;
+import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.jwt.TokenProvider;
@@ -12,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -100,5 +102,17 @@ public class UserController {
     public ResponseEntity<Boolean> addProductInWish(HttpServletRequest httpServletRequest, @PathVariable Long id) {
         boolean successProductAddWish = userService.addProductInWish(httpServletRequest, id);
         return ResponseEntity.ok(successProductAddWish);
+    }
+
+    @Operation(summary = "로그인 유저의 장바구니 조회", description = "로그인한 유저의 장바구니 상품 리스트")
+    @PostMapping("/user/cart")
+    public ResponseEntity<List<ProductResponse>> getLoginUserCart(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(userService.getCart(httpServletRequest));
+    }
+
+    @Operation(summary = "로그인 유저의 찜목록 조회", description = "로그인한 유저의 찜목록 상품 리스트")
+    @PostMapping("/user/wish")
+    public ResponseEntity<List<ProductResponse>> getLoginUserWish(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(userService.getWish(httpServletRequest));
     }
 }
