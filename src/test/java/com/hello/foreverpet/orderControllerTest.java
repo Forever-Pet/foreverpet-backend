@@ -25,6 +25,8 @@ import com.hello.foreverpet.domain.dto.request.OrderProductListRequest;
 import com.hello.foreverpet.domain.entity.Payment;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.domain.entity.Product;
+import com.hello.foreverpet.domain.entity.UserInfo;
+import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import com.hello.foreverpet.service.PaymentService;
 import com.hello.foreverpet.service.OrderProductService;
 import com.hello.foreverpet.service.OrderService;
@@ -47,13 +49,15 @@ public class OrderControllerTest {
     @InjectMocks
     private OrderController orderController;
 
+    private UserInfoJpaRepository userInfoJpaRepository;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
     
 
-    /*@Test
+    @Test
     void createOrder_shouldReturnCreatedOrderNo(){
         // Payment test data 
         PaymentRequest paymentInfoRequest = new PaymentRequest("paymentName", "paymentGateway","paymentMethod");
@@ -80,7 +84,9 @@ public class OrderControllerTest {
 
         OrderRequest orderInfoRequest = new OrderRequest();
         orderInfoRequest.setAddress(address);
-        orderInfoRequest.setUserNo(1L);
+        UserInfo userInfo = userInfoJpaRepository.findById(1L).get();
+
+        orderInfoRequest.setUserInfo(userInfo);
 
         
         Long expectedId = 0L;
@@ -107,6 +113,6 @@ public class OrderControllerTest {
         assertEquals(expectedId, response.getBody());
         verify(orderService, times(1)).createOrder(orderInfoRequest);
 
-    }*/
+    }
 
 }
