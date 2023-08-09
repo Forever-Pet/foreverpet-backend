@@ -36,7 +36,7 @@ public class OAuthLoginService {
 
     private Long findOrCreateMember(OAuthInfoResponse oAuthInfoResponse) {
         return userInfoJpaRepository.findByUserNickname(oAuthInfoResponse.getNickname())
-                .map(UserInfo::getUserNo)
+                .map(UserInfo::getUserId)
                 .orElseGet(() -> newMember(oAuthInfoResponse));
     }
 
@@ -46,6 +46,6 @@ public class OAuthLoginService {
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
                 .build();
 
-        return userInfoJpaRepository.save(userInfo).getUserNo();
+        return userInfoJpaRepository.save(userInfo).getUserId();
     }
 }
