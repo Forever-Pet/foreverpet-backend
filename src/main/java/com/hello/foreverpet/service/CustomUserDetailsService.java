@@ -29,11 +29,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String username) {
 
         return userRepository.findOneWithAuthoritiesByUserEmail(username)
-                .map(user -> createUser(username, user))
+                .map(this::createUser)
                 .orElseThrow(() -> new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다."));
     }
 
-    private org.springframework.security.core.userdetails.User createUser(String username, UserInfo user) {
+    private org.springframework.security.core.userdetails.User createUser(UserInfo user) {
 
         List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
