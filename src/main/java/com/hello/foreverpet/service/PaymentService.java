@@ -15,14 +15,14 @@ public class PaymentService {
 
     private final PaymentJpaRepository paymentJpaRepository;
 
-     public Payment createPayment(PaymentRequest paymentInfoRequest) {
+    public Payment createPayment(PaymentRequest paymentInfoRequest) {
 
         Payment newPayment = paymentInfoRequest.toEntity();
-        
+
         paymentJpaRepository.save(newPayment);
 
         // log.info();
-  
+
         return newPayment;
     }
 }
