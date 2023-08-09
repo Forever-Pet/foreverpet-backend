@@ -74,6 +74,9 @@ dependencies {
 	testImplementation('org.junit.jupiter:junit-jupiter')
 	testImplementation('org.junit.jupiter:junit-jupiter-api')
 	testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
+
+	// json setting
+	implementation 'org.json:json:20200518'
 }
 
 tasks.named('test') {
