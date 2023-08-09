@@ -72,14 +72,14 @@ public class UserController {
     }
 
     @Operation(summary = "장바구니에 상품 추가", description = "로그인한 회원의 장바구니에 상품을 추가.")
-    @PostMapping("/cart/{id}")
+    @PostMapping("/user/cart/{id}")
     public ResponseEntity<Boolean> addProductInCart(HttpServletRequest httpServletRequest, @PathVariable Long id) {
         boolean successProductAddCart = userService.addProductInCart(httpServletRequest, id);
         return ResponseEntity.ok(successProductAddCart);
     }
 
     @Operation(summary = "찜목록에 상품 추가", description = "로그인한 회원의 찜목록에 상품을 추가.")
-    @PostMapping("/wish/{id}")
+    @PostMapping("/user/wish/{id}")
     public ResponseEntity<Boolean> addProductInWish(HttpServletRequest httpServletRequest, @PathVariable Long id) {
         boolean successProductAddWish = userService.addProductInWish(httpServletRequest, id);
         return ResponseEntity.ok(successProductAddWish);
