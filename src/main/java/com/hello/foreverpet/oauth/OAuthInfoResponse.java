@@ -14,4 +14,6 @@ public interface OAuthInfoResponse {
 
     // 소셜 타입 요청용
     OAuthProvider getOAuthProvider();
+
+    Long getId();
 }

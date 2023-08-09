@@ -69,6 +69,7 @@ public class UserController {
     @PutMapping("/user")
     public ResponseEntity<UserInfo> modifyUserData(@RequestHeader HttpHeaders header, @Valid @RequestBody UserUpdateRequest userUpdateRequest){
 
+        // null 처리 필요
         String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
 
         userService.updateUserInfo(Long.valueOf(tokenProvider.getAuthentication(token).getName()), userUpdateRequest);
