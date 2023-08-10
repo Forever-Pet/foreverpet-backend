@@ -13,18 +13,16 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.hello.foreverpet.controller.OrderController;
 import com.hello.foreverpet.domain.dto.Address;
-import com.hello.foreverpet.domain.dto.OrderRequestBody;
 import com.hello.foreverpet.domain.dto.request.PaymentRequest;
-import com.hello.foreverpet.domain.dto.request.OrderRequest;
-import com.hello.foreverpet.domain.dto.request.OrderProductListRequest;
-import com.hello.foreverpet.domain.entity.Payment;
-import com.hello.foreverpet.domain.entity.OrderProduct;
-import com.hello.foreverpet.domain.entity.Product;
+import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
+import com.hello.foreverpet.domain.dto.request.OrderProductRequest;
+import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import com.hello.foreverpet.service.PaymentService;
@@ -35,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class OrderControllerTest {
-
 
     @Mock
     private OrderService orderService;
@@ -63,8 +60,8 @@ public class OrderControllerTest {
         PaymentRequest paymentInfoRequest = new PaymentRequest("paymentName", "paymentGateway","paymentMethod");
         
         // OrderProduct test data
-        List < OrderProductListRequest > ProductIdList = new ArrayList<>();
-        OrderProductListRequest orderProductRequest = new OrderProductListRequest();
+        List < OrderProductRequest > ProductIdList = new ArrayList<>();
+        OrderProductRequest orderProductRequest = new OrderProductRequest();
         orderProductRequest.setOrderProductAmount(4);
         orderProductRequest.setOrderProductId(1L);
         ProductIdList.add(orderProductRequest);
@@ -82,38 +79,30 @@ public class OrderControllerTest {
         address.setZipcode("test");
 
 
-        OrderRequest orderInfoRequest = new OrderRequest();
-        orderInfoRequest.setAddress(address);
         UserInfo userInfo = userInfoJpaRepository.findById(1L).get();
 
-        orderInfoRequest.setUserInfo(userInfo);
-
         
-        Long expectedId = 0L;
+        String expectedId = "성공";
 
         OrderRequestBody createOrderRequest = new OrderRequestBody();
         createOrderRequest.setPaymentRequest(paymentInfoRequest);
-        createOrderRequest.setOrderRequest(orderInfoRequest);
         createOrderRequest.setOrderProductListRequest(ProductIdList);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
 
         
 
         // 실행
-        ResponseEntity<Long> response = orderController.createOrder(createOrderRequest);
+        ResponseEntity<Order> response = orderController.createOrder(createOrderRequest , httpHeaders);
 
-        
+    
 
-        orderInfoRequest.setPaymentId(paymentService.createPayment(paymentInfoRequest));
-        orderInfoRequest.setOrderProductList(orderProductService.createOrderProductList(ProductIdList));
-
-        when(orderService.createOrder(orderInfoRequest)).thenReturn(expectedId);
+        // when(orderService.createOrder(orderInfoRequest)).thenReturn(expectedId);
         
         // 단언
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedId, response.getBody());
-        verify(orderService, times(1)).createOrder(orderInfoRequest);
 
-    }
-
+    } 
+    
 }
-
