@@ -1,14 +1,13 @@
 package com.hello.foreverpet.controller;
 
-import com.hello.foreverpet.domain.dto.request.UserEmailCheckRequest;
-import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
-import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
-import com.hello.foreverpet.domain.dto.request.UserUpdateRequest;
+import com.hello.foreverpet.domain.dto.request.*;
+import com.hello.foreverpet.domain.dto.response.UserDataResponse;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
+import com.hello.foreverpet.domain.dto.response.UserPasswordResponse;
+import com.hello.foreverpet.domain.dto.response.UserQuitResponse;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.service.UserService;
-import io.jsonwebtoken.Header;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,8 +17,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Optional;
 
 @Tag(name = "User Login API",description = "User Login API 입니다")
 @RestController
@@ -46,7 +43,7 @@ public class UserController {
         return ResponseEntity.ok(signCheck);
     }
 
-    @Operation(summary = "로그인",description = "로그인 진행.")
+    @Operation(summary = "로그인",description = "로그인 진행 / deleteFlag = false면 탈퇴, true면 로그인 가능")
     @PostMapping("/user/login")
     public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
 
@@ -75,6 +72,59 @@ public class UserController {
         userService.updateUserInfo(Long.valueOf(tokenProvider.getAuthentication(token).getName()), userUpdateRequest);
 
         return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @Operation(summary = "유저 정보 조회", description = "유저 정보 조회 기능")
+    @GetMapping("/user")
+    public ResponseEntity<UserDataResponse> getUserData(@RequestHeader HttpHeaders header){
+
+        // null 처리 필요
+        String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
+
+        UserDataResponse user = userService.getUserData(Long.valueOf(tokenProvider.getAuthentication(token).getName()));
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @Operation(summary = "유저 탈퇴", description = "유저 탈퇴 기능")
+    @PutMapping("/user/quit")
+    public ResponseEntity<UserQuitResponse> quitUser(@RequestHeader HttpHeaders header){
+
+        // null 처리 필요
+        String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
+
+        Boolean flag = userService.userQuit(Long.valueOf(tokenProvider.getAuthentication(token).getName())).getUserDeleteFlag();
+
+        String msg = "";
+        if(flag){
+            msg = "탈퇴 완료";
+        }else{
+            msg = "탈퇴 실패";
+        }
+
+        UserQuitResponse response = new UserQuitResponse(msg, flag);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Operation(summary = "유저 비밀번호 변경 1차 체크", description = "유저 비밀번호 변경 1차 체크 (기존 비밀번호) - 일치 시 true, 불일치 시 false")
+    @PostMapping("/user/passwordCheck")
+    public ResponseEntity<Boolean> userPasswordCheck(@RequestHeader HttpHeaders header, @Valid @RequestBody UserPasswordRequest request){
+
+        // null 처리 필요
+        String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
+
+        return new ResponseEntity<>(userService.userPasswordCheck(token, request), HttpStatus.OK);
+    }
+
+    @Operation(summary = "유저 비밀번호 변경", description = "유저 비밀번호 변경")
+    @PostMapping("/user/password")
+    public ResponseEntity<UserPasswordResponse> userNewPassword(@RequestHeader HttpHeaders header, @Valid @RequestBody UserNewPasswordRequest request){
+
+        // null 처리 필요
+        String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
+
+        return new ResponseEntity<>(userService.userNewPassword(token, request), HttpStatus.OK);
     }
 
     @Operation(summary = "로그인 테스트용",description = "로그인 테스트 진행.")
