@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
+import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.service.OrderService;
 
@@ -36,18 +37,14 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    private final TokenProvider tokenProvider;
-
 
 
     @PostMapping("/order")
     @Operation(summary = "주문 등록 ",description = " 결제 , 상품정보확인 후 주문 등록 ")
-    public ResponseEntity<String> createOrder(@RequestBody @Valid OrderRequestBody orderRequestBody , @RequestHeader HttpHeaders header ) {
-        
-        String result_msg = "";
+    public ResponseEntity<Order> createOrder(@RequestBody @Valid OrderRequestBody orderRequestBody , @RequestHeader HttpHeaders header ) {
 
-        result_msg = orderService.createOrder( orderRequestBody , header );
+        Order newOrder = orderService.createOrder( orderRequestBody , header );
 
-        return ResponseEntity.ok(result_msg);
+        return ResponseEntity.ok(newOrder);
     }  
 } 

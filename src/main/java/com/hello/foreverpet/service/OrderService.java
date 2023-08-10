@@ -35,8 +35,7 @@ public class OrderService {
     private final TokenProvider tokenProvider;
 
 
-    public String createOrder(OrderRequestBody orderRequestBody , HttpHeaders httpHeaders) {
-        String result_msg = " 성공 ";
+    public Order createOrder(OrderRequestBody orderRequestBody , HttpHeaders httpHeaders) {
 
         // 주소 
         Address address = orderRequestBody.getAddress();
@@ -69,9 +68,9 @@ public class OrderService {
                         .receiverPhoneNumber(receiverPhoneNumber)
                         .build();
 
-        orderJpaRepository.save(newOrder);
+        Long orderId = orderJpaRepository.save(newOrder).getOrderId();
 
-        return result_msg;
+        return orderJpaRepository.findById(orderId).get();
     }
 
 

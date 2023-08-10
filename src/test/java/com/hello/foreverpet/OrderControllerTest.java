@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.coyote.Request;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -23,6 +22,7 @@ import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.dto.request.PaymentRequest;
 import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
 import com.hello.foreverpet.domain.dto.request.OrderProductRequest;
+import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import com.hello.foreverpet.service.PaymentService;
@@ -93,7 +93,7 @@ public class OrderControllerTest {
         
 
         // 실행
-        ResponseEntity<String> response = orderController.createOrder(createOrderRequest , httpHeaders);
+        ResponseEntity<Order> response = orderController.createOrder(createOrderRequest , httpHeaders);
 
     
 
