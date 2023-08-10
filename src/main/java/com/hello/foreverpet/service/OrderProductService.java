@@ -51,10 +51,8 @@ public class OrderProductService {
         for (Map.Entry<Long, Integer> elem : productIdMap.entrySet()) {
 
             // 익셉션 처리 
-            Product getOrderProductInfo = new Product();
-            getOrderProductInfo = productJpaRepository.findById(elem.getKey())
+            Product getOrderProductInfo =  productJpaRepository.findById(elem.getKey())
                     .orElseThrow(IllegalArgumentException::new);
-
             // 수량
             Long amount = (long) elem.getValue();
 
