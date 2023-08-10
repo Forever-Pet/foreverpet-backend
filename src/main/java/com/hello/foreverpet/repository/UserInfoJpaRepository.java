@@ -9,6 +9,8 @@ public interface UserInfoJpaRepository extends JpaRepository<UserInfo, Long> {
 
     Optional<UserInfo> findByUserNickname(String nickname);
 
+    Optional<UserInfo> findByUserKakaoId(Long kakaoId);
+
     Optional<UserInfo> findByUserEmail(String nickname);
 
     Optional<UserInfo> findOneWithAuthoritiesByUserEmail(String name);
