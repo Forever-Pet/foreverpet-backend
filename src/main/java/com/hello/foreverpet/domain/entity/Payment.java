@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -33,6 +34,11 @@ public class Payment extends BaseTimeEntity {
     @NotNull
     @Column(name = "payment_method")
     private String paymentMethod;       // 결제방법
+
+
+    @OneToOne(mappedBy = "payment")
+    private Order order;                // 주문정보 확인 
+
 
     @Builder
     public Payment(Long paymentId, String paymentName,

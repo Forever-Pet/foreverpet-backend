@@ -1,11 +1,8 @@
-package com.hello.foreverpet.domain.dto;
-
-import com.hello.foreverpet.domain.dto.request.PaymentRequest;
+package com.hello.foreverpet.domain.dto.request;
 
 import java.util.List;
 
-import com.hello.foreverpet.domain.dto.request.OrderRequest;
-import com.hello.foreverpet.domain.dto.request.OrderProductListRequest;
+import com.hello.foreverpet.domain.dto.Address;
 
 import lombok.Data;
 
@@ -14,11 +11,13 @@ public class OrderRequestBody {
 
     private PaymentRequest paymentRequest;      // 결제정보
 
-    private OrderRequest orderRequest;          // 주문정보
+    private Address address;
 
-    private List<OrderProductListRequest> OrderProductListRequest;                 // 상품 목록
+    private String customerPhoneNumber;
 
-    private Long userNo;
+    private String receiverPhoneNumber;
+
+    private List<OrderProductRequest> OrderProductListRequest;                 // 상품 목록
 
     public OrderRequestBody() {
 

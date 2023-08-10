@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.hello.foreverpet.domain.dto.request.OrderProductListRequest;
+import com.hello.foreverpet.domain.dto.request.OrderProductRequest;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.repository.OrderProductListJpaRepository;
@@ -25,7 +25,7 @@ public class OrderProductService {
 
     private final OrderProductListJpaRepository orderProductListJpaRepository;
 
-    public List<OrderProduct> createOrderProductList(List<OrderProductListRequest> orderProductRequest) {
+    public List<OrderProduct> createOrderProductList(List<OrderProductRequest> orderProductRequest) {
 
         // return 값 
         List<OrderProduct> orderproductList = new ArrayList<>();
