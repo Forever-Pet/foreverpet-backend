@@ -4,6 +4,9 @@ import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.OAuthProvider;
+import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
+import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
+import com.hello.foreverpet.domain.dto.request.UserUpdateRequest;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -52,6 +55,9 @@ public class UserInfo extends BaseTimeEntity {
     @Column(name = "user_point")
     private Integer userPoint;
 
+    @Column(name = "user_kakao_id")
+    private Long userKakaoId;
+
     // 상복님 장바구니 , 찜목록 관련 이쪽에 작업하겠습니다.
     @OneToMany(fetch = FetchType.LAZY)
     private List<Product> cart = new ArrayList<>();
@@ -73,7 +79,7 @@ public class UserInfo extends BaseTimeEntity {
     public UserInfo(String userNickname, String userEmail, String userPassword,
                     String userPhone, Address userAddress,
                 Boolean userDeleteFlag, Integer userPoint, OAuthProvider oAuthProvider,
-                    Set<Authority> authorities, String username, String password){
+                    Set<Authority> authorities, String username, String password, Long userKakaoId){
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
@@ -83,6 +89,14 @@ public class UserInfo extends BaseTimeEntity {
         this.userPoint = userPoint;
         this.oAuthProvider = oAuthProvider;
         this.authorities = authorities;
+        this.userKakaoId = userKakaoId;
+    }
+
+    public UserInfo updateUserData(UserUpdateRequest userSignupRequest){
+        this.userNickname = userSignupRequest.getUserNickName();
+        this.userPhone = userSignupRequest.getUserPhone();
+        this.userAddress = userSignupRequest.getUserAddress();
+        return this;
     }
 
     public void addProductInCart(Product product) {

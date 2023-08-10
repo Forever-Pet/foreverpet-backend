@@ -2,8 +2,8 @@ package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.config.SecurityUtil;
 import com.hello.foreverpet.domain.dto.AuthorityList;
-import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
-import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
+import com.hello.foreverpet.domain.dto.request.*;
+import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.entity.Authority;
 import com.hello.foreverpet.domain.entity.Product;
@@ -14,6 +14,8 @@ import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -87,9 +89,35 @@ public class UserService {
         return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders);
     }
 
+    public UserLoginResponse kakaoLogin(Long userId) {
+
+        Optional<UserInfo> userData = userInfoJpaRepository.findById(userId);
+
+        // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
+        String jwt = tokenProvider.createKakaoToken(String.valueOf(userData.get().getUserId()));
+
+        System.out.println("test 3 : " + jwt);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        // response header에 jwt token에 넣어줌
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders);
+    }
+
     @Transactional(readOnly = true)
     public Optional<UserInfo> getUserWithAuthorities(String username) {
         return userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(username);
+    }
+
+    @Transactional
+    public UserInfo updateUserInfo(Long id, UserUpdateRequest request) {
+
+        return userInfoJpaRepository.findById(id)
+                .map(userInfo -> {
+                    return userInfo.updateUserData(request);
+                })
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
     }
 
     // 현재 securityContext에 저장된 username의 정보만 가져오는 메소드
@@ -99,7 +127,7 @@ public class UserService {
                 .flatMap(userInfoJpaRepository::findOneWithAuthoritiesByUserEmail);
     }
 
-    public boolean emailCheck(UserLoginRequest request) {
+    public boolean emailCheck(UserEmailCheckRequest request) {
 
         Optional<UserInfo> user = userInfoJpaRepository.findByUserEmail(request.getUserEmail());
 
@@ -140,4 +168,26 @@ public class UserService {
         }
     }
 
+    public List<ProductResponse> getCart(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        String userId = jwtTokenProvider.extractSubject(token);
+
+        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
+                .orElseThrow(IllegalArgumentException::new);
+
+        return userInfo.getCart().stream().map(ProductResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> getWish(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        String userId = jwtTokenProvider.extractSubject(token);
+
+        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
+                .orElseThrow(IllegalArgumentException::new);
+
+        return userInfo.getWish()
+                .stream().map(ProductResponse::new)
+                .collect(Collectors.toList());
+    }
 }
