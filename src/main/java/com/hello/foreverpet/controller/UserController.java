@@ -47,7 +47,7 @@ public class UserController {
     @PostMapping("/user/login")
     public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginRequest userLoginRequest) {
 
-         UserLoginResponse userLoginResponse = userService.userLogin(userLoginRequest);
+        UserLoginResponse userLoginResponse = userService.userLogin(userLoginRequest);
 
         return new ResponseEntity<>(userLoginResponse, userLoginResponse.getHttpHeaders(), HttpStatus.OK);
     }
@@ -154,5 +154,17 @@ public class UserController {
     public ResponseEntity<Boolean> addProductInWish(HttpServletRequest httpServletRequest, @PathVariable Long id) {
         boolean successProductAddWish = userService.addProductInWish(httpServletRequest, id);
         return ResponseEntity.ok(successProductAddWish);
+    }
+
+    @Operation(summary = "로그인 유저의 장바구니 조회", description = "로그인한 유저의 장바구니 상품 리스트")
+    @PostMapping("/user/cart")
+    public ResponseEntity<List<ProductResponse>> getLoginUserCart(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(userService.getCart(httpServletRequest));
+    }
+
+    @Operation(summary = "로그인 유저의 찜목록 조회", description = "로그인한 유저의 찜목록 상품 리스트")
+    @PostMapping("/user/wish")
+    public ResponseEntity<List<ProductResponse>> getLoginUserWish(HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(userService.getWish(httpServletRequest));
     }
 }
