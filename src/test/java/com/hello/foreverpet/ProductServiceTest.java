@@ -1,9 +1,17 @@
 package com.hello.foreverpet;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
+import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
+import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.service.ProductService;
+import com.hello.foreverpet.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -20,7 +28,13 @@ import org.springframework.test.context.TestPropertySource;
 public class ProductServiceTest {
 
     @Autowired
-    private ProductService productService;
+    ProductService productService;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
 
     @Test
     @DisplayName("상품 등록")
@@ -118,6 +132,34 @@ public class ProductServiceTest {
 
         // then
         Assertions.assertEquals(productById.getProductName(),"테스트제품");
+    }
+
+    @Test
+    @DisplayName("장바구니 테스트")
+    public void cartTest (){
+        // given
+        // 유저 회원가입
+        UserSignupRequest userSignupRequest = UserSignupRequest.builder()
+                .userNickName("testUser")
+                .userEmail("test@gmail.com")
+                .userPassword("123123")
+                .userPhone("010-111-111")
+                .userAddress(Address.builder()
+                        .city("test")
+                        .street("test")
+                        .zipcode("test")
+                        .build())
+                .build();
+        userService.userSignup(userSignupRequest);
+
+        HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+        when(mockRequest.getHeader("Authorization")).thenReturn("Bearer mocktoken");
+//        when(jwtTokenProvider.extractSubject("mocktoken")).thenReturn("1");
+
+        // when
+        boolean b = userService.addProductInCart(mockRequest, 1L);
+
+        // then
     }
 
 }
