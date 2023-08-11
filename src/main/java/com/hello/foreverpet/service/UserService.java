@@ -2,9 +2,11 @@ package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.config.SecurityUtil;
 import com.hello.foreverpet.domain.dto.AuthorityList;
+import com.hello.foreverpet.domain.dto.MemberShip;
 import com.hello.foreverpet.domain.dto.request.*;
-import com.hello.foreverpet.domain.dto.response.ProductResponse;
+import com.hello.foreverpet.domain.dto.response.UserDataResponse;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
+import com.hello.foreverpet.domain.dto.response.UserPasswordResponse;
 import com.hello.foreverpet.domain.entity.Authority;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
@@ -14,8 +16,6 @@ import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -58,6 +58,7 @@ public class UserService {
                 .userDeleteFlag(false)
                 .userAddress(request.getUserAddress())
                 .authorities(Collections.singleton(authority))
+                .userMembership(String.valueOf(MemberShip.SILVER))
                 .build();
 
         Long userId = userInfoJpaRepository.save(user).getUserId();
@@ -73,6 +74,10 @@ public class UserService {
 
         Optional<UserInfo> userData = userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(request.getUserEmail());
 
+        if(userData.get().getUserDeleteFlag()){
+            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null, false);
+        }
+
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
@@ -86,23 +91,56 @@ public class UserService {
         // response header에 jwt token에 넣어줌
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders);
+        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders, true);
     }
 
     public UserLoginResponse kakaoLogin(Long userId) {
 
         Optional<UserInfo> userData = userInfoJpaRepository.findById(userId);
 
+        if(userData.get().getUserDeleteFlag()){
+            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null, false);
+        }
+
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
         String jwt = tokenProvider.createKakaoToken(String.valueOf(userData.get().getUserId()));
-
-        System.out.println("test 3 : " + jwt);
 
         HttpHeaders httpHeaders = new HttpHeaders();
         // response header에 jwt token에 넣어줌
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders);
+        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders, true);
+    }
+
+    public UserDataResponse getUserData(Long userId){
+
+        UserDataResponse user = new UserDataResponse(userInfoJpaRepository.findGetUserData(userId));
+        return user;
+    }
+
+    public Boolean userPasswordCheck(String token, UserPasswordRequest request){
+
+        Optional<UserInfo> user = userInfoJpaRepository.findById(Long.valueOf(tokenProvider.getAuthentication(token).getName()));
+
+        return passwordEncoder.matches(request.getUserPassword(), user.get().getUserPassword());
+    }
+
+    @Transactional
+    public UserPasswordResponse userNewPassword(String token, UserNewPasswordRequest request){
+
+        Optional<UserInfo> user = userInfoJpaRepository.findById(Long.valueOf(tokenProvider.getAuthentication(token).getName()));
+
+        if(!request.getUserPassword().equals(request.getUserPasswordCheck())){
+            return new UserPasswordResponse("패스워드가 일치 하지 않습니다.", false);
+        }
+
+        user
+                .map(userInfo -> {
+                    return userInfo.updatePassword(passwordEncoder.encode(request.getUserPassword()));
+                })
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
+
+        return new UserPasswordResponse("패스워드가 변경 성공", true);
     }
 
     @Transactional(readOnly = true)
@@ -129,7 +167,7 @@ public class UserService {
 
     public boolean emailCheck(UserEmailCheckRequest request) {
 
-        Optional<UserInfo> user = userInfoJpaRepository.findByUserEmail(request.getUserEmail());
+        Optional<UserInfo> user = userInfoJpaRepository.findByUserEmailAndUserDeleteFlag(request.getUserEmail(), false);
 
         // true의 경우 사용가능, false의 경우 이메일이 사용불가능
         return user.isEmpty();
@@ -168,26 +206,11 @@ public class UserService {
         }
     }
 
-    public List<ProductResponse> getCart(HttpServletRequest httpServletRequest) {
-        String token = httpServletRequest.getHeader("Authorization");
-        String userId = jwtTokenProvider.extractSubject(token);
+    @Transactional
+    public UserInfo userQuit(Long userId){
 
-        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
-                .orElseThrow(IllegalArgumentException::new);
-
-        return userInfo.getCart().stream().map(ProductResponse::new)
-                .collect(Collectors.toList());
-    }
-
-    public List<ProductResponse> getWish(HttpServletRequest httpServletRequest) {
-        String token = httpServletRequest.getHeader("Authorization");
-        String userId = jwtTokenProvider.extractSubject(token);
-
-        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
-                .orElseThrow(IllegalArgumentException::new);
-
-        return userInfo.getWish()
-                .stream().map(ProductResponse::new)
-                .collect(Collectors.toList());
+        return userInfoJpaRepository.findById(Long.valueOf(userId))
+                .map(UserInfo::quitUser)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
     }
 }
