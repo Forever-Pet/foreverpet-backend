@@ -89,6 +89,22 @@ public class UserService {
         return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders);
     }
 
+    public UserLoginResponse kakaoLogin(Long userId) {
+
+        Optional<UserInfo> userData = userInfoJpaRepository.findById(userId);
+
+        // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
+        String jwt = tokenProvider.createKakaoToken(String.valueOf(userData.get().getUserId()));
+
+        System.out.println("test 3 : " + jwt);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        // response header에 jwt token에 넣어줌
+        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
+
+        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders);
+    }
+
     @Transactional(readOnly = true)
     public Optional<UserInfo> getUserWithAuthorities(String username) {
         return userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(username);

@@ -49,6 +49,9 @@ public class UserInfo extends BaseTimeEntity {
     @Column(name = "user_point")
     private Integer userPoint;
 
+    @Column(name = "user_kakao_id")
+    private Long userKakaoId;
+
     // 상복님 장바구니 , 찜목록 관련 이쪽에 작업하겠습니다.
     @OneToMany(mappedBy = "userInfo", fetch = FetchType.LAZY)
     private List<Product> cart = new ArrayList<>();
@@ -69,8 +72,12 @@ public class UserInfo extends BaseTimeEntity {
     @Builder
     public UserInfo(String userNickname, String userEmail, String userPassword,
                     String userPhone, Address userAddress,
+
                     Boolean userDeleteFlag, Integer userPoint, OAuthProvider oAuthProvider,
                     Set<Authority> authorities, String username, String password) {
+                Boolean userDeleteFlag, Integer userPoint, OAuthProvider oAuthProvider,
+                    Set<Authority> authorities, String username, String password, Long userKakaoId){
+
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
@@ -80,6 +87,7 @@ public class UserInfo extends BaseTimeEntity {
         this.userPoint = userPoint;
         this.oAuthProvider = oAuthProvider;
         this.authorities = authorities;
+        this.userKakaoId = userKakaoId;
     }
 
     public UserInfo updateUserData(UserUpdateRequest userSignupRequest) {

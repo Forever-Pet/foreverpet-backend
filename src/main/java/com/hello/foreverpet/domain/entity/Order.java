@@ -35,8 +35,7 @@ public class Order extends BaseTimeEntity {
     @NotNull
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "payment_id")
-    @Setter
-    private Payment paymentId;                  // 결제고유번호
+    private Payment payment;                      // 결제고유번호
 
     @NotNull
     @Embedded
@@ -60,15 +59,22 @@ public class Order extends BaseTimeEntity {
 
     @NotNull
     @OneToMany
-    @Setter 
     private List<OrderProduct> orderProductList;   // 주문한 상품 상세정보
 
 
     @NotNull
     private Long amount;                            // 총 수량 
+    
+    @NotNull
+    @Column(name ="customer_phone_number")
+    private String customerPhoneNumber;             // 주문자 핸드폰 번호
+
+    @NotNull
+    @Column(name ="receiver_phone_number")
+    private String receiverPhoneNumber;             // 수령인 핸드폰 번호
 
     @Builder
-    public Order(Payment paymentId, Address address,
+    public Order(Payment payment, Address address, String customerPhoneNumber , String receiverPhoneNumber,
         UserInfo userInfo, List<OrderProduct> orderProductList ) {
             // 총 수량 계산
             Long amount = 0L;
@@ -77,9 +83,10 @@ public class Order extends BaseTimeEntity {
                 amount += orderProductList.get(i).getOrderProductAmount();
                 totalPrice += orderProductList.get(i).getOrderProductPrice();
             }
-
+            this.customerPhoneNumber = customerPhoneNumber;
+            this.receiverPhoneNumber = receiverPhoneNumber;
             this.totalPrice = totalPrice;
-            this.paymentId = paymentId;
+            this.payment = payment;
             this.address = address;
             this.userInfo = userInfo;
             this.orderProcess = OrderProcess.ORDER;      // 배송상황 = 주문완료처리로 고정
