@@ -16,12 +16,17 @@ public class UserLoginResponse {
 
     private String userNickname;
 
+    private String userSocialType;
+
     private HttpHeaders httpHeaders;
 
-    public UserLoginResponse(String accessToken, String userEmail, String userNickname, HttpHeaders httpHeaders) {
+    private Boolean deleteFlag;
+
+    public UserLoginResponse(String accessToken, String userEmail, String userNickname, HttpHeaders httpHeaders, Boolean deleteFlag) {
         this.accessToken = accessToken;
         this.userEmail = userEmail;
         this.userNickname = userNickname;
         this.httpHeaders = httpHeaders;
+        this.deleteFlag = deleteFlag;
     }
 }
