@@ -138,7 +138,12 @@ public class UserService {
 
     public boolean addProductInWish(HttpServletRequest httpServletRequest, Long id) {
         String token = httpServletRequest.getHeader("Authorization");
-        String userId = jwtTokenProvider.extractSubject(token);
+        String userId = "";
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring("Bearer ".length()).trim();
+            userId = jwtTokenProvider.extractSubject(token);
+        }
+
 
         try {
             Product productById = productJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
@@ -154,7 +159,11 @@ public class UserService {
 
     public List<ProductResponse> getCart(HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("Authorization");
-        String userId = jwtTokenProvider.extractSubject(token);
+        String userId = "";
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring("Bearer ".length()).trim();
+            userId = jwtTokenProvider.extractSubject(token);
+        }
 
         UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
                 .orElseThrow(IllegalArgumentException::new);
