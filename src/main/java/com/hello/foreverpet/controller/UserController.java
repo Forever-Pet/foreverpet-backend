@@ -1,10 +1,7 @@
 package com.hello.foreverpet.controller;
 
 import com.hello.foreverpet.domain.dto.request.*;
-import com.hello.foreverpet.domain.dto.response.UserDataResponse;
-import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
-import com.hello.foreverpet.domain.dto.response.UserPasswordResponse;
-import com.hello.foreverpet.domain.dto.response.UserQuitResponse;
+import com.hello.foreverpet.domain.dto.response.*;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.service.UserService;
@@ -17,6 +14,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "User Login API",description = "User Login API 입니다")
 @RestController
