@@ -4,6 +4,7 @@ import com.hello.foreverpet.config.SecurityUtil;
 import com.hello.foreverpet.domain.dto.AuthorityList;
 import com.hello.foreverpet.domain.dto.MemberShip;
 import com.hello.foreverpet.domain.dto.request.*;
+import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.dto.response.UserDataResponse;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.dto.response.UserPasswordResponse;
@@ -27,7 +28,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -212,5 +215,32 @@ public class UserService {
         return userInfoJpaRepository.findById(Long.valueOf(userId))
                 .map(UserInfo::quitUser)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
+    }
+
+    public List<ProductResponse> getCart(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        String userId = "";
+        if (token != null && token.startsWith("Bearer ")) {
+            token = token.substring("Bearer ".length()).trim();
+            userId = jwtTokenProvider.extractSubject(token);
+        }
+
+        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
+                .orElseThrow(IllegalArgumentException::new);
+
+        return userInfo.getCart().stream().map(ProductResponse::new)
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductResponse> getWish(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+        String userId = jwtTokenProvider.extractSubject(token);
+
+        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
+                .orElseThrow(IllegalArgumentException::new);
+
+        return userInfo.getWish()
+                .stream().map(ProductResponse::new)
+                .collect(Collectors.toList());
     }
 }
