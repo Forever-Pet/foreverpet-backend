@@ -64,6 +64,8 @@ public class OAuthLoginService {
                 .userSocialType(String.valueOf(OAuthProvider.KAKAO))
                 .authorities(Collections.singleton(authority))
                 .userMembership(String.valueOf(MemberShip.SILVER))
+                .userDeleteFlag(false)
+                .userPoint(0)
                 .build();
 
         return userInfoJpaRepository.save(userInfo).getUserId();
