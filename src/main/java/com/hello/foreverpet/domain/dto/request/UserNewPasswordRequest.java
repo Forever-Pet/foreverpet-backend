@@ -7,7 +7,7 @@ import lombok.Data;
 @Schema(description = "유저 패스워드 요청DTO")
 public class UserNewPasswordRequest {
 
-    private String userPassword;
+    private String userOriginPassword;
 
-    private String userPasswordCheck;
+    private String userNewPassword;
 }

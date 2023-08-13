@@ -121,29 +121,33 @@ public class UserService {
         return user;
     }
 
-    public Boolean userPasswordCheck(String token, UserPasswordRequest request){
-
-        Optional<UserInfo> user = userInfoJpaRepository.findById(Long.valueOf(tokenProvider.getAuthentication(token).getName()));
-
-        return passwordEncoder.matches(request.getUserPassword(), user.get().getUserPassword());
-    }
-
     @Transactional
     public UserPasswordResponse userNewPassword(String token, UserNewPasswordRequest request){
 
         Optional<UserInfo> user = userInfoJpaRepository.findById(Long.valueOf(tokenProvider.getAuthentication(token).getName()));
 
-        if(!request.getUserPassword().equals(request.getUserPasswordCheck())){
-            return new UserPasswordResponse("패스워드가 일치 하지 않습니다.", false);
+        if(passwordEncoder.matches(request.getUserOriginPassword(), user.get().getUserPassword())){
+            user
+                    .map(userInfo -> {
+                        return userInfo.updatePassword(passwordEncoder.encode(request.getUserNewPassword()));
+                    })
+                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
+        }else{
+            return new UserPasswordResponse("패스워드가 일치하지 않습니다", true);
         }
-
-        user
-                .map(userInfo -> {
-                    return userInfo.updatePassword(passwordEncoder.encode(request.getUserPassword()));
-                })
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
-
         return new UserPasswordResponse("패스워드가 변경 성공", true);
+    }
+
+    @Transactional
+    public Boolean userAddressChange(String token, UserAddressRequest request){
+
+        Optional<UserInfo> user = userInfoJpaRepository.findById(Long.valueOf(tokenProvider.getAuthentication(token).getName()));
+
+        user.map(userInfo -> {
+            return userInfo.updateAddress(request.getUserAddress());
+        });
+
+        return true;
     }
 
     @Transactional(readOnly = true)
