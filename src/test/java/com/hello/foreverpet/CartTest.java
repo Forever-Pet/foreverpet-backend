@@ -76,8 +76,8 @@ public class CartTest {
         cartTester.addProductInCart(productById);
 
         // then
-        Assertions.assertEquals(cartTester.getCart().size(),1);
-        Assertions.assertEquals(cartTester.getCart().get(0).getProductName(),productById.getProductName());
+        Assertions.assertEquals(cartTester.getCart().getProducts().size(),1);
+        Assertions.assertEquals(cartTester.getCart().getProducts().get(0).getProductName(),productById.getProductName());
     }
 
     @Test
@@ -121,7 +121,7 @@ public class CartTest {
         cartTester.addProductInWish(productById);
 
         // then
-        Assertions.assertEquals(cartTester.getWish().size(),1);
-        Assertions.assertEquals(cartTester.getWish().get(0).getProductName(),productById.getProductName());
+        Assertions.assertEquals(cartTester.getWish().getProducts().size(),1);
+        Assertions.assertEquals(cartTester.getWish().getProducts().get(0).getProductName(),productById.getProductName());
     }
 }

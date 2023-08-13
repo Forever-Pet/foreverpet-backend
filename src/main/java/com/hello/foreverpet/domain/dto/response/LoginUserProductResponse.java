@@ -35,11 +35,11 @@ public class LoginUserProductResponse {
         this.modifiedDate = product.getModifiedDate();
     }
 
-    public void changeInCart() {
+    public void reverseInCart() {
         this.inCart = true;
     }
 
-    public void changeInWish() {
+    public void reverseInWish() {
         this.inWish = true;
     }
 }
