@@ -106,19 +106,9 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @Operation(summary = "유저 비밀번호 변경 1차 체크", description = "유저 비밀번호 변경 1차 체크 (기존 비밀번호) - 일치 시 true, 불일치 시 false")
-    @PostMapping("/user/passwordCheck")
-    public ResponseEntity<Boolean> userPasswordCheck(@RequestHeader HttpHeaders header, @Valid @RequestBody UserPasswordRequest request){
-
-        // null 처리 필요
-        String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
-
-        return new ResponseEntity<>(userService.userPasswordCheck(token, request), HttpStatus.OK);
-    }
-
     @Operation(summary = "유저 비밀번호 변경", description = "유저 비밀번호 변경")
     @PostMapping("/user/password")
-    public ResponseEntity<UserPasswordResponse> userNewPassword(@RequestHeader HttpHeaders header, @Valid @RequestBody UserNewPasswordRequest request){
+    public ResponseEntity<UserPasswordResponse> userPasswordChange(@RequestHeader HttpHeaders header, @Valid @RequestBody UserNewPasswordRequest request){
 
         // null 처리 필요
         String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
@@ -126,19 +116,14 @@ public class UserController {
         return new ResponseEntity<>(userService.userNewPassword(token, request), HttpStatus.OK);
     }
 
-    @Operation(summary = "로그인 테스트용",description = "로그인 테스트 진행.")
-    @PostMapping("/loginAdmin")
-    public ResponseEntity<String> loginTestAdmin() {
+    @Operation(summary = "유저 배송지 변경", description = "유저 배송지 변경 / 변경 성공 시 true ")
+    @PostMapping("/user/address")
+    public ResponseEntity<Boolean> userAddressChange(@RequestHeader HttpHeaders header, @Valid @RequestBody UserAddressRequest request){
 
-        // ROLE_ADMIN이 아니면 403 에러 배출
-        return new ResponseEntity<>("Admin On",HttpStatus.OK);
-    }
-    @Operation(summary = "로그인 어드민 테스트용",description = "로그인 어드민 테스트 진행.")
-    @PostMapping("/loginUser")
-    public ResponseEntity<String> loginTestUser() {
+        // null 처리 필요
+        String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
 
-        // ROLE_USER 이 아니면 403 에러 배출
-        return new ResponseEntity<>("User On",HttpStatus.OK);
+        return new ResponseEntity<>(userService.userAddressChange(token, request), HttpStatus.OK);
     }
 
     @Operation(summary = "장바구니에 상품 추가", description = "회원의 장바구니에 상품을 추가.")

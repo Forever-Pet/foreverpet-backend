@@ -116,6 +116,11 @@ public class UserInfo extends BaseTimeEntity {
         return this;
     }
 
+    public UserInfo updateAddress(Address address){
+        this.userAddress = address;
+        return this;
+    }
+
     public void addProductInCart(Product product) {
         this.cart.add(product);
     }
