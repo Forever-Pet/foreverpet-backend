@@ -2,22 +2,13 @@ package com.hello.foreverpet.domain.entity;
 
 import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Address;
-import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.OAuthProvider;
-import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
-import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
 import com.hello.foreverpet.domain.dto.request.UserUpdateRequest;
-import com.hello.foreverpet.domain.dto.response.UserDataResponse;
-import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 import java.util.Set;
 
 @Entity
@@ -62,14 +53,14 @@ public class UserInfo extends BaseTimeEntity {
     @Column(name = "user_membership")
     private String userMembership;
 
-    // 상복님 장바구니 , 찜목록 관련 이쪽에 작업하겠습니다.
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Product> cart = new ArrayList<>();
+
+    @OneToOne(mappedBy = "userInfo")
+    private Cart cart;
+
+    @OneToOne(mappedBy = "userInfo")
+    private Wish wish;
 
     private OAuthProvider oAuthProvider;
-
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Product> wish = new ArrayList<>();
 
     private Long coupon_cnt;
 
@@ -83,8 +74,8 @@ public class UserInfo extends BaseTimeEntity {
     @Builder
     public UserInfo(String userNickname, String userEmail, String userPassword,
                     String userPhone, Address userAddress,
-                Boolean userDeleteFlag, Integer userPoint, OAuthProvider oAuthProvider, String userSocialType,
-                    Set<Authority> authorities, Long userKakaoId, String userMembership){
+                    Boolean userDeleteFlag, Integer userPoint, OAuthProvider oAuthProvider, String userSocialType,
+                    Set<Authority> authorities, Long userKakaoId, String userMembership) {
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
@@ -99,34 +90,43 @@ public class UserInfo extends BaseTimeEntity {
         this.userMembership = userMembership;
     }
 
-    public UserInfo updateUserData(UserUpdateRequest userSignupRequest){
+    public UserInfo updateUserData(UserUpdateRequest userSignupRequest) {
         this.userNickname = userSignupRequest.getUserNickName();
         this.userPhone = userSignupRequest.getUserPhone();
         this.userAddress = userSignupRequest.getUserAddress();
         return this;
     }
 
-    public UserInfo quitUser(){
+    public UserInfo quitUser() {
         this.userDeleteFlag = true;
         return this;
     }
 
-    public UserInfo updatePassword(String userPassword){
+    public UserInfo updatePassword(String userPassword) {
         this.userPassword = userPassword;
         return this;
     }
 
-    public UserInfo updateAddress(Address address){
+    public UserInfo updateAddress(Address address) {
         this.userAddress = address;
         return this;
     }
 
     public void addProductInCart(Product product) {
-        this.cart.add(product);
+        if (cart == null) {
+            cart = new Cart();
+            cart.setUserInfo(this);
+        }
+        this.cart.addProduct(product);
     }
 
     public void addProductInWish(Product product) {
-        this.wish.add(product);
+        if (wish == null) {
+            wish = new Wish();
+            wish.setUserInfo(this);
+        }
+        this.wish.addProductInWish(product);
     }
+
 
 }

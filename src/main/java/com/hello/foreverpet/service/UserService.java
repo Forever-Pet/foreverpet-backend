@@ -64,9 +64,7 @@ public class UserService {
                 .userMembership(String.valueOf(MemberShip.SILVER))
                 .build();
 
-        Long userId = userInfoJpaRepository.save(user).getUserId();
-
-        return userId;
+        return userInfoJpaRepository.save(user).getUserId();
     }
 
 
@@ -190,6 +188,7 @@ public class UserService {
                     .orElseThrow(IllegalArgumentException::new);
             Product productById = productJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
             userInfoByJWTToken.addProductInCart(productById);
+
         } catch (IllegalArgumentException e) {
             return false;
         }
@@ -207,6 +206,7 @@ public class UserService {
                     .orElseThrow(IllegalArgumentException::new);
 
             userInfoByJWTToken.addProductInWish(productById);
+
             return true;
         } catch (IllegalArgumentException e) {
             return false;
@@ -232,7 +232,8 @@ public class UserService {
         UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
                 .orElseThrow(IllegalArgumentException::new);
 
-        return userInfo.getCart().stream().map(ProductResponse::new)
+        return userInfo.getCart().getProducts()
+                .stream().map(ProductResponse::new)
                 .collect(Collectors.toList());
     }
 
@@ -243,7 +244,7 @@ public class UserService {
         UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
                 .orElseThrow(IllegalArgumentException::new);
 
-        return userInfo.getWish()
+        return userInfo.getWish().getProducts()
                 .stream().map(ProductResponse::new)
                 .collect(Collectors.toList());
     }

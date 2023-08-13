@@ -1,9 +1,6 @@
 package com.hello.foreverpet.domain.entity;
 
 import jakarta.persistence.ManyToOne;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
@@ -14,7 +11,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,11 +44,11 @@ public class Product extends BaseTimeEntity {
 
     private String brandName;
 
-    @ManyToMany
-    private List<Order> orders = new ArrayList<>();
+    @ManyToOne
+    private Cart cart;
 
     @ManyToOne
-    private UserInfo userInfo;
+    private Wish wish;
 
     @Builder
     public Product(String productName, String productDescription, Categories categories, Long productPrice,
