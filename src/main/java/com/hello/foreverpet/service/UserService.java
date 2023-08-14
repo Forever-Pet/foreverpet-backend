@@ -65,7 +65,7 @@ public class UserService {
                 .userMembership(String.valueOf(MemberShip.SILVER))
                 .build();
 
-        user.setAuthority(AuthorityList.ROLE_USER);
+        user.setAuthority(Authority.builder().authorityName(AuthorityList.ROLE_USER.name()).build());
 
         return userInfoJpaRepository.save(user).getUserId();
     }

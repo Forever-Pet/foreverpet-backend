@@ -67,7 +67,7 @@ public class OAuthLoginService {
                 .userPoint(0)
                 .build();
 
-        userInfo.setAuthority(AuthorityList.ROLE_USER);
+        userInfo.setAuthority(Authority.builder().authorityName(AuthorityList.ROLE_USER.name()).build());
 
         return userInfoJpaRepository.save(userInfo).getUserId();
     }
