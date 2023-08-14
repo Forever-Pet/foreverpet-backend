@@ -2,6 +2,7 @@ package com.hello.foreverpet.domain.entity;
 
 import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Address;
+import com.hello.foreverpet.domain.dto.AuthorityList;
 import com.hello.foreverpet.domain.dto.OAuthProvider;
 import com.hello.foreverpet.domain.dto.request.UserUpdateRequest;
 import jakarta.persistence.*;
@@ -64,6 +65,9 @@ public class UserInfo extends BaseTimeEntity {
 
     private Long coupon_cnt;
 
+    // 상복님 이렇게 해놓으면 자동으로 저장될거에요.
+    private AuthorityList authority;
+
     @ManyToMany
     @JoinTable(
             name = "user_authority",
@@ -110,6 +114,10 @@ public class UserInfo extends BaseTimeEntity {
     public UserInfo updateAddress(Address address) {
         this.userAddress = address;
         return this;
+    }
+
+    public void setAuthority(AuthorityList authority) {
+        this.authority = authority;
     }
 
     public void addProductInCart(Product product) {
