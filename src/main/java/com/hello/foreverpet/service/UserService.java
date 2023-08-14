@@ -181,6 +181,7 @@ public class UserService {
         return user.isEmpty();
     }
 
+    @Transactional
     public boolean addProductInCart(HttpServletRequest httpServletRequest, Long id) {
 
         String token = httpServletRequest.getHeader("Authorization");
@@ -199,6 +200,7 @@ public class UserService {
         return true;
     }
 
+    @Transactional
     public boolean addProductInWish(HttpServletRequest httpServletRequest, Long id) {
         String token = httpServletRequest.getHeader("Authorization");
         String userId = jwtTokenProvider.extractSubject(token);
