@@ -6,7 +6,6 @@ import com.hello.foreverpet.domain.dto.OAuthProvider;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.entity.Authority;
 import com.hello.foreverpet.domain.entity.UserInfo;
-import com.hello.foreverpet.oauth.AuthTokens;
 import com.hello.foreverpet.oauth.AuthTokensGenerator;
 import com.hello.foreverpet.oauth.OAuthInfoResponse;
 import com.hello.foreverpet.oauth.OAuthLoginParams;
@@ -67,6 +66,8 @@ public class OAuthLoginService {
                 .userDeleteFlag(false)
                 .userPoint(0)
                 .build();
+
+        userInfo.setAuthority(AuthorityList.ROLE_USER);
 
         return userInfoJpaRepository.save(userInfo).getUserId();
     }

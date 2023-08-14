@@ -43,6 +43,7 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public Long userSignup(UserSignupRequest request) {
 
         // 가입되어 있지 않은 회원이면,
@@ -63,6 +64,8 @@ public class UserService {
                 .authorities(Collections.singleton(authority))
                 .userMembership(String.valueOf(MemberShip.SILVER))
                 .build();
+
+        user.setAuthority(AuthorityList.ROLE_USER);
 
         return userInfoJpaRepository.save(user).getUserId();
     }
@@ -216,7 +219,7 @@ public class UserService {
     @Transactional
     public UserInfo userQuit(Long userId){
 
-        return userInfoJpaRepository.findById(Long.valueOf(userId))
+        return userInfoJpaRepository.findById(userId)
                 .map(UserInfo::quitUser)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
     }
