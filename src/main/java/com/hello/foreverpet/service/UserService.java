@@ -11,9 +11,12 @@ import com.hello.foreverpet.domain.dto.response.UserPasswordResponse;
 import com.hello.foreverpet.domain.entity.Authority;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
+import com.hello.foreverpet.handler.ErrorCode;
+import com.hello.foreverpet.handler.RuntimeExceptionHandler;
 import com.hello.foreverpet.jwt.JwtFilter;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.jwt.JwtTokenProvider;
+import com.hello.foreverpet.repository.AuthorityJpaRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -68,8 +71,20 @@ public class UserService {
                 .userMembership(String.valueOf(MemberShip.SILVER))
                 .build();
 
+        // 이메일 중복 처리 다시 확인
+        if(!userInfoJpaRepository.findByUserEmail(user.getUserEmail()).isEmpty()){
+            throw new RuntimeExceptionHandler("S002", ErrorCode.SIGNUP_EMAIL_ERROR);
+        }
 
-        return userInfoJpaRepository.save(user).getUserId();
+        // 실질적인 이메일 저장
+        UserInfo userinfo = userInfoJpaRepository.save(user);
+
+        /* 회원가입 오류 발생 */
+        if(userinfo.getUserId() <1L){
+            throw new RuntimeExceptionHandler("S001", ErrorCode.SIGNUP_ERROR);
+        }
+
+        return userinfo.getUserId();
     }
 
 
@@ -78,11 +93,13 @@ public class UserService {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(request.getUserEmail(), request.getUserPassword());
 
-        Optional<UserInfo> userData = userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(request.getUserEmail());
+        Optional<UserInfo> userData =
+                userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(request.getUserEmail());
 
-        if (userData.get().getUserDeleteFlag()) {
-            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null,
-                    false);
+        if(userData.isEmpty()){
+            throw new RuntimeExceptionHandler("L001", ErrorCode.LOGIN_EMAIL_ERROR);
+        }else if(userData.get().getUserDeleteFlag()){
+            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null, false);
         }
 
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
@@ -93,8 +110,8 @@ public class UserService {
 
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
         String jwt = tokenProvider.createToken(authentication, String.valueOf(userData.get().getUserId()));
-
         HttpHeaders httpHeaders = new HttpHeaders();
+
         // response header에 jwt token에 넣어줌
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
@@ -124,7 +141,14 @@ public class UserService {
 
     public UserDataResponse getUserData(Long userId) {
 
-        UserDataResponse user = new UserDataResponse(userInfoJpaRepository.findGetUserData(userId));
+        Optional<UserInfo> users = userInfoJpaRepository.findGetUserData(userId);
+
+        if(users.isEmpty()){
+            throw new RuntimeExceptionHandler("G001", ErrorCode.USER_ID_ERROR);
+        }
+
+        UserDataResponse user = new UserDataResponse(users);
+
         return user;
     }
 
