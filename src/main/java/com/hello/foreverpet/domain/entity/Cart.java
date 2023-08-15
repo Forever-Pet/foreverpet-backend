@@ -27,6 +27,7 @@ public class Cart {
 
     public void addProduct(Product product) {
         this.products.add(product);
+        product.setCart(this);
     }
 
     public void setUserInfo(UserInfo userInfo) {
