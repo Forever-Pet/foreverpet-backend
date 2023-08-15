@@ -74,10 +74,12 @@ public class Product extends BaseTimeEntity {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+        cart.getProducts().add(this);
     }
 
     public void setWish(Wish wish) {
         this.wish = wish;
+        wish.getProducts().add(this);
     }
 
 

@@ -68,7 +68,6 @@ public class UserService {
                 .userMembership(String.valueOf(MemberShip.SILVER))
                 .build();
 
-
         return userInfoJpaRepository.save(user).getUserId();
     }
 
@@ -195,9 +194,6 @@ public class UserService {
         String token = httpServletRequest.getHeader("Authorization");
         String userId = jwtTokenProvider.extractSubject(token);
 
-        log.info("token = {}", token);
-        log.info("userId = {}", userId);
-
         try {
             UserInfo userInfoByJWTToken = userInfoJpaRepository.findById(Long.valueOf(userId))
                     .orElseThrow(IllegalArgumentException::new);
@@ -213,21 +209,26 @@ public class UserService {
 
     @Transactional
     public boolean addProductInWish(HttpServletRequest httpServletRequest, Long id) {
-        String token = httpServletRequest.getHeader("Authorization");
-        String userId = jwtTokenProvider.extractSubject(token);
+        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
 
-        try {
+        if (userInfo.isPresent()) {
+
+            log.info("userInfo.get().getUserEmail() = {}",userInfo.get().getUserEmail());
+
             Product productById = productJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-            UserInfo userInfoByJWTToken = userInfoJpaRepository.findById(Long.valueOf(userId))
-                    .orElseThrow(IllegalArgumentException::new);
 
-            userInfoByJWTToken.addProductInWish(productById);
+            log.info("productById = {}",productById);
+
+            userInfo.get().addProductInWish(productById);
+
+            log.info(userInfo.get().getCart().getProducts().toString());
 
             return true;
-        } catch (IllegalArgumentException e) {
-            return false;
         }
+
+        return false;
     }
+
 
     @Transactional
     public UserInfo userQuit(Long userId) {
@@ -238,54 +239,48 @@ public class UserService {
     }
 
     public List<ProductResponse> getCart(HttpServletRequest httpServletRequest) {
-        String token = httpServletRequest.getHeader("Authorization");
-        String userId = "";
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring("Bearer ".length()).trim();
-            userId = jwtTokenProvider.extractSubject(token);
-        }
-
-        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
-                .orElseThrow(IllegalArgumentException::new);
+        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
 
         List<ProductResponse> productResponses = new ArrayList<>();
 
-        if (userInfo.getCart() != null) {
-            List<Product> products = userInfo.getCart().getProducts();
+        if (userInfo.isPresent()) {
+            if (userInfo.get().getCart() != null) {
+                List<Product> products = userInfo.get().getCart().getProducts();
 
-            if (products != null) {
-                productResponses = products.stream()
-                        .map(ProductResponse::new)
-                        .collect(Collectors.toList());
+                if (products != null) {
+                    productResponses = products.stream()
+                            .map(ProductResponse::new)
+                            .collect(Collectors.toList());
+                }
             }
         }
-
-
-
         return productResponses;
     }
 
     public List<ProductResponse> getWish(HttpServletRequest httpServletRequest) {
-        String token = httpServletRequest.getHeader("Authorization");
-        String userId = jwtTokenProvider.extractSubject(token);
-
-        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
-                .orElseThrow(IllegalArgumentException::new);
+        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
 
         List<ProductResponse> productResponses = new ArrayList<>();
 
-        if (userInfo.getWish() != null) {
-            List<Product> products = userInfo.getWish().getProducts();
+        if (userInfo.isPresent()) {
+            if (userInfo.get().getWish() != null) {
+                List<Product> products = userInfo.get().getWish().getProducts();
 
-            if (products != null) {
-                productResponses = products.stream()
-                        .map(ProductResponse::new)
-                        .collect(Collectors.toList());
+                if (products != null) {
+                    productResponses = products.stream()
+                            .map(ProductResponse::new)
+                            .collect(Collectors.toList());
+                }
             }
         }
-
-
-
         return productResponses;
     }
+
+    private Optional<UserInfo> getUserInfo(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+
+        return userInfoJpaRepository.findById(
+                Long.valueOf(tokenProvider.getAuthentication(token).getName()));
+    }
+
 }

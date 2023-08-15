@@ -139,7 +139,6 @@ public class UserController {
     @PostMapping("/wish/{id}")
     public ResponseEntity<Boolean> addProductInWish(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
         boolean successProductAddWish = userService.addProductInWish(httpServletRequest, id);
-
         return ResponseEntity.ok(successProductAddWish);
     }
 

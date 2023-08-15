@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.Set;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Table(name = "user_info")
@@ -88,8 +89,6 @@ public class UserInfo extends BaseTimeEntity {
         this.userSocialType = userSocialType;
         this.userKakaoId = userKakaoId;
         this.userMembership = userMembership;
-        this.cart = new Cart();
-        this.wish = new Wish();
     }
 
     public UserInfo updateUserData(UserUpdateRequest userSignupRequest) {
@@ -118,14 +117,16 @@ public class UserInfo extends BaseTimeEntity {
         if (cart == null) {
             cart = new Cart();
         }
-        cart.addProduct(product);
+        cart.setUserInfo(this);
+        cart.addProductInCart(product);
     }
-
+    @Transactional
     public void addProductInWish(Product product) {
         if (wish == null) {
             wish = new Wish();
         }
-        this.wish.addProductInWish(product);
+        wish.setUserInfo(this);
+        wish.addProductInWish(product);
     }
 
 
