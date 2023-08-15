@@ -17,7 +17,9 @@ import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final TokenProvider tokenProvider;
@@ -65,7 +68,6 @@ public class UserService {
                 .userMembership(String.valueOf(MemberShip.SILVER))
                 .build();
 
-        user.setAuthority(Authority.builder().authorityName(AuthorityList.ROLE_USER.name()).build());
 
         return userInfoJpaRepository.save(user).getUserId();
     }
@@ -78,8 +80,9 @@ public class UserService {
 
         Optional<UserInfo> userData = userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(request.getUserEmail());
 
-        if(userData.get().getUserDeleteFlag()){
-            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null, false);
+        if (userData.get().getUserDeleteFlag()) {
+            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null,
+                    false);
         }
 
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
@@ -95,15 +98,17 @@ public class UserService {
         // response header에 jwt token에 넣어줌
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders, true);
+        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders,
+                true);
     }
 
     public UserLoginResponse kakaoLogin(Long userId) {
 
         Optional<UserInfo> userData = userInfoJpaRepository.findById(userId);
 
-        if(userData.get().getUserDeleteFlag()){
-            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null, false);
+        if (userData.get().getUserDeleteFlag()) {
+            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null,
+                    false);
         }
 
         // authentication 객체를 createToken 메소드를 통해서 JWT Token을 생성
@@ -113,36 +118,39 @@ public class UserService {
         // response header에 jwt token에 넣어줌
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
 
-        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders, true);
+        return new UserLoginResponse(jwt, userData.get().getUserEmail(), userData.get().getUserNickname(), httpHeaders,
+                true);
     }
 
-    public UserDataResponse getUserData(Long userId){
+    public UserDataResponse getUserData(Long userId) {
 
         UserDataResponse user = new UserDataResponse(userInfoJpaRepository.findGetUserData(userId));
         return user;
     }
 
     @Transactional
-    public UserPasswordResponse userNewPassword(String token, UserNewPasswordRequest request){
+    public UserPasswordResponse userNewPassword(String token, UserNewPasswordRequest request) {
 
-        Optional<UserInfo> user = userInfoJpaRepository.findById(Long.valueOf(tokenProvider.getAuthentication(token).getName()));
+        Optional<UserInfo> user = userInfoJpaRepository.findById(
+                Long.valueOf(tokenProvider.getAuthentication(token).getName()));
 
-        if(passwordEncoder.matches(request.getUserOriginPassword(), user.get().getUserPassword())){
+        if (passwordEncoder.matches(request.getUserOriginPassword(), user.get().getUserPassword())) {
             user
                     .map(userInfo -> {
                         return userInfo.updatePassword(passwordEncoder.encode(request.getUserNewPassword()));
                     })
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
-        }else{
+        } else {
             return new UserPasswordResponse("패스워드가 일치하지 않습니다", true);
         }
         return new UserPasswordResponse("패스워드가 변경 성공", true);
     }
 
     @Transactional
-    public Boolean userAddressChange(String token, UserAddressRequest request){
+    public Boolean userAddressChange(String token, UserAddressRequest request) {
 
-        Optional<UserInfo> user = userInfoJpaRepository.findById(Long.valueOf(tokenProvider.getAuthentication(token).getName()));
+        Optional<UserInfo> user = userInfoJpaRepository.findById(
+                Long.valueOf(tokenProvider.getAuthentication(token).getName()));
 
         user.map(userInfo -> {
             return userInfo.updateAddress(request.getUserAddress());
@@ -187,6 +195,9 @@ public class UserService {
         String token = httpServletRequest.getHeader("Authorization");
         String userId = jwtTokenProvider.extractSubject(token);
 
+        log.info("token = {}", token);
+        log.info("userId = {}", userId);
+
         try {
             UserInfo userInfoByJWTToken = userInfoJpaRepository.findById(Long.valueOf(userId))
                     .orElseThrow(IllegalArgumentException::new);
@@ -219,7 +230,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserInfo userQuit(Long userId){
+    public UserInfo userQuit(Long userId) {
 
         return userInfoJpaRepository.findById(userId)
                 .map(UserInfo::quitUser)
@@ -237,9 +248,21 @@ public class UserService {
         UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
                 .orElseThrow(IllegalArgumentException::new);
 
-        return userInfo.getCart().getProducts()
-                .stream().map(ProductResponse::new)
-                .collect(Collectors.toList());
+        List<ProductResponse> productResponses = new ArrayList<>();
+
+        if (userInfo.getCart() != null) {
+            List<Product> products = userInfo.getCart().getProducts();
+
+            if (products != null) {
+                productResponses = products.stream()
+                        .map(ProductResponse::new)
+                        .collect(Collectors.toList());
+            }
+        }
+
+
+
+        return productResponses;
     }
 
     public List<ProductResponse> getWish(HttpServletRequest httpServletRequest) {
@@ -249,8 +272,20 @@ public class UserService {
         UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
                 .orElseThrow(IllegalArgumentException::new);
 
-        return userInfo.getWish().getProducts()
-                .stream().map(ProductResponse::new)
-                .collect(Collectors.toList());
+        List<ProductResponse> productResponses = new ArrayList<>();
+
+        if (userInfo.getWish() != null) {
+            List<Product> products = userInfo.getWish().getProducts();
+
+            if (products != null) {
+                productResponses = products.stream()
+                        .map(ProductResponse::new)
+                        .collect(Collectors.toList());
+            }
+        }
+
+
+
+        return productResponses;
     }
 }

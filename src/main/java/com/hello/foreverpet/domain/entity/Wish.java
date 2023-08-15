@@ -27,6 +27,7 @@ public class Wish {
 
     public void addProductInWish(Product product) {
         this.products.add(product);
+        product.setWish(this);
     }
 
     public void setUserInfo(UserInfo userInfo) {

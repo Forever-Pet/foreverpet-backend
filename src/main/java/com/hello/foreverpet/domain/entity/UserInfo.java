@@ -54,19 +54,15 @@ public class UserInfo extends BaseTimeEntity {
     private String userMembership;
 
 
-    @OneToOne(mappedBy = "userInfo")
+    @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL)
     private Cart cart;
 
-    @OneToOne(mappedBy = "userInfo")
+    @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL)
     private Wish wish;
 
     private OAuthProvider oAuthProvider;
 
     private Long coupon_cnt;
-
-    // 상복님 이렇게 해놓으면 자동으로 저장될거에요.
-    @OneToOne(cascade = CascadeType.ALL)
-    private Authority authority;
 
     @ManyToMany
     @JoinTable(
@@ -92,6 +88,8 @@ public class UserInfo extends BaseTimeEntity {
         this.userSocialType = userSocialType;
         this.userKakaoId = userKakaoId;
         this.userMembership = userMembership;
+        this.cart = new Cart();
+        this.wish = new Wish();
     }
 
     public UserInfo updateUserData(UserUpdateRequest userSignupRequest) {
@@ -116,22 +114,16 @@ public class UserInfo extends BaseTimeEntity {
         return this;
     }
 
-    public void setAuthority(Authority authority) {
-        this.authority = authority;
-    }
-
     public void addProductInCart(Product product) {
         if (cart == null) {
             cart = new Cart();
-            cart.setUserInfo(this);
         }
-        this.cart.addProduct(product);
+        cart.addProduct(product);
     }
 
     public void addProductInWish(Product product) {
         if (wish == null) {
             wish = new Wish();
-            wish.setUserInfo(this);
         }
         this.wish.addProductInWish(product);
     }

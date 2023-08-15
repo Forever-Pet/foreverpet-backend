@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.util.List;
 @Tag(name = "User Login API",description = "User Login API 입니다")
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -128,15 +130,16 @@ public class UserController {
 
     @Operation(summary = "장바구니에 상품 추가", description = "회원의 장바구니에 상품을 추가.")
     @PostMapping("/cart/{id}")
-    public ResponseEntity<Boolean> addProductInCart(HttpServletRequest httpServletRequest, @PathVariable Long id) {
+    public ResponseEntity<Boolean> addProductInCart(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
         boolean successProductAddCart = userService.addProductInCart(httpServletRequest, id);
         return ResponseEntity.ok(successProductAddCart);
     }
 
     @Operation(summary = "찜목록에 상품 추가", description = "회원의 찜목록에 상품을 추가.")
     @PostMapping("/wish/{id}")
-    public ResponseEntity<Boolean> addProductInWish(HttpServletRequest httpServletRequest, @PathVariable Long id) {
+    public ResponseEntity<Boolean> addProductInWish(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
         boolean successProductAddWish = userService.addProductInWish(httpServletRequest, id);
+
         return ResponseEntity.ok(successProductAddWish);
     }
 

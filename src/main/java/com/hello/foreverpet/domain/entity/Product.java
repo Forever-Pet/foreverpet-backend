@@ -72,6 +72,14 @@ public class Product extends BaseTimeEntity {
         return this;
     }
 
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public void setWish(Wish wish) {
+        this.wish = wish;
+    }
+
 
     // 주문시 판매수량 증가
     public void soldProducts(OrderProduct orderProduct) {
