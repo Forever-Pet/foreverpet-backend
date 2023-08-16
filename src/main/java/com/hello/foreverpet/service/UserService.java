@@ -36,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -74,7 +74,7 @@ public class UserService {
 
         // 이메일 중복 처리 다시 확인
         if (!userInfoJpaRepository.findByUserEmail(user.getUserEmail()).isEmpty()) {
-            throw new RuntimeExceptionHandler(ErrorCode.SIGNUP_EMAIL_ERROR);
+            throw new RuntimeExceptionHandler("S002", ErrorCode.SIGNUP_EMAIL_ERROR);
         }
 
         // 실질적인 이메일 저장
@@ -82,7 +82,7 @@ public class UserService {
 
         /* 회원가입 오류 발생 */
         if (userinfo.getUserId() < 1L) {
-            throw new RuntimeExceptionHandler(ErrorCode.SIGNUP_ERROR);
+            throw new RuntimeExceptionHandler("S001", ErrorCode.SIGNUP_ERROR);
         }
 
         return userinfo.getUserId();
@@ -98,7 +98,7 @@ public class UserService {
                 userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(request.getUserEmail());
 
         if (userData.isEmpty()) {
-            throw new RuntimeExceptionHandler(ErrorCode.LOGIN_EMAIL_ERROR);
+            throw new RuntimeExceptionHandler("L001", ErrorCode.LOGIN_EMAIL_ERROR);
         } else if (userData.get().getUserDeleteFlag()) {
             return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null,
                     false);
@@ -146,7 +146,7 @@ public class UserService {
         Optional<UserInfo> users = userInfoJpaRepository.findGetUserData(userId);
 
         if (users.isEmpty()) {
-            throw new RuntimeExceptionHandler(ErrorCode.USER_ID_ERROR);
+            throw new RuntimeExceptionHandler("G001", ErrorCode.USER_ID_ERROR);
         }
 
         return new UserDataResponse(users);
