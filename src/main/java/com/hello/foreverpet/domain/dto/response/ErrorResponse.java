@@ -14,6 +14,6 @@ public class ErrorResponse {
     public ErrorResponse(ErrorCode errorCode){
         this.status = errorCode.getStatus();
         this.message = errorCode.getMessage();
-        this.code = errorCode.getErrorCode();
+        this.code = errorCode.getErrorCodeNumber();
     }
 }

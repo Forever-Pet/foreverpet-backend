@@ -11,12 +11,13 @@ import com.hello.foreverpet.domain.dto.response.UserPasswordResponse;
 import com.hello.foreverpet.domain.entity.Authority;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
+import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
+import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.handler.RuntimeExceptionHandler;
 import com.hello.foreverpet.jwt.JwtFilter;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.jwt.JwtTokenProvider;
-import com.hello.foreverpet.repository.AuthorityJpaRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -72,16 +73,16 @@ public class UserService {
                 .build();
 
         // 이메일 중복 처리 다시 확인
-        if(!userInfoJpaRepository.findByUserEmail(user.getUserEmail()).isEmpty()){
-            throw new RuntimeExceptionHandler("S002", ErrorCode.SIGNUP_EMAIL_ERROR);
+        if (!userInfoJpaRepository.findByUserEmail(user.getUserEmail()).isEmpty()) {
+            throw new RuntimeExceptionHandler(ErrorCode.SIGNUP_EMAIL_ERROR);
         }
 
         // 실질적인 이메일 저장
         UserInfo userinfo = userInfoJpaRepository.save(user);
 
         /* 회원가입 오류 발생 */
-        if(userinfo.getUserId() <1L){
-            throw new RuntimeExceptionHandler("S001", ErrorCode.SIGNUP_ERROR);
+        if (userinfo.getUserId() < 1L) {
+            throw new RuntimeExceptionHandler(ErrorCode.SIGNUP_ERROR);
         }
 
         return userinfo.getUserId();
@@ -96,10 +97,11 @@ public class UserService {
         Optional<UserInfo> userData =
                 userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(request.getUserEmail());
 
-        if(userData.isEmpty()){
-            throw new RuntimeExceptionHandler("L001", ErrorCode.LOGIN_EMAIL_ERROR);
-        }else if(userData.get().getUserDeleteFlag()){
-            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null, false);
+        if (userData.isEmpty()) {
+            throw new RuntimeExceptionHandler(ErrorCode.LOGIN_EMAIL_ERROR);
+        } else if (userData.get().getUserDeleteFlag()) {
+            return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null,
+                    false);
         }
 
         // authenticate 메소드가 실행이 될 때 CustomUserDetailsService class의 loadUserByUsername 메소드가 실행
@@ -143,13 +145,11 @@ public class UserService {
 
         Optional<UserInfo> users = userInfoJpaRepository.findGetUserData(userId);
 
-        if(users.isEmpty()){
-            throw new RuntimeExceptionHandler("G001", ErrorCode.USER_ID_ERROR);
+        if (users.isEmpty()) {
+            throw new RuntimeExceptionHandler(ErrorCode.USER_ID_ERROR);
         }
 
-        UserDataResponse user = new UserDataResponse(users);
-
-        return user;
+        return new UserDataResponse(users);
     }
 
     @Transactional
@@ -163,7 +163,7 @@ public class UserService {
                     .map(userInfo -> {
                         return userInfo.updatePassword(passwordEncoder.encode(request.getUserNewPassword()));
                     })
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
+                    .orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
         } else {
             return new UserPasswordResponse("패스워드가 일치하지 않습니다", false);
         }
@@ -215,18 +215,16 @@ public class UserService {
 
     @Transactional
     public boolean addProductInCart(HttpServletRequest httpServletRequest, Long id) {
+        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
 
-        String token = httpServletRequest.getHeader("Authorization");
-        String userId = jwtTokenProvider.extractSubject(token);
+        if (userInfo.isPresent()) {
 
-        try {
-            UserInfo userInfoByJWTToken = userInfoJpaRepository.findById(Long.valueOf(userId))
-                    .orElseThrow(IllegalArgumentException::new);
-            Product productById = productJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-            userInfoByJWTToken.addProductInCart(productById);
+            Product productById = productJpaRepository.findById(id)
+                    .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
 
-        } catch (IllegalArgumentException e) {
-            return false;
+            userInfo.get().addProductInCart(productById);
+
+            return true;
         }
 
         return true;
@@ -238,15 +236,10 @@ public class UserService {
 
         if (userInfo.isPresent()) {
 
-            log.info("userInfo.get().getUserEmail() = {}",userInfo.get().getUserEmail());
-
-            Product productById = productJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-
-            log.info("productById = {}",productById);
+            Product productById = productJpaRepository.findById(id)
+                    .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
 
             userInfo.get().addProductInWish(productById);
-
-            log.info(userInfo.get().getCart().getProducts().toString());
 
             return true;
         }
@@ -268,17 +261,14 @@ public class UserService {
 
         List<ProductResponse> productResponses = new ArrayList<>();
 
-        if (userInfo.isPresent()) {
-            if (userInfo.get().getCart() != null) {
-                List<Product> products = userInfo.get().getCart().getProducts();
-
-                if (products != null) {
-                    productResponses = products.stream()
-                            .map(ProductResponse::new)
-                            .collect(Collectors.toList());
-                }
-            }
+        if (userInfo.isPresent() && userInfo.get().getCart() != null) {
+            productResponses = userInfo.get().getCart()
+                    .getProducts()
+                    .stream()
+                    .map(ProductResponse::new)
+                    .collect(Collectors.toList());
         }
+
         return productResponses;
     }
 
@@ -287,16 +277,16 @@ public class UserService {
 
         List<ProductResponse> productResponses = new ArrayList<>();
 
-        if (userInfo.isPresent()) {
-            if (userInfo.get().getWish() != null) {
-                List<Product> products = userInfo.get().getWish().getProducts();
+        if (userInfo.isPresent() && userInfo.get().getWish() != null) {
 
-                if (products != null) {
-                    productResponses = products.stream()
-                            .map(ProductResponse::new)
-                            .collect(Collectors.toList());
-                }
+            List<Product> products = userInfo.get().getWish().getProducts();
+
+            if (products != null) {
+                productResponses = products.stream()
+                        .map(ProductResponse::new)
+                        .collect(Collectors.toList());
             }
+
         }
         return productResponses;
     }
