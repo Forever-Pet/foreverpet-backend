@@ -219,9 +219,6 @@ public class UserService {
         String token = httpServletRequest.getHeader("Authorization");
         String userId = jwtTokenProvider.extractSubject(token);
 
-        log.info("token = {}", token);
-        log.info("userId = {}", userId);
-
         try {
             UserInfo userInfoByJWTToken = userInfoJpaRepository.findById(Long.valueOf(userId))
                     .orElseThrow(IllegalArgumentException::new);
@@ -237,21 +234,26 @@ public class UserService {
 
     @Transactional
     public boolean addProductInWish(HttpServletRequest httpServletRequest, Long id) {
-        String token = httpServletRequest.getHeader("Authorization");
-        String userId = jwtTokenProvider.extractSubject(token);
+        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
 
-        try {
+        if (userInfo.isPresent()) {
+
+            log.info("userInfo.get().getUserEmail() = {}",userInfo.get().getUserEmail());
+
             Product productById = productJpaRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-            UserInfo userInfoByJWTToken = userInfoJpaRepository.findById(Long.valueOf(userId))
-                    .orElseThrow(IllegalArgumentException::new);
 
-            userInfoByJWTToken.addProductInWish(productById);
+            log.info("productById = {}",productById);
+
+            userInfo.get().addProductInWish(productById);
+
+            log.info(userInfo.get().getCart().getProducts().toString());
 
             return true;
-        } catch (IllegalArgumentException e) {
-            return false;
         }
+
+        return false;
     }
+
 
     @Transactional
     public UserInfo userQuit(Long userId) {
@@ -262,54 +264,58 @@ public class UserService {
     }
 
     public List<ProductResponse> getCart(HttpServletRequest httpServletRequest) {
-        String token = httpServletRequest.getHeader("Authorization");
-        String userId = "";
-        if (token != null && token.startsWith("Bearer ")) {
-            token = token.substring("Bearer ".length()).trim();
-            userId = jwtTokenProvider.extractSubject(token);
-        }
-
-        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
-                .orElseThrow(IllegalArgumentException::new);
+        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
 
         List<ProductResponse> productResponses = new ArrayList<>();
 
-        if (userInfo.getCart() != null) {
-            List<Product> products = userInfo.getCart().getProducts();
+        if (userInfo.isPresent()) {
+            if (userInfo.get().getCart() != null) {
+                List<Product> products = userInfo.get().getCart().getProducts();
 
-            if (products != null) {
-                productResponses = products.stream()
-                        .map(ProductResponse::new)
-                        .collect(Collectors.toList());
+                if (products != null) {
+                    productResponses = products.stream()
+                            .map(ProductResponse::new)
+                            .collect(Collectors.toList());
+                }
             }
         }
-
-
-
         return productResponses;
     }
 
     public List<ProductResponse> getWish(HttpServletRequest httpServletRequest) {
-        String token = httpServletRequest.getHeader("Authorization");
-        String userId = jwtTokenProvider.extractSubject(token);
-
-        UserInfo userInfo = userInfoJpaRepository.findById(Long.valueOf(userId))
-                .orElseThrow(IllegalArgumentException::new);
+        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
 
         List<ProductResponse> productResponses = new ArrayList<>();
 
-        if (userInfo.getWish() != null) {
-            List<Product> products = userInfo.getWish().getProducts();
+        if (userInfo.isPresent()) {
+            if (userInfo.get().getWish() != null) {
+                List<Product> products = userInfo.get().getWish().getProducts();
 
-            if (products != null) {
-                productResponses = products.stream()
-                        .map(ProductResponse::new)
-                        .collect(Collectors.toList());
+                if (products != null) {
+                    productResponses = products.stream()
+                            .map(ProductResponse::new)
+                            .collect(Collectors.toList());
+                }
             }
         }
-
-
-
         return productResponses;
     }
+
+    private Optional<UserInfo> getUserInfo(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+
+        return userInfoJpaRepository.findById(
+                Long.valueOf(tokenProvider.getAuthentication(token).getName()));
+    }
+
 }
+
+// Cart ,Wish 의 기능이 생각보다 많다.
+// 따로 Service 등을 분리하도록 리팩토링 예정.
+
+// 회원가입 -> 로그인 -> 장바구니 , 찜목록 조회 -> 빈배열 확인
+// 회원가입 -> 로그인 -> 장바구니 , 찜목록에 상품 추가 -> 장바구니 or 찜목록 조회 -> 추가한 상품 확인
+
+// 회의때 체크할 내용
+// 장바구니 , 찜목록 모두에 한가지 상품이 들어갈수 있는가 ?
+// 주문시 장바구니 or 찜목록 에 추가되어 있는 상품은 삭제가 되는가 ? (유저 편의성)

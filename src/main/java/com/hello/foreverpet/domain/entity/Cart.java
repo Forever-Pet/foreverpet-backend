@@ -1,5 +1,6 @@
 package com.hello.foreverpet.domain.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,10 +23,10 @@ public class Cart {
     @OneToOne(fetch = FetchType.LAZY)
     private UserInfo userInfo;
 
-    @OneToMany(mappedBy = "cart")
+    @OneToMany(mappedBy = "cart",cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
 
-    public void addProduct(Product product) {
+    public void addProductInCart(Product product) {
         this.products.add(product);
         product.setCart(this);
     }
