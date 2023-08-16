@@ -227,7 +227,7 @@ public class UserService {
             return true;
         }
 
-        return true;
+        return false;
     }
 
     @Transactional
@@ -266,7 +266,7 @@ public class UserService {
                     .getProducts()
                     .stream()
                     .map(ProductResponse::new)
-                    .collect(Collectors.toList());
+                    .toList();
         }
 
         return productResponses;
@@ -284,7 +284,7 @@ public class UserService {
             if (products != null) {
                 productResponses = products.stream()
                         .map(ProductResponse::new)
-                        .collect(Collectors.toList());
+                        .toList();
             }
 
         }
