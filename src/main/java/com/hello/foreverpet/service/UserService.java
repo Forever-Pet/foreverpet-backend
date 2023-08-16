@@ -165,7 +165,7 @@ public class UserService {
                     })
                     .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
         } else {
-            return new UserPasswordResponse("패스워드가 일치하지 않습니다", true);
+            return new UserPasswordResponse("패스워드가 일치하지 않습니다", false);
         }
         return new UserPasswordResponse("패스워드가 변경 성공", true);
     }
