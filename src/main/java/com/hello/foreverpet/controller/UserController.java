@@ -2,7 +2,6 @@ package com.hello.foreverpet.controller;
 
 import com.hello.foreverpet.domain.dto.request.*;
 import com.hello.foreverpet.domain.dto.response.*;
-import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +26,6 @@ public class UserController {
     private final UserService userService;
     private final TokenProvider tokenProvider;
 
-    @CrossOrigin(origins="*")
     @Operation(summary = "일반 회원가입",description = "회원가입 성공시 true, 실패시 false.")
     @PostMapping("/user/signup")
     public ResponseEntity<Boolean> signup(@RequestBody UserSignupRequest userSignupRequest) {

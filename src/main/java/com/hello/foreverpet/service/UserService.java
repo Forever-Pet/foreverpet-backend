@@ -14,7 +14,6 @@ import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
 import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
-import com.hello.foreverpet.handler.RuntimeExceptionHandler;
 import com.hello.foreverpet.jwt.JwtFilter;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.jwt.JwtTokenProvider;
@@ -74,7 +73,7 @@ public class UserService {
 
         // 이메일 중복 처리 다시 확인
         if (!userInfoJpaRepository.findByUserEmail(user.getUserEmail()).isEmpty()) {
-            throw new RuntimeExceptionHandler("S002", ErrorCode.SIGNUP_EMAIL_ERROR);
+            throw new UserNotFoundException(ErrorCode.SIGNUP_EMAIL_ERROR);
         }
 
         // 실질적인 이메일 저장
@@ -82,7 +81,7 @@ public class UserService {
 
         /* 회원가입 오류 발생 */
         if (userinfo.getUserId() < 1L) {
-            throw new RuntimeExceptionHandler("S001", ErrorCode.SIGNUP_ERROR);
+            throw new UserNotFoundException(ErrorCode.SIGNUP_ERROR);
         }
 
         return userinfo.getUserId();
@@ -98,7 +97,7 @@ public class UserService {
                 userInfoJpaRepository.findOneWithAuthoritiesByUserEmail(request.getUserEmail());
 
         if (userData.isEmpty()) {
-            throw new RuntimeExceptionHandler("L001", ErrorCode.LOGIN_EMAIL_ERROR);
+            throw new UserNotFoundException(ErrorCode.LOGIN_EMAIL_ERROR);
         } else if (userData.get().getUserDeleteFlag()) {
             return new UserLoginResponse("", userData.get().getUserEmail(), userData.get().getUserNickname(), null,
                     false);
@@ -146,7 +145,7 @@ public class UserService {
         Optional<UserInfo> users = userInfoJpaRepository.findGetUserData(userId);
 
         if (users.isEmpty()) {
-            throw new RuntimeExceptionHandler("G001", ErrorCode.USER_ID_ERROR);
+            throw new UserNotFoundException(ErrorCode.USER_ID_ERROR);
         }
 
         return new UserDataResponse(users);
