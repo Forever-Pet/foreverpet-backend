@@ -3,6 +3,7 @@ package com.hello.foreverpet;
 
 import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
+import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
 import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
@@ -67,17 +68,21 @@ public class CartTest {
 
         productService.createProduct(newProductRequest);
 
+        // userLogin
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setUserEmail("cartTester@aa.com");
+        userLoginRequest.setUserPassword("123123");
+
         Product productById = productJpaRepository.findById(1L).get();
 
         UserInfo cartTester = userInfoJpaRepository.findByUserNickname("cartTester").get();
 
         // when
-
         cartTester.addProductInCart(productById);
 
         // then
-        Assertions.assertEquals(cartTester.getCart().size(),1);
-        Assertions.assertEquals(cartTester.getCart().get(0).getProductName(),productById.getProductName());
+        Assertions.assertEquals(cartTester.getCart().getProducts().size(),1);
+        Assertions.assertEquals(cartTester.getCart().getProducts().get(0).getProductName(),productById.getProductName());
     }
 
     @Test
@@ -121,7 +126,7 @@ public class CartTest {
         cartTester.addProductInWish(productById);
 
         // then
-        Assertions.assertEquals(cartTester.getWish().size(),1);
-        Assertions.assertEquals(cartTester.getWish().get(0).getProductName(),productById.getProductName());
+        Assertions.assertEquals(cartTester.getWish().getProducts().size(),1);
+        Assertions.assertEquals(cartTester.getWish().getProducts().get(0).getProductName(),productById.getProductName());
     }
 }

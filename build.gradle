@@ -75,8 +75,12 @@ dependencies {
 	testImplementation('org.junit.jupiter:junit-jupiter-api')
 	testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
 
+	// mock
+	testImplementation 'org.mockito:mockito-core:4.1.0'
+
+
 	// json setting
-	implementation 'org.json:json:20200518'
+	implementation 'org.json:json:20230227'
 }
 
 tasks.named('test') {

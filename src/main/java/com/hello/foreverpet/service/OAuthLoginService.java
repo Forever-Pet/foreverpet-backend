@@ -1,10 +1,11 @@
 package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.domain.dto.AuthorityList;
+import com.hello.foreverpet.domain.dto.MemberShip;
+import com.hello.foreverpet.domain.dto.OAuthProvider;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.entity.Authority;
 import com.hello.foreverpet.domain.entity.UserInfo;
-import com.hello.foreverpet.oauth.AuthTokens;
 import com.hello.foreverpet.oauth.AuthTokensGenerator;
 import com.hello.foreverpet.oauth.OAuthInfoResponse;
 import com.hello.foreverpet.oauth.OAuthLoginParams;
@@ -59,8 +60,13 @@ public class OAuthLoginService {
                 .userNickname(oAuthInfoResponse.getNickname())
                 .userKakaoId(oAuthInfoResponse.getId())
                 .oAuthProvider(oAuthInfoResponse.getOAuthProvider())
+                .userSocialType(String.valueOf(OAuthProvider.KAKAO))
                 .authorities(Collections.singleton(authority))
+                .userMembership(String.valueOf(MemberShip.SILVER))
+                .userDeleteFlag(false)
+                .userPoint(0)
                 .build();
+
 
         return userInfoJpaRepository.save(userInfo).getUserId();
     }

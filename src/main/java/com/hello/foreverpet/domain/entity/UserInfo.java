@@ -2,22 +2,15 @@ package com.hello.foreverpet.domain.entity;
 
 import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Address;
-import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.OAuthProvider;
-import com.hello.foreverpet.domain.dto.request.UserLoginRequest;
-import com.hello.foreverpet.domain.dto.request.UserSignupRequest;
 import com.hello.foreverpet.domain.dto.request.UserUpdateRequest;
-import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
 import java.util.Set;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Table(name = "user_info")
@@ -58,15 +51,19 @@ public class UserInfo extends BaseTimeEntity {
     @Column(name = "user_kakao_id")
     private Long userKakaoId;
 
-    // 상복님 장바구니 , 찜목록 관련 이쪽에 작업하겠습니다.
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Product> cart = new ArrayList<>();
+    @Column(name = "user_membership")
+    private String userMembership;
+
+
+    @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL)
+    private Cart cart;
+
+    @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL)
+    private Wish wish;
 
     private OAuthProvider oAuthProvider;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Product> wish = new ArrayList<>();
-
+    private Long coupon_cnt;
 
     @ManyToMany
     @JoinTable(
@@ -78,8 +75,8 @@ public class UserInfo extends BaseTimeEntity {
     @Builder
     public UserInfo(String userNickname, String userEmail, String userPassword,
                     String userPhone, Address userAddress,
-                Boolean userDeleteFlag, Integer userPoint, OAuthProvider oAuthProvider,
-                    Set<Authority> authorities, String username, String password, Long userKakaoId){
+                    Boolean userDeleteFlag, Integer userPoint, OAuthProvider oAuthProvider, String userSocialType,
+                    Set<Authority> authorities, Long userKakaoId, String userMembership) {
         this.userNickname = userNickname;
         this.userEmail = userEmail;
         this.userPassword = userPassword;
@@ -89,22 +86,48 @@ public class UserInfo extends BaseTimeEntity {
         this.userPoint = userPoint;
         this.oAuthProvider = oAuthProvider;
         this.authorities = authorities;
+        this.userSocialType = userSocialType;
         this.userKakaoId = userKakaoId;
+        this.userMembership = userMembership;
     }
 
-    public UserInfo updateUserData(UserUpdateRequest userSignupRequest){
+    public UserInfo updateUserData(UserUpdateRequest userSignupRequest) {
         this.userNickname = userSignupRequest.getUserNickName();
         this.userPhone = userSignupRequest.getUserPhone();
         this.userAddress = userSignupRequest.getUserAddress();
         return this;
     }
 
-    public void addProductInCart(Product product) {
-        this.cart.add(product);
+    public UserInfo quitUser() {
+        this.userDeleteFlag = true;
+        return this;
     }
 
-    public void addProductInWish(Product product) {
-        this.wish.add(product);
+    public UserInfo updatePassword(String userPassword) {
+        this.userPassword = userPassword;
+        return this;
     }
+
+    public UserInfo updateAddress(Address address) {
+        this.userAddress = address;
+        return this;
+    }
+
+    public void addProductInCart(Product product) {
+        if (cart == null) {
+            cart = new Cart();
+        }
+        cart.setUserInfo(this);
+        cart.addProductInCart(product);
+    }
+    @Transactional
+    public void addProductInWish(Product product) {
+        if (wish == null) {
+            wish = new Wish();
+        }
+        wish.setUserInfo(this);
+        wish.addProductInWish(product);
+    }
+
 
 }
