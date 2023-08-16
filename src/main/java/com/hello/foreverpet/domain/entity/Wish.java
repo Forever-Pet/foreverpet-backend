@@ -1,5 +1,6 @@
 package com.hello.foreverpet.domain.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -22,7 +23,7 @@ public class Wish {
     @OneToOne(fetch = FetchType.LAZY)
     private UserInfo userInfo;
 
-    @OneToMany(mappedBy = "wish")
+    @OneToMany(mappedBy = "wish",cascade = CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
 
     public void addProductInWish(Product product) {
