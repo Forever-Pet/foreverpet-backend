@@ -21,9 +21,16 @@ public enum ErrorCode {
     // 기타 에러
     ALL_ERROR(500,"A001","알 수 없는 에러 발생"),
     TOKEN_ERROR(500,"A002","헤더에 토큰 인증 에러 발생"),
+
+    // user
+    USER_NOT_FOUND(500,"U001","유저 정보를 찾을수 없습니다."),
+
+    // product
+    PRODUCT_FOUND_ERROR(500,"P001","상품 정보를 찾을수 없습니다.")
+
     ;
 
-    private int status;
-    private String errorCode;
-    private String message;
+    private final int status;
+    private final String errorCodeNumber;
+    private final String message;
 }
