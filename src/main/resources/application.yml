@@ -17,7 +17,7 @@ jwt:
   token-validity-in-seconds: 86400
 oauth:
   kakao:
-    client-id: ef70ead256236ff245dd289a71f416f3
+    client-id: a6bfe93b460dd365f9951854df478ab9
     url:
       auth: https://kauth.kakao.com/
       api: https://kapi.kakao.com/
