@@ -224,14 +224,23 @@ public class InitDataService {
 
         // 유저 권한 설정
 
-        Optional<Authority> authority = authorityJpaRepository.findAuthRole("ROLE_USER");
+        Optional<Authority> userAuth = authorityJpaRepository.findAuthRole("ROLE_USER");
 
-        if(authority.isEmpty()){
+        if(userAuth.isEmpty()){
             Authority auth = new Authority();
             auth.setAuthorityName("ROLE_USER");
             authorityJpaRepository.save(auth);
         }
 
+        // 관리자 권한 설정
+
+        Optional<Authority> userAdmin = authorityJpaRepository.findAuthRole("ROLE_ADMIN");
+
+        if(userAdmin.isEmpty()){
+            Authority auth = new Authority();
+            auth.setAuthorityName("ROLE_ADMIN");
+            authorityJpaRepository.save(auth);
+        }
 
     }
 }
