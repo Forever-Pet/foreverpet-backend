@@ -65,14 +65,13 @@ public class UserController {
 
     @Operation(summary = "유저 정보 수정", description = "유저 정보 수정 기능")
     @PutMapping("/user")
-    public ResponseEntity<UserInfo> modifyUserData(@RequestHeader HttpHeaders header, @Valid @RequestBody UserUpdateRequest userUpdateRequest){
+    public ResponseEntity<UserModifyResponse> modifyUserData(@RequestHeader HttpHeaders header, @Valid @RequestBody UserUpdateRequest userUpdateRequest){
 
         // null 처리 필요
         String token = ((header.get("Authorization").toString()).substring(7, header.get("Authorization").toString().length()-1)).trim();
-
         userService.updateUserInfo(Long.valueOf(tokenProvider.getAuthentication(token).getName()), userUpdateRequest);
 
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(new UserModifyResponse("유저 정보 수정 완료", true), HttpStatus.OK);
     }
 
     @Operation(summary = "유저 정보 조회", description = "유저 정보 조회 기능")

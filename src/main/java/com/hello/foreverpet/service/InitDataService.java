@@ -1,10 +1,14 @@
 package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
+import com.hello.foreverpet.domain.entity.Authority;
+import com.hello.foreverpet.repository.AuthorityJpaRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -12,6 +16,7 @@ public class InitDataService {
 
     private final ProductService productService;
     private final ProductJpaRepository productJpaRepository;
+    private final AuthorityJpaRepository authorityJpaRepository;
 
     @PostConstruct
     public void init() {
@@ -216,5 +221,26 @@ public class InitDataService {
                 productService.createProduct(newProductRequest);
             }
         }
+
+        // 유저 권한 설정
+
+        Optional<Authority> userAuth = authorityJpaRepository.findAuthRole("ROLE_USER");
+
+        if(userAuth.isEmpty()){
+            Authority auth = new Authority();
+            auth.setAuthorityName("ROLE_USER");
+            authorityJpaRepository.save(auth);
+        }
+
+        // 관리자 권한 설정
+
+        Optional<Authority> userAdmin = authorityJpaRepository.findAuthRole("ROLE_ADMIN");
+
+        if(userAdmin.isEmpty()){
+            Authority auth = new Authority();
+            auth.setAuthorityName("ROLE_ADMIN");
+            authorityJpaRepository.save(auth);
+        }
+
     }
 }
