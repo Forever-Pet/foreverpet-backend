@@ -43,8 +43,6 @@ public class SpringSecurityConfig {
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests((authorizeRequests) -> authorizeRequests
 //                        테스트용 api 생성
-                        .requestMatchers("/loginAdmin").hasRole("ADMIN")
-                        .requestMatchers("/loginUser").hasRole("USER")
                         .anyRequest().permitAll())
                 .apply(new JwtSecurityConfig(tokenProvider));
         return httpSecurity.build();
