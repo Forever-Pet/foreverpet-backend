@@ -3,21 +3,18 @@ package com.hello.foreverpet.handler;
 import com.hello.foreverpet.domain.dto.response.ErrorResponse;
 import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
 import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
-import io.swagger.models.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
 
 @RestControllerAdvice
 @Slf4j
 public class ControllerAdvice {
 
-    @ExceptionHandler(RuntimeExceptionHandler.class)
-    public ResponseEntity<ErrorResponse> handlerEmailDuplicateException(RuntimeExceptionHandler ex) {
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlerEmailDuplicateException(UserNotFoundException ex) {
 
         ErrorResponse response = null;
 
@@ -40,13 +37,6 @@ public class ControllerAdvice {
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorResponse> productNotFoundExceptionHandler(ProductNotFoundException e) {
         ErrorResponse response = new ErrorResponse(ErrorCode.PRODUCT_FOUND_ERROR);
-
-        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> userNotFoundExceptionHandler(UserNotFoundException e) {
-        ErrorResponse response = new ErrorResponse(ErrorCode.USER_NOT_FOUND);
 
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
     }
