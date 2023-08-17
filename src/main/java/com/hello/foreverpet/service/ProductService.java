@@ -6,6 +6,9 @@ import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import com.hello.foreverpet.domain.dto.response.LoginUserProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.entity.Product;
+import com.hello.foreverpet.domain.exception.user.AlreadyExistProductException;
+import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
+import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.repository.CustomProductRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
@@ -13,7 +16,6 @@ import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,7 @@ public class ProductService {
     @Transactional
     public ProductResponse createProduct(NewProductRequest newProductRequest) {
         if (productJpaRepository.findByProductName(newProductRequest.getProductName()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 상품입니다.");
+            throw new AlreadyExistProductException(ErrorCode.ALREADY_EXIST_PRODUCT_EXCEPTION);
         }
         Product newProduct = newProductRequest.toEntity();
         productJpaRepository.save(newProduct);
@@ -38,7 +40,7 @@ public class ProductService {
     }
 
     public List<ProductResponse> getAllProducts() {
-        return productJpaRepository.findAll().stream().map(ProductResponse::new).collect(Collectors.toList());
+        return productJpaRepository.findAll().stream().map(ProductResponse::new).toList();
     }
 
     @Transactional
@@ -48,7 +50,7 @@ public class ProductService {
                     Product updateProduct = product.updateProductByUpdateRequest(updateProductRequest);
                     return new ProductResponse(updateProduct);
                 })
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 ID 입니다."));
+                .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
     }
 
 
@@ -58,7 +60,7 @@ public class ProductService {
                     productJpaRepository.delete(product);
                     return id;
                 })
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 ID 입니다."));
+                .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
     }
 
     public ProductResponse findProductById(Long id) {
@@ -67,23 +69,23 @@ public class ProductService {
 
     public List<ProductResponse> searchProduct(String search) {
         return customProductRepository.findProductBySearch(search).stream()
-                .map(ProductResponse::new).collect(Collectors.toList());
+                .map(ProductResponse::new).toList();
     }
 
     public List<ProductResponse> orderBySold() {
         return customProductRepository.findProductOrderBySold().stream()
-                .map(ProductResponse::new).collect(Collectors.toList());
+                .map(ProductResponse::new).toList();
     }
 
     public List<ProductResponse> orderByNew() {
         return customProductRepository.findProductOrderByNew().stream()
-                .map(ProductResponse::new).collect(Collectors.toList());
+                .map(ProductResponse::new).toList();
     }
 
     public List<ProductResponse> productByCategories(String categories) {
         Categories wantFindCategories = Categories.valueOf(categories);
         return customProductRepository.findProductByCategories(wantFindCategories).stream()
-                .map(ProductResponse::new).collect(Collectors.toList());
+                .map(ProductResponse::new).toList();
     }
 
     public List<LoginUserProductResponse> loginUserGetAllProducts(HttpServletRequest httpServletRequest) {
@@ -115,6 +117,6 @@ public class ProductService {
                     }
                     return loginUserProductResponse;
                 })
-                .collect(Collectors.toList());
+                .toList();
     }
 }
