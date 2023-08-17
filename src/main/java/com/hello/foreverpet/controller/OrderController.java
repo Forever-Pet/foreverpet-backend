@@ -1,12 +1,8 @@
 package com.hello.foreverpet.controller;
 
 
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -16,9 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
-import com.hello.foreverpet.domain.dto.response.OrderResponse;
 import com.hello.foreverpet.domain.entity.Order;
-import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -46,19 +40,10 @@ public class OrderController {
 
     @PostMapping("/order")
     @Operation(summary = "주문 등록 ",description = " 결제 , 상품정보확인 후 주문 등록 ")
-    public ResponseEntity<String> createOrder(@RequestBody @Valid OrderRequestBody orderRequestBody , @RequestHeader HttpHeaders header ) {
+    public ResponseEntity<Order> createOrder(@RequestBody @Valid OrderRequestBody orderRequestBody , @RequestHeader HttpHeaders header ) {
 
-        String newOrder = orderService.createOrder( orderRequestBody , header );
+        Order newOrder = orderService.createOrder( orderRequestBody , header );
 
         return ResponseEntity.ok(newOrder);
-    }  
-
-    @GetMapping("/order")
-    @Operation(summary = "주문내역 보기 ",description = " 사용자의 주문 내역 확인 ")
-    public ResponseEntity<List<OrderResponse>> findOrderProductByUserId( @RequestHeader HttpHeaders header ) {
-
-        return ResponseEntity.ok(orderService.findOrderProductByUserId(header));
     }
-
-    
 } 
