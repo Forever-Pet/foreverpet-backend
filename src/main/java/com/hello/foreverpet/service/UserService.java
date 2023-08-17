@@ -277,16 +277,13 @@ public class UserService {
         List<ProductResponse> productResponses = new ArrayList<>();
 
         if (userInfo.isPresent() && userInfo.get().getWish() != null) {
-
-            List<Product> products = userInfo.get().getWish().getProducts();
-
-            if (products != null) {
-                productResponses = products.stream()
-                        .map(ProductResponse::new)
-                        .toList();
-            }
-
+            productResponses = userInfo.get().getWish()
+                    .getProducts()
+                    .stream()
+                    .map(ProductResponse::new)
+                    .toList();
         }
+
         return productResponses;
     }
 

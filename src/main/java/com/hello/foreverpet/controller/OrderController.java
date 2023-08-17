@@ -13,7 +13,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
 import com.hello.foreverpet.domain.entity.Order;
-import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.service.OrderService;
 
 import jakarta.validation.Valid;
@@ -46,5 +45,5 @@ public class OrderController {
         Order newOrder = orderService.createOrder( orderRequestBody , header );
 
         return ResponseEntity.ok(newOrder);
-    }  
+    }
 } 
