@@ -26,7 +26,8 @@ public enum ErrorCode {
     USER_NOT_FOUND(500,"U001","유저 정보를 찾을수 없습니다."),
 
     // product
-    PRODUCT_FOUND_ERROR(500,"P001","상품 정보를 찾을수 없습니다.")
+    PRODUCT_FOUND_ERROR(500,"P001","상품 정보를 찾을수 없습니다."),
+    ALREADY_EXIST_PRODUCT_EXCEPTION(500,"E001","이미 존재하는 상품입니다.")
 
     ;
 
