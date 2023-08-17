@@ -7,16 +7,13 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class SwaggerConfig {
-
     @Bean
-    public OpenAPI apiInfo() {
-
-        Info info = new Info()
-                .version("v1.0.0")
-                .title("ForeverPet API")
-                .description("Foreverpet API 명세서 입니다");
-
-        return new OpenAPI().info(info);
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .version("v1.0.0")
+                        .title("ForeverPet API")
+                        .description("Foreverpet API 명세서 입니다"));
 
     }
 }
