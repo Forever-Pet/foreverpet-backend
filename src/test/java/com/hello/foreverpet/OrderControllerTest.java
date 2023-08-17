@@ -23,7 +23,6 @@ import com.hello.foreverpet.domain.dto.request.PaymentRequest;
 import com.hello.foreverpet.domain.dto.response.OrderResponse;
 import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
 import com.hello.foreverpet.domain.dto.request.OrderProductRequest;
-import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import com.hello.foreverpet.service.PaymentService;
