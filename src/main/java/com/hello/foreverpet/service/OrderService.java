@@ -3,16 +3,19 @@ package com.hello.foreverpet.service;
 
 import java.util.List;
 
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
+import com.hello.foreverpet.domain.dto.response.OrderResponse;
 import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.domain.entity.Payment;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.jwt.TokenProvider;
+import com.hello.foreverpet.repository.CustomOrderRepository;
 import com.hello.foreverpet.repository.OrderJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 
@@ -26,6 +29,8 @@ public class OrderService {
 
     private final OrderJpaRepository orderJpaRepository;
 
+    private final CustomOrderRepository CustomOrderRepository;
+
     private final PaymentService paymentService;
 
     private final OrderProductService orderProductService;
@@ -35,7 +40,8 @@ public class OrderService {
     private final TokenProvider tokenProvider;
 
 
-    public Order createOrder(OrderRequestBody orderRequestBody , HttpHeaders httpHeaders) {
+    public String createOrder(OrderRequestBody orderRequestBody , HttpHeaders httpHeaders) {
+        String result_msg = "성공";
 
         // 주소 
         Address address = orderRequestBody.getAddress();
@@ -67,10 +73,24 @@ public class OrderService {
                         .customerPhoneNumber(customerPhoneNumber)
                         .receiverPhoneNumber(receiverPhoneNumber)
                         .build();
-
+                        
         Long orderId = orderJpaRepository.save(newOrder).getOrderId();
 
-        return orderJpaRepository.findById(orderId).get();
+        
+
+        return result_msg;
+    }
+
+    public List<OrderResponse> findOrderProductByUserId (HttpHeaders httpHeaders) {
+
+        String token = (httpHeaders.get("Authorization").toString()).trim().substring(7);
+        // log.info("token = " + token);
+        Long userId = Long.valueOf(tokenProvider.getAuthentication(token).getName());
+
+        List<OrderResponse> order = CustomOrderRepository.findOrderProductByUserId(userId);
+
+
+        return order;
     }
 
 

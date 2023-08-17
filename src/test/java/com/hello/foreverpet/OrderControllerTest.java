@@ -93,7 +93,7 @@ public class OrderControllerTest {
         
 
         // 실행
-        ResponseEntity<Order> response = orderController.createOrder(createOrderRequest , httpHeaders);
+        ResponseEntity<String> response = orderController.createOrder(createOrderRequest , httpHeaders);
 
     
 
