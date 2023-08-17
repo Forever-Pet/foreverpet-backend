@@ -22,5 +22,16 @@ oauth:
       auth: https://kauth.kakao.com/
       api: https://kapi.kakao.com/
 
-  profiles:
-    active: local
+springdoc:
+  swagger-ui:
+    operations-sorter: method
+    path: /
+    groups-order: desc
+    disable-swagger-default-url: true
+    display-request-duration: true
+
+  api-docs:
+    groups:
+      enabled: true
+
+

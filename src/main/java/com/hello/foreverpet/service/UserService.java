@@ -4,14 +4,11 @@ import com.hello.foreverpet.config.SecurityUtil;
 import com.hello.foreverpet.domain.dto.AuthorityList;
 import com.hello.foreverpet.domain.dto.MemberShip;
 import com.hello.foreverpet.domain.dto.request.*;
-import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.dto.response.UserDataResponse;
 import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.dto.response.UserPasswordResponse;
 import com.hello.foreverpet.domain.entity.Authority;
-import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
-import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
 import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.jwt.JwtFilter;
@@ -19,8 +16,6 @@ import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.jwt.JwtTokenProvider;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -33,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -213,98 +207,10 @@ public class UserService {
     }
 
     @Transactional
-    public boolean addProductInCart(HttpServletRequest httpServletRequest, Long id) {
-        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
-
-        if (userInfo.isPresent()) {
-
-            Product productById = productJpaRepository.findById(id)
-                    .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
-
-            userInfo.get().addProductInCart(productById);
-
-            return true;
-        }
-
-        return false;
-    }
-
-    @Transactional
-    public boolean addProductInWish(HttpServletRequest httpServletRequest, Long id) {
-        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
-
-        if (userInfo.isPresent()) {
-
-            Product productById = productJpaRepository.findById(id)
-                    .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
-
-            userInfo.get().addProductInWish(productById);
-
-            return true;
-        }
-
-        return false;
-    }
-
-
-    @Transactional
     public UserInfo userQuit(Long userId) {
 
         return userInfoJpaRepository.findById(userId)
                 .map(UserInfo::quitUser)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저데이터 입니다."));
     }
-
-    public List<ProductResponse> getCart(HttpServletRequest httpServletRequest) {
-        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
-
-        List<ProductResponse> productResponses = new ArrayList<>();
-
-        if (userInfo.isPresent() && userInfo.get().getCart() != null) {
-            productResponses = userInfo.get().getCart()
-                    .getProducts()
-                    .stream()
-                    .map(ProductResponse::new)
-                    .toList();
-        }
-
-        return productResponses;
-    }
-
-    public List<ProductResponse> getWish(HttpServletRequest httpServletRequest) {
-        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
-
-        List<ProductResponse> productResponses = new ArrayList<>();
-
-        if (userInfo.isPresent() && userInfo.get().getWish() != null) {
-
-            List<Product> products = userInfo.get().getWish().getProducts();
-
-            if (products != null) {
-                productResponses = products.stream()
-                        .map(ProductResponse::new)
-                        .toList();
-            }
-
-        }
-        return productResponses;
-    }
-
-    private Optional<UserInfo> getUserInfo(HttpServletRequest httpServletRequest) {
-        String token = httpServletRequest.getHeader("Authorization");
-
-        return userInfoJpaRepository.findById(
-                Long.valueOf(tokenProvider.getAuthentication(token).getName()));
-    }
-
 }
-
-// Cart ,Wish 의 기능이 생각보다 많다.
-// 따로 Service 등을 분리하도록 리팩토링 예정.
-
-// 회원가입 -> 로그인 -> 장바구니 , 찜목록 조회 -> 빈배열 확인
-// 회원가입 -> 로그인 -> 장바구니 , 찜목록에 상품 추가 -> 장바구니 or 찜목록 조회 -> 추가한 상품 확인
-
-// 회의때 체크할 내용
-// 장바구니 , 찜목록 모두에 한가지 상품이 들어갈수 있는가 ?
-// 주문시 장바구니 or 찜목록 에 추가되어 있는 상품은 삭제가 되는가 ? (유저 편의성)
