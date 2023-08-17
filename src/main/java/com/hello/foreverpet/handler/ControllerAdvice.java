@@ -1,10 +1,12 @@
 package com.hello.foreverpet.handler;
 
 import com.hello.foreverpet.domain.dto.response.ErrorResponse;
+import com.hello.foreverpet.domain.exception.user.AlreadyExistProductException;
 import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
 import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -39,5 +41,12 @@ public class ControllerAdvice {
         ErrorResponse response = new ErrorResponse(ErrorCode.PRODUCT_FOUND_ERROR);
 
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getErrorCode().getStatus()));
+    }
+
+    @ExceptionHandler(AlreadyExistProductException.class)
+    public ResponseEntity<ErrorResponse> alreadyExistExceptionHandler(AlreadyExistProductException e) {
+        ErrorResponse response = new ErrorResponse(ErrorCode.ALREADY_EXIST_PRODUCT_EXCEPTION);
+
+        return new ResponseEntity<>(response, HttpStatusCode.valueOf(e.getErrorCode().getStatus()));
     }
 }
