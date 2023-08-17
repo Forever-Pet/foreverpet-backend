@@ -24,7 +24,7 @@ public class AuthController {
     public ResponseEntity<UserLoginResponse> loginKakao(@RequestBody KakaoLoginParams params) {
 
         /* param에는 프론트에서 넘겨준 카카오 회원의 인가코드가 저장되어있다 */
-        // https://kauth.kakao.com/oauth/authorize?client_id=ef70ead256236ff245dd289a71f416f3&redirect_uri=http://localhost:8080/kakao/callback&response_type=code
+        // https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=a6bfe93b460dd365f9951854df478ab9&redirect_uri=http://localhost:5173/oauth/kakaoCallback&response_type=code
 
         UserLoginResponse kakaoResponse = oAuthLoginService.login(params);
         kakaoResponse.setUserSocialType(String.valueOf(OAuthProvider.KAKAO));
