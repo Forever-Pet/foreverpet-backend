@@ -2,10 +2,15 @@ package com.hello.foreverpet.controller;
 
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
+import com.hello.foreverpet.domain.dto.response.ErrorResponse;
 import com.hello.foreverpet.domain.dto.response.LoginUserProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -28,8 +33,10 @@ public class ProductController {
 
     private final ProductService productService;
 
-    // 상품 등록
-    // 상품 등록은 관리자만 가능해야 한다.
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "API 정상 작동",content = @Content(schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 에러",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
+    )
     @Operation(summary = "상품 등록", description = "상품을 등록합니다.")
     @PostMapping("/products")
     public ResponseEntity<ProductResponse> createProduct(@RequestBody @Valid NewProductRequest newProductRequest) {
