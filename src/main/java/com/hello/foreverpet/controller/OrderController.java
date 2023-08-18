@@ -48,9 +48,7 @@ public class OrderController {
     @Operation(summary = "주문 등록 ",description = " 결제 , 상품정보확인 후 주문 등록 ")
     public ResponseEntity<String> createOrder(@RequestBody @Valid OrderRequestBody orderRequestBody , @RequestHeader HttpHeaders header ) {
 
-        String newOrder = orderService.createOrder( orderRequestBody , header );
-
-        return ResponseEntity.ok(newOrder);
+        return ResponseEntity.ok(orderService.createOrder( orderRequestBody , header ));
     }  
 
     @GetMapping("/order")
