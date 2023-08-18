@@ -2,23 +2,31 @@ package com.hello.foreverpet.service;
 
 
 import java.util.List;
-
+import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import com.hello.foreverpet.domain.dto.Address;
+import com.hello.foreverpet.domain.dto.OrderProcess;
 import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
 import com.hello.foreverpet.domain.dto.response.OrderResponse;
+import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.domain.entity.Payment;
+import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
+import com.hello.foreverpet.domain.exception.user.OrderNotFoundException;
+import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
+import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.repository.CustomOrderRepository;
 import com.hello.foreverpet.repository.OrderJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
+import com.mysql.cj.protocol.x.Notice;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,7 +49,6 @@ public class OrderService {
 
 
     public String createOrder(OrderRequestBody orderRequestBody , HttpHeaders httpHeaders) {
-        String result_msg = "성공";
 
         // 주소 
         Address address = orderRequestBody.getAddress();
@@ -73,12 +80,12 @@ public class OrderService {
                         .customerPhoneNumber(customerPhoneNumber)
                         .receiverPhoneNumber(receiverPhoneNumber)
                         .build();
-                        
+
         Long orderId = orderJpaRepository.save(newOrder).getOrderId();
 
         
 
-        return result_msg;
+        return "성공";
     }
 
     public List<OrderResponse> findOrderProductByUserId (HttpHeaders httpHeaders) {
@@ -87,11 +94,26 @@ public class OrderService {
         // log.info("token = " + token);
         Long userId = Long.valueOf(tokenProvider.getAuthentication(token).getName());
 
-        List<OrderResponse> order = CustomOrderRepository.findOrderProductByUserId(userId);
+        List<OrderResponse> orderResponses = CustomOrderRepository.findOrderProductByUserId(userId);
 
 
-        return order;
+        return orderResponses;
     }
+
+
+    //() -> new OrderNotFoundException(ErrorCode.ORDER_FOUND_ERROR)
+
+    
+    @Transactional
+    public String OrderProcessCancelByOrderId(Long orderId) {
+        log.info(orderId.toString());
+        
+        Order order = orderJpaRepository.findById(orderId).orElseThrow( () -> new OrderNotFoundException(ErrorCode.ORDER_FOUND_ERROR) );
+        
+        order.setOrderProcess(OrderProcess.CANCLE); 
+
+        return " 성공 ";
+}
 
 
 }

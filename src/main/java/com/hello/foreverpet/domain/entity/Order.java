@@ -55,6 +55,7 @@ public class Order extends BaseTimeEntity {
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name ="order_process")
+    @Setter
     private OrderProcess orderProcess;              // 상품 배송 상황
 
     @NotNull
