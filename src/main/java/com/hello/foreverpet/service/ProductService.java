@@ -6,15 +6,17 @@ import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import com.hello.foreverpet.domain.dto.response.LoginUserProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.entity.Product;
+import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.domain.exception.user.AlreadyExistProductException;
 import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
+import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
-import com.hello.foreverpet.jwt.JwtTokenProvider;
+import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.repository.CustomProductRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProductService {
     private final ProductJpaRepository productJpaRepository;
     private final CustomProductRepository customProductRepository;
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserInfoJpaRepository userInfoJpaRepository;
+    private final TokenProvider tokenProvider;
 
     @Transactional
     public ProductResponse createProduct(NewProductRequest newProductRequest) {
@@ -90,33 +92,44 @@ public class ProductService {
 
     public List<LoginUserProductResponse> loginUserGetAllProducts(HttpServletRequest httpServletRequest) {
 
-        String token = httpServletRequest.getHeader("Authorization");
-        boolean isLoggedIn = token != null;
+        UserInfo userInfo = getUserInfo(httpServletRequest);
 
-        List<Product> cart = new ArrayList<>();
-        List<Product> wish = new ArrayList<>();
-
-        if (isLoggedIn) {
-            String userId = jwtTokenProvider.extractSubject(token);
-            userInfoJpaRepository.findById(Long.valueOf(userId)).ifPresent(userInfo -> {
-                cart.addAll(userInfo.getCart().getProducts());
-                wish.addAll(userInfo.getWish().getProducts());
-            });
-        }
+        List<Product> cart = getCartProducts(userInfo.getUserId());
+        List<Product> wish = getWishProducts(userInfo.getUserId());
 
         return productJpaRepository.findAll().stream()
                 .map(product -> {
                     LoginUserProductResponse loginUserProductResponse = new LoginUserProductResponse(product);
 
-                    if (isLoggedIn && cart.contains(product)) {
+                    if (cart.contains(product)) {
                         loginUserProductResponse.reverseInCart();
                     }
 
-                    if (isLoggedIn && wish.contains(product)) {
+                    if (wish.contains(product)) {
                         loginUserProductResponse.reverseInWish();
                     }
                     return loginUserProductResponse;
                 })
                 .toList();
+    }
+
+    private List<Product> getCartProducts(Long userId) {
+        return userInfoJpaRepository.findById(userId)
+                .map(userInfo -> userInfo.getCart().getProducts())
+                .orElse(Collections.emptyList());
+    }
+
+    private List<Product> getWishProducts(Long userId) {
+
+            return userInfoJpaRepository.findById(userId)
+                    .map(userInfo -> userInfo.getWish().getProducts())
+                    .orElse(Collections.emptyList());
+    }
+
+    private UserInfo getUserInfo(HttpServletRequest httpServletRequest) {
+        String token = httpServletRequest.getHeader("Authorization");
+
+        return userInfoJpaRepository.findById(
+                Long.valueOf(tokenProvider.getAuthentication(token).getName())).orElseThrow(() -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
     }
 }

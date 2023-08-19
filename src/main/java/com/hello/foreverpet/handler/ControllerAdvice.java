@@ -49,4 +49,12 @@ public class ControllerAdvice {
 
         return new ResponseEntity<>(response, HttpStatusCode.valueOf(e.getErrorCode().getStatus()));
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleOtherExceptions(Exception ex) {
+        log.error("Unhandled exception occurred", ex);
+
+        ErrorResponse response = new ErrorResponse(ErrorCode.ALL_ERROR);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
