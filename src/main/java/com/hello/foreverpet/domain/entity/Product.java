@@ -1,5 +1,6 @@
 package com.hello.foreverpet.domain.entity;
 
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Categories;
@@ -44,10 +45,10 @@ public class Product extends BaseTimeEntity {
 
     private String brandName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cart cart;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Wish wish;
 
     @Builder
