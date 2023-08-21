@@ -55,10 +55,10 @@ public class UserInfo extends BaseTimeEntity {
     private String userMembership;
 
 
-    @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Cart cart;
 
-    @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Wish wish;
 
     private OAuthProvider oAuthProvider;
