@@ -81,6 +81,9 @@ dependencies {
 
 	// json setting
 	implementation 'org.json:json:20230227'
+
+	// aop
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
 }
 
 tasks.named('test') {
