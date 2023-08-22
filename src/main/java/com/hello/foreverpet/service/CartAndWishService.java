@@ -92,6 +92,41 @@ public class CartAndWishService {
         return false;
     }
 
+    @Transactional
+    public boolean deleteProductInCart(HttpServletRequest httpServletRequest, Long id) {
+
+        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
+
+        if (userInfo.isPresent()) {
+            Product product = productJpaRepository.findById(id)
+                    .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
+
+            log.info(product.getProductName());
+
+            userInfo.get().getCart().deleteProductInCart(product);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Transactional
+    public boolean deleteProductInWish(HttpServletRequest httpServletRequest, Long id) {
+        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
+
+        if (userInfo.isPresent()) {
+            Product product = productJpaRepository.findById(id)
+                    .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
+
+            userInfo.get().getWish().deleteProductInWish(product);
+
+            return true;
+        }
+
+        return false;
+    }
+
     private Optional<UserInfo> getUserInfo(HttpServletRequest httpServletRequest) {
         String token = httpServletRequest.getHeader("Authorization");
 

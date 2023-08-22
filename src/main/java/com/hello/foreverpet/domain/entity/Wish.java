@@ -11,6 +11,7 @@ import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import org.springframework.transaction.annotation.Transactional;
 
 @Entity
 @Getter
@@ -29,6 +30,12 @@ public class Wish {
     public void addProductInWish(Product product) {
         this.products.add(product);
         product.setWish(this);
+    }
+
+    @Transactional
+    public void deleteProductInWish(Product product) {
+        this.products.remove(product);
+        product.setWish(null);
     }
 
     public void setUserInfo(UserInfo userInfo) {

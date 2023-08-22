@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,4 +47,20 @@ public class CartAndWishController {
     public ResponseEntity<List<ProductResponse>> getLoginUserWish(HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(cartAndWishService.getWish(httpServletRequest));
     }
+
+    @Operation(summary = "장바구니에서 상품 제거", description = "회원의 장바구니에서 상품을 제거.")
+    @DeleteMapping("/user/cart/{id}")
+    public ResponseEntity<Boolean> deleteProductInCart(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
+
+        boolean removeProductInCart = cartAndWishService.deleteProductInCart(httpServletRequest, id);
+        return ResponseEntity.ok(removeProductInCart);
+    }
+
+    @Operation(summary = "찜목록에서 상품 제거", description = "회원의 찜목록에서 상품을 제거.")
+    @DeleteMapping("/user/wish/{id}")
+    public ResponseEntity<Boolean> deleteProductInWish(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
+        boolean removeProductInWish = cartAndWishService.deleteProductInWish(httpServletRequest, id);
+        return ResponseEntity.ok(removeProductInWish);
+    }
+
 }

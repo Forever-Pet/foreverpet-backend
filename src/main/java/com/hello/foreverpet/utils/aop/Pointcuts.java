@@ -4,7 +4,7 @@ import org.aspectj.lang.annotation.Pointcut;
 
 public class Pointcuts {
 
-    @Pointcut("execution(* *..*Service.*(..))")
+    @Pointcut("execution(* hello.foreverpet.service.*.*(..))")
     public void allService() {
     }
 
