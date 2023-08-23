@@ -24,7 +24,6 @@ import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.repository.CustomOrderRepository;
 import com.hello.foreverpet.repository.OrderJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
-import com.mysql.cj.protocol.x.Notice;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
