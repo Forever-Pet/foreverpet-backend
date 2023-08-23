@@ -60,9 +60,9 @@ public class OrderController {
 
     @PutMapping("/ordercancle/{orderId}")
     @Operation(summary = "주문취소 ",description = " 사용자의 주문 내역 취소 ")
-    public ResponseEntity<String> OrderProcessCancelByOrderId(@PathVariable Long orderId) {
+    public ResponseEntity<String> OrderProcessCancelByOrderId(@PathVariable Long orderId , @RequestHeader HttpHeaders header) {
 
-        return ResponseEntity.ok(orderService.OrderProcessCancelByOrderId(orderId));
+        return ResponseEntity.ok(orderService.OrderProcessCancelByOrderId(orderId,header));
     }
 
 } 

@@ -102,14 +102,19 @@ public class OrderService {
 
     
     @Transactional
-    public String OrderProcessCancelByOrderId(Long orderId) {
+    public String OrderProcessCancelByOrderId(Long orderId, HttpHeaders httpHeaders) {
+        String token = (httpHeaders.get("Authorization").toString()).trim().substring(7);
+        // log.info("token = " + token);
+        Long userId = Long.valueOf(tokenProvider.getAuthentication(token).getName());
+
         log.info(orderId.toString());
         
         Order order = orderJpaRepository.findById(orderId).orElseThrow( () -> new OrderNotFoundException(ErrorCode.ORDER_FOUND_ERROR) );
-        
-        order.setOrderProcess(OrderProcess.CANCLE); 
-
-        return " 성공 ";
+        if ( userId == order.getUserInfo().getUserId()){
+            order.OrderCancle(order);
+        return "SUCC";
+        }
+        return "FAIL: INVALID USER";
 }
 
 

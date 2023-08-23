@@ -13,6 +13,7 @@ import lombok.*;
 @Entity
 @Table(name = "order_info")
 @Getter
+@NoArgsConstructor
 public class Order extends BaseTimeEntity {
     
     // @NotNull 의 장점 = 데이터베이스에 SQL 쿼리를 보내기 전에 예외가 발생한다 즉 DB에 값이 넘어가기 전에 예외가 발생한다는 것
@@ -94,5 +95,10 @@ public class Order extends BaseTimeEntity {
             this.orderProductList = orderProductList;
             this.amount = amount;
     }
+
+    public void OrderCancle(Order order) {
+        order.setOrderProcess(OrderProcess.CANCLE);
+    }
+
 
 }
