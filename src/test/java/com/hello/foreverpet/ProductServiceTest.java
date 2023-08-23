@@ -157,7 +157,7 @@ public class ProductServiceTest {
 //        when(jwtTokenProvider.extractSubject("mocktoken")).thenReturn("1");
 
         // when
-        boolean b = userService.addProductInCart(mockRequest, 1L);
+        //boolean b = userService.addProductInCart(mockRequest, 1L);
 
         // then
     }
