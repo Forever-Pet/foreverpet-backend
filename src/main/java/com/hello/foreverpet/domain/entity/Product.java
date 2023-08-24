@@ -1,5 +1,6 @@
 package com.hello.foreverpet.domain.entity;
 
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import com.hello.foreverpet.auditing.BaseTimeEntity;
 import com.hello.foreverpet.domain.dto.Categories;
@@ -11,6 +12,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,10 +46,13 @@ public class Product extends BaseTimeEntity {
 
     private String brandName;
 
-    @ManyToOne
-    private Cart cart;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    private Cart cart;
 
-    @ManyToOne
+    @OneToOne(fetch = FetchType.LAZY)
+    private CartProduct cartProduct;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     private Wish wish;
 
     @Builder
@@ -72,16 +77,26 @@ public class Product extends BaseTimeEntity {
         return this;
     }
 
-    public void setCart(Cart cart) {
-        this.cart = cart;
-        cart.getProducts().add(this);
+//    public void setCart(Cart cart) {
+//        this.cart = cart;
+//        if (cart != null) {
+//            cart.getProducts().add(this);
+//        }
+//
+//    }
+
+
+    public void setCartProduct(CartProduct cartProduct) {
+        this.cartProduct = cartProduct;
     }
 
     public void setWish(Wish wish) {
         this.wish = wish;
-        wish.getProducts().add(this);
-    }
+        if (wish != null) {
+            wish.getProducts().add(this);
+        }
 
+    }
 
     // 주문시 판매수량 증가
     public void soldProducts(OrderProduct orderProduct) {

@@ -23,12 +23,17 @@ public class Wish {
     @OneToOne(fetch = FetchType.LAZY)
     private UserInfo userInfo;
 
-    @OneToMany(mappedBy = "wish",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "wish", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Product> products = new ArrayList<>();
 
     public void addProductInWish(Product product) {
         this.products.add(product);
         product.setWish(this);
+    }
+
+    public void deleteProductInWish(Product product) {
+        this.products.remove(product);
+        product.setWish(null);
     }
 
     public void setUserInfo(UserInfo userInfo) {
