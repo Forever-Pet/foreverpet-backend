@@ -11,10 +11,10 @@ public class UserPasswordResponse {
 
     private String msg;
 
-    private Boolean reuslt;
+    private Boolean result;
 
-    public UserPasswordResponse(String msg, Boolean reuslt) {
+    public UserPasswordResponse(String msg, Boolean result) {
         this.msg = msg;
-        this.reuslt = reuslt;
+        this.result = result;
     }
 }
