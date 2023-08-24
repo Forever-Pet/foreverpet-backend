@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Tag(name = "Cart & Wish API",description = "장바구니와 찜목록 API 입니다.")
+@Tag(name = "Cart & Wish API", description = "장바구니와 찜목록 API 입니다.")
 @RestController
 @RequiredArgsConstructor
 @Slf4j
@@ -25,14 +25,16 @@ public class CartAndWishController {
 
     @Operation(summary = "장바구니에 상품 추가", description = "회원의 장바구니에 상품을 추가.")
     @PostMapping("/user/cart/{id}")
-    public ResponseEntity<Boolean> addProductInCart(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
+    public ResponseEntity<Boolean> addProductInCart(HttpServletRequest httpServletRequest,
+                                                    @PathVariable("id") Long id) {
         boolean successProductAddCart = cartAndWishService.addProductInCart(httpServletRequest, id);
         return ResponseEntity.ok(successProductAddCart);
     }
 
     @Operation(summary = "찜목록에 상품 추가", description = "회원의 찜목록에 상품을 추가.")
     @PostMapping("/user/wish/{id}")
-    public ResponseEntity<Boolean> addProductInWish(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
+    public ResponseEntity<Boolean> addProductInWish(HttpServletRequest httpServletRequest,
+                                                    @PathVariable("id") Long id) {
         boolean successProductAddWish = cartAndWishService.addProductInWish(httpServletRequest, id);
         return ResponseEntity.ok(successProductAddWish);
     }
@@ -51,7 +53,8 @@ public class CartAndWishController {
 
     @Operation(summary = "장바구니에서 상품 제거", description = "회원의 장바구니에서 상품을 제거.")
     @DeleteMapping("/user/cart/{id}")
-    public ResponseEntity<Boolean> deleteProductInCart(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
+    public ResponseEntity<Boolean> deleteProductInCart(HttpServletRequest httpServletRequest,
+                                                       @PathVariable("id") Long id) {
 
         boolean removeProductInCart = cartAndWishService.deleteProductInCart(httpServletRequest, id);
         return ResponseEntity.ok(removeProductInCart);
@@ -59,20 +62,21 @@ public class CartAndWishController {
 
     @Operation(summary = "찜목록에서 상품 제거", description = "회원의 찜목록에서 상품을 제거.")
     @DeleteMapping("/user/wish/{id}")
-    public ResponseEntity<Boolean> deleteProductInWish(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
+    public ResponseEntity<Boolean> deleteProductInWish(HttpServletRequest httpServletRequest,
+                                                       @PathVariable("id") Long id) {
         boolean removeProductInWish = cartAndWishService.deleteProductInWish(httpServletRequest, id);
         return ResponseEntity.ok(removeProductInWish);
     }
 
     @Operation(summary = "장바구니 수량 증가", description = "회원 장바구니의 상품 수량 증가")
     @PostMapping("/user/cart/{id}/increase-quantity")
-    public boolean increaseQuantity(HttpServletRequest httpServletRequest,@PathVariable("id") Long id) {
+    public boolean increaseQuantity(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
         return cartAndWishService.increaseQuantity(httpServletRequest, id);
     }
 
     @Operation(summary = "장바구니 수량 감소", description = "회원 장바구니의 상품 수량 감소")
     @PostMapping("/user/cart/{id}/decrease-quantity")
-    public boolean decreaseQuantity(HttpServletRequest httpServletRequest,@PathVariable("id") Long id) {
+    public boolean decreaseQuantity(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
         return cartAndWishService.decreaseQuantity(httpServletRequest, id);
     }
 
