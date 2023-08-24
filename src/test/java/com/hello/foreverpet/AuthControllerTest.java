@@ -1,6 +1,11 @@
 package com.hello.foreverpet;
 
 import com.hello.foreverpet.controller.AuthController;
+import com.hello.foreverpet.controller.ProductController;
+import com.hello.foreverpet.domain.dto.Address;
+import com.hello.foreverpet.domain.dto.OAuthProvider;
+import com.hello.foreverpet.domain.entity.UserInfo;
+import com.hello.foreverpet.oauth.OAuthInfoResponse;
 import com.hello.foreverpet.oauth.kakao.KakaoInfoResponse;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import com.hello.foreverpet.service.OAuthLoginService;
@@ -9,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;

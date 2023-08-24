@@ -20,9 +20,9 @@ import org.springframework.http.ResponseEntity;
 import com.hello.foreverpet.controller.OrderController;
 import com.hello.foreverpet.domain.dto.Address;
 import com.hello.foreverpet.domain.dto.request.PaymentRequest;
+import com.hello.foreverpet.domain.dto.response.OrderResponse;
 import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
 import com.hello.foreverpet.domain.dto.request.OrderProductRequest;
-import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import com.hello.foreverpet.service.PaymentService;
@@ -93,7 +93,7 @@ public class OrderControllerTest {
         
 
         // 실행
-        ResponseEntity<Order> response = orderController.createOrder(createOrderRequest , httpHeaders);
+        ResponseEntity<String> response = orderController.createOrder(createOrderRequest , httpHeaders);
 
     
 
@@ -102,6 +102,27 @@ public class OrderControllerTest {
         // 단언
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedId, response.getBody());
+
+    } 
+
+    @Test
+    void findOrderProductByUserId_shouldReturnCreatedOrderNo(){
+       
+
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        String token = "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwiYXV0aCI6IlJPTEVfVVNFUi"
+        +"IsImV4cCI6MTY5MjE0ODM4OX0.suxw2OeF57WW2XBkGeAScyyAGlTXHZ_TFIyabROXNFmrnb7X4XbsXx8x5f6rzKWjgd1DjNJu6UH5bgR2b1uoCQ";
+        httpHeaders.set("Authorization",token );
+
+        
+
+        // 실행
+        ResponseEntity<List<OrderResponse>>response = orderController.findOrderProductByUserId(httpHeaders);
+
+        
+        // 단언
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
     } 
     

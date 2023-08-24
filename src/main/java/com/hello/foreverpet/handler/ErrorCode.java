@@ -27,8 +27,10 @@ public enum ErrorCode {
 
     // product
     PRODUCT_FOUND_ERROR(500,"P001","상품 정보를 찾을수 없습니다."),
-    ALREADY_EXIST_PRODUCT_EXCEPTION(500,"E001","이미 존재하는 상품입니다.")
+    ALREADY_EXIST_PRODUCT_EXCEPTION(500,"E001","이미 존재하는 상품입니다."),
 
+    // order
+    ORDER_FOUND_ERROR(500,"Or001","주문 정보를 찾을수 없습니다."),
     ;
 
     private final int status;
