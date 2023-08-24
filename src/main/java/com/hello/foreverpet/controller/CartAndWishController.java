@@ -1,5 +1,6 @@
 package com.hello.foreverpet.controller;
 
+import com.hello.foreverpet.domain.dto.response.CartProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.service.CartAndWishService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +39,7 @@ public class CartAndWishController {
 
     @Operation(summary = "로그인 유저의 장바구니 조회", description = "로그인한 유저의 장바구니 상품 리스트")
     @PostMapping("/user/cart")
-    public ResponseEntity<List<ProductResponse>> getLoginUserCart(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<CartProductResponse>> getLoginUserCart(HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(cartAndWishService.getCart(httpServletRequest));
     }
 
@@ -61,6 +62,18 @@ public class CartAndWishController {
     public ResponseEntity<Boolean> deleteProductInWish(HttpServletRequest httpServletRequest, @PathVariable("id") Long id) {
         boolean removeProductInWish = cartAndWishService.deleteProductInWish(httpServletRequest, id);
         return ResponseEntity.ok(removeProductInWish);
+    }
+
+    @Operation(summary = "장바구니 수량 증가", description = "회원 장바구니의 상품 수량 증가")
+    @PostMapping("/user/cart/{id}/increase-quantity")
+    public boolean increaseQuantity(HttpServletRequest httpServletRequest,@PathVariable("id") Long id) {
+        return cartAndWishService.increaseQuantity(httpServletRequest, id);
+    }
+
+    @Operation(summary = "장바구니 수량 감소", description = "회원 장바구니의 상품 수량 감소")
+    @PostMapping("/user/cart/{id}/decrease-quantity")
+    public boolean decreaseQuantity(HttpServletRequest httpServletRequest,@PathVariable("id") Long id) {
+        return cartAndWishService.decreaseQuantity(httpServletRequest, id);
     }
 
 }

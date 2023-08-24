@@ -5,6 +5,7 @@ import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import com.hello.foreverpet.domain.dto.response.LoginUserProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
+import com.hello.foreverpet.domain.entity.CartProduct;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.domain.exception.user.AlreadyExistProductException;
@@ -94,7 +95,9 @@ public class ProductService {
 
         UserInfo userInfo = getUserInfo(httpServletRequest);
 
-        List<Product> cart = getCartProducts(userInfo.getUserId());
+        List<Product> cart = getCartProducts(userInfo.getUserId()).stream().map(cartProduct -> cartProduct.getProduct())
+                .toList();
+
         List<Product> wish = getWishProducts(userInfo.getUserId());
 
         return productJpaRepository.findAll().stream()
@@ -113,17 +116,18 @@ public class ProductService {
                 .toList();
     }
 
-    private List<Product> getCartProducts(Long userId) {
+    private List<CartProduct> getCartProducts(Long userId) {
+        
         return userInfoJpaRepository.findById(userId)
-                .map(userInfo -> userInfo.getCart().getProducts())
+                .map(userInfo -> userInfo.getCart().getCartProducts())
                 .orElse(Collections.emptyList());
     }
 
     private List<Product> getWishProducts(Long userId) {
 
-            return userInfoJpaRepository.findById(userId)
-                    .map(userInfo -> userInfo.getWish().getProducts())
-                    .orElse(Collections.emptyList());
+        return userInfoJpaRepository.findById(userId)
+                .map(userInfo -> userInfo.getWish().getProducts())
+                .orElse(Collections.emptyList());
     }
 
     private UserInfo getUserInfo(HttpServletRequest httpServletRequest) {

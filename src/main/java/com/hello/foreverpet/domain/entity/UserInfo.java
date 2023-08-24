@@ -10,12 +10,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import java.util.Set;
-import org.springframework.transaction.annotation.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Table(name = "user_info")
 @Getter
 @NoArgsConstructor
+@Slf4j
 public class UserInfo extends BaseTimeEntity {
 
     @Id
@@ -55,7 +56,7 @@ public class UserInfo extends BaseTimeEntity {
     private String userMembership;
 
 
-    @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Cart cart;
 
     @OneToOne(mappedBy = "userInfo",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
@@ -113,14 +114,23 @@ public class UserInfo extends BaseTimeEntity {
         return this;
     }
 
-    public void addProductInCart(Product product) {
+//    public void addProductInCart(Product product) {
+//        if (cart == null) {
+//            cart = new Cart();
+//        }
+//        cart.setUserInfo(this);
+//        cart.addProductInCart(product);
+//    }
+
+
+    public void addProductInCart(CartProduct cartProduct) {
         if (cart == null) {
             cart = new Cart();
         }
         cart.setUserInfo(this);
-        cart.addProductInCart(product);
+        cart.addProductInCart(cartProduct);
     }
-    @Transactional
+
     public void addProductInWish(Product product) {
         if (wish == null) {
             wish = new Wish();
