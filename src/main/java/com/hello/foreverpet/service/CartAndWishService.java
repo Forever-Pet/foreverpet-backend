@@ -9,6 +9,7 @@ import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.repository.CartProductJpaRepository;
+import com.hello.foreverpet.repository.CustomProductRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,20 +30,22 @@ public class CartAndWishService {
     private final UserInfoJpaRepository userInfoJpaRepository;
     private final ProductJpaRepository productJpaRepository;
     private final CartProductJpaRepository cartProductJpaRepository;
+    private final CustomProductRepository customProductRepository;
 
     public List<CartProductResponse> getCart(HttpServletRequest httpServletRequest) {
         Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
 
-        List<CartProductResponse> cartProductResponses = new ArrayList<>();
+//        List<CartProductResponse> cartProductResponses = new ArrayList<>();
 
-        if (userInfo.isPresent() && userInfo.get().getCart() != null) {
-            cartProductResponses = userInfo.get().getCart().getCartProducts()
-                    .stream()
-                    .map(CartProductResponse::new)
-                    .toList();
-        }
+//        if (userInfo.isPresent() && userInfo.get().getCart() != null) {
+//            cartProductResponses = userInfo.get().getCart().getCartProducts()
+//                    .stream()
+//                    .map(CartProductResponse::new)
+//                    .toList();
+//        }
+        return customProductRepository.getCartProductResponsesByUserId(userInfo.get());
 
-        return cartProductResponses;
+
     }
 
     public List<ProductResponse> getWish(HttpServletRequest httpServletRequest) {
@@ -170,5 +173,8 @@ public class CartAndWishService {
         return userInfoJpaRepository.findById(
                 Long.valueOf(tokenProvider.getAuthentication(token).getName()));
     }
+
+    // getUserInfo 를 사용하니까 쓸데없는 쿼리문이 발생하는거같다.
+    // userId 를 받아서 처리하면 쿼리문을 더 줄일수 있을거같다.
 
 }

@@ -48,6 +48,7 @@ public class UserController {
         return new ResponseEntity<>(userLoginResponse, userLoginResponse.getHttpHeaders(), HttpStatus.OK);
     }
 
+
     @Operation(summary = "이메일 중복 확인", description = "true의 경우 이메일 사용가능, false의 경우 이메일 사용불가")
     @PostMapping("/user/emailCheck")
     public ResponseEntity<Boolean> emailCheck(@RequestBody UserEmailCheckRequest userEmailCheckRequest){
