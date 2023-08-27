@@ -80,12 +80,15 @@ public class Product extends BaseTimeEntity {
     }
 
     // 주문시 판매수량 증가
-    public void soldProducts(OrderProduct orderProduct) {
-        this.numberOfSold += orderProduct.getOrderProductAmount();
+    public void soldProducts() {
+        this.numberOfSold++;
     }
 
     // 주문 취소시 판매수량 감소
-    public void cancelOrder(OrderProduct orderProduct) {
-        this.numberOfSold -= orderProduct.getOrderProductAmount();
+    public void cancelOrder() {
+        if (numberOfSold > 1) {
+            this.numberOfSold--;
+        }
+
     }
 }
