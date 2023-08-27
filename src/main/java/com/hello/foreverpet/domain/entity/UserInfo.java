@@ -55,7 +55,6 @@ public class UserInfo extends BaseTimeEntity {
     @Column(name = "user_membership")
     private String userMembership;
 
-
     @OneToOne(mappedBy = "userInfo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Cart cart;
 
@@ -114,21 +113,13 @@ public class UserInfo extends BaseTimeEntity {
         return this;
     }
 
-//    public void addProductInCart(Product product) {
-//        if (cart == null) {
-//            cart = new Cart();
-//        }
-//        cart.setUserInfo(this);
-//        cart.addProductInCart(product);
-//    }
-
-
-    public void addProductInCart(CartProduct cartProduct) {
+    public void addToCart(Product product) {
         if (cart == null) {
             cart = new Cart();
         }
         cart.setUserInfo(this);
-        cart.addProductInCart(cartProduct);
+
+        cart.addProductToCart(product);
     }
 
     public void addProductInWish(Product product) {
@@ -140,4 +131,10 @@ public class UserInfo extends BaseTimeEntity {
     }
 
 
+    public Cart getCart() {
+        if (cart == null) {
+            return new Cart(this);
+        }
+        return cart;
+    }
 }

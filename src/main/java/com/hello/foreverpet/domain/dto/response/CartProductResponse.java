@@ -11,6 +11,7 @@ import lombok.Data;
 @Schema(description = "장바구니 상품 응답")
 public class CartProductResponse {
     private Long id;
+    private Long productId;
     private String productName;
     private String productDescription;
     private Categories categories;
@@ -40,6 +41,7 @@ public class CartProductResponse {
     @QueryProjection
     public CartProductResponse(
             Long id,
+            Long productId,
             String productName,
             String productDescription,
             Categories categories,
@@ -52,6 +54,7 @@ public class CartProductResponse {
             LocalDateTime modifiedDate
     ) {
         this.id = id;
+        this.productId = productId;
         this.productName = productName;
         this.productDescription = productDescription;
         this.categories = categories;

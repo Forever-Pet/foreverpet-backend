@@ -1,15 +1,12 @@
 package com.hello.foreverpet.repository;
 
+import static com.hello.foreverpet.domain.entity.QCartProduct.cartProduct;
 import static com.hello.foreverpet.domain.entity.QProduct.product;
 
 import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.response.CartProductResponse;
 import com.hello.foreverpet.domain.dto.response.QCartProductResponse;
 import com.hello.foreverpet.domain.entity.Product;
-import com.hello.foreverpet.domain.entity.QCart;
-import com.hello.foreverpet.domain.entity.QCartProduct;
-import com.hello.foreverpet.domain.entity.QProduct;
-import com.hello.foreverpet.domain.entity.QUserInfo;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -60,28 +57,26 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
 
     @Override
     public List<CartProductResponse> getCartProductResponsesByUserId(UserInfo userInfo) {
-        QCartProductResponse cartProductResponse = new QCartProductResponse(
-                QCartProduct.cartProduct.id,
-                QProduct.product.productName,
-                QProduct.product.productDescription,
-                QProduct.product.categories,
-                QProduct.product.productPrice,
-                QProduct.product.numberOfSold,
-                QProduct.product.productImage,
-                QProduct.product.brandName,
-                QCartProduct.cartProduct.quantity,
-                QProduct.product.createDate,
-                QProduct.product.modifiedDate
-        );
-
         return jpaQueryFactory
-                .select(cartProductResponse)
-                .from(QUserInfo.userInfo)
-                .leftJoin(QUserInfo.userInfo.cart, QCart.cart)
-                .leftJoin(QCart.cart.cartProducts, QCartProduct.cartProduct)
-                .leftJoin(QCartProduct.cartProduct.product, QProduct.product)
-                .where(QUserInfo.userInfo.eq(userInfo))
+                .select(new QCartProductResponse(
+                        cartProduct.id,
+                        cartProduct.product.productId,
+                        cartProduct.product.productName,
+                        cartProduct.product.productDescription,
+                        cartProduct.product.categories,
+                        cartProduct.product.productPrice,
+                        cartProduct.product.numberOfSold,
+                        cartProduct.product.productImage,
+                        cartProduct.product.brandName,
+                        cartProduct.quantity,
+                        cartProduct.product.createDate,
+                        cartProduct.product.modifiedDate
+                ))
+                .from(cartProduct)
+                .leftJoin(cartProduct.product, product)
+                .where(cartProduct.cart.userInfo.eq(userInfo))
                 .fetch();
+
     }
 
     private BooleanExpression containsProductName(String productName) {

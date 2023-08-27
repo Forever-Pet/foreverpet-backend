@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,7 +22,7 @@ public class CartProduct extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Cart cart;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product;
 
     private Long quantity;
@@ -31,7 +30,6 @@ public class CartProduct extends BaseTimeEntity {
     public CartProduct(Product product) {
         this.product = product;
         this.quantity = 1L;
-        product.setCartProduct(this);
     }
 
     public void setCart(Cart cart) {
@@ -43,7 +41,7 @@ public class CartProduct extends BaseTimeEntity {
     }
 
     public void decreaseQuantity() {
-        if (quantity > 0) {
+        if (quantity > 1) {
             quantity--;
         }
     }

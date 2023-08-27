@@ -2,10 +2,12 @@ package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.domain.dto.response.CartProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
+import com.hello.foreverpet.domain.entity.Cart;
 import com.hello.foreverpet.domain.entity.CartProduct;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
+import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.repository.CartProductJpaRepository;
@@ -33,17 +35,10 @@ public class CartAndWishService {
     private final CustomProductRepository customProductRepository;
 
     public List<CartProductResponse> getCart(HttpServletRequest httpServletRequest) {
-        Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
+        UserInfo userInfo = getUserInfo(httpServletRequest).orElseThrow(
+                () -> new UserNotFoundException(ErrorCode.USER_NOT_FOUND));
 
-//        List<CartProductResponse> cartProductResponses = new ArrayList<>();
-
-//        if (userInfo.isPresent() && userInfo.get().getCart() != null) {
-//            cartProductResponses = userInfo.get().getCart().getCartProducts()
-//                    .stream()
-//                    .map(CartProductResponse::new)
-//                    .toList();
-//        }
-        return customProductRepository.getCartProductResponsesByUserId(userInfo.get());
+        return customProductRepository.getCartProductResponsesByUserId(userInfo);
 
 
     }
@@ -67,18 +62,10 @@ public class CartAndWishService {
     @Transactional
     public boolean addProductInCart(HttpServletRequest httpServletRequest, Long id) {
         Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
+        Optional<Product> productById = productJpaRepository.findById(id);
 
-        if (userInfo.isPresent()) {
-
-            Product productById = productJpaRepository.findById(id)
-                    .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
-
-            CartProduct cartProduct = new CartProduct(productById);
-
-            productById.setCartProduct(cartProduct);
-
-            userInfo.get().addProductInCart(cartProduct);
-
+        if (userInfo.isPresent() && productById.isPresent()) {
+            userInfo.get().addToCart(productById.get());
             return true;
         }
 
@@ -106,14 +93,13 @@ public class CartAndWishService {
     public boolean deleteProductInCart(HttpServletRequest httpServletRequest, Long id) {
 
         Optional<UserInfo> userInfo = getUserInfo(httpServletRequest);
+        Optional<Product> productById = productJpaRepository.findById(id);
 
-        if (userInfo.isPresent()) {
-            Product product = productJpaRepository.findById(id)
-                    .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_FOUND_ERROR));
+        if (userInfo.isPresent() && productById.isPresent()) {
+            Cart cart = userInfo.get().getCart();
 
-            CartProduct cartProduct = product.getCartProduct();
-
-            userInfo.get().getCart().deleteProductInCart(cartProduct);
+            CartProduct cartProduct = new CartProduct(productById.get());
+            cartProduct.setCart(cart);
 
             return true;
         }
