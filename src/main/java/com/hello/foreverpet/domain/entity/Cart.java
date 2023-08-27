@@ -12,10 +12,12 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@Slf4j
 public class Cart {
 
     @Id
@@ -39,7 +41,18 @@ public class Cart {
     }
 
     public void deleteProductInCart(CartProduct cartProduct) {
+        log.info("deleteProductInCart()");
+        for (CartProduct product : cartProducts) {
+            log.info("CartProductName = {}",product.getProduct().getProductName());
+        }
         this.cartProducts.remove(cartProduct);
+
+        log.info("After Remove");
+
+        for (CartProduct product : cartProducts) {
+            log.info("CartProductName = {}",product.getProduct().getProductName());
+        }
+
     }
 
     public void setUserInfo(UserInfo userInfo) {
