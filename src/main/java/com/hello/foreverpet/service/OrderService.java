@@ -40,6 +40,7 @@ public class OrderService {
     private final TokenProvider tokenProvider;
 
 
+    @Transactional
     public String createOrder(OrderRequestBody orderRequestBody , HttpHeaders httpHeaders) {
 
         // 주소 
