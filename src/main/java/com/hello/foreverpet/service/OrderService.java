@@ -2,23 +2,16 @@ package com.hello.foreverpet.service;
 
 
 import java.util.List;
-import java.util.Optional;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-
 import com.hello.foreverpet.domain.dto.Address;
-import com.hello.foreverpet.domain.dto.OrderProcess;
 import com.hello.foreverpet.domain.dto.request.OrderRequestBody;
 import com.hello.foreverpet.domain.dto.response.OrderResponse;
-import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.domain.entity.Payment;
-import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import com.hello.foreverpet.domain.exception.user.OrderNotFoundException;
-import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.repository.CustomOrderRepository;
@@ -47,6 +40,7 @@ public class OrderService {
     private final TokenProvider tokenProvider;
 
 
+    @Transactional
     public String createOrder(OrderRequestBody orderRequestBody , HttpHeaders httpHeaders) {
 
         // 주소 
@@ -59,7 +53,9 @@ public class OrderService {
         
         // 상세품목
         List<OrderProduct> orderproductList = orderProductService.createOrderProductList(orderRequestBody.getOrderProductListRequest());
-        
+
+        orderproductList.forEach(orderProduct -> orderProduct.getOrderProduct().soldProducts());
+
         // 결제정보
         Payment newPayment = paymentService.createPayment(orderRequestBody.getPaymentRequest());
 
@@ -109,6 +105,9 @@ public class OrderService {
         log.info(orderId.toString());
         
         Order order = orderJpaRepository.findById(orderId).orElseThrow( () -> new OrderNotFoundException(ErrorCode.ORDER_FOUND_ERROR) );
+
+        order.getOrderProductList().forEach(orderProduct -> orderProduct.getOrderProduct().cancelOrder());
+
         if ( userId == order.getUserInfo().getUserId()){
             order.OrderCancle(order);
         return "SUCC";

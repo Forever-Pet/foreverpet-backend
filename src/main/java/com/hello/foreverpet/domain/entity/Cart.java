@@ -11,9 +11,13 @@ import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Entity
 @Getter
+@NoArgsConstructor
+@Slf4j
 public class Cart {
 
     @Id
@@ -23,41 +27,36 @@ public class Cart {
     @OneToOne(fetch = FetchType.LAZY)
     private UserInfo userInfo;
 
-//    @OneToMany(mappedBy = "cart",fetch = FetchType.LAZY)
-//    private List<Product> products = new ArrayList<>();
-
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<CartProduct> cartProducts = new ArrayList<>();
 
-//    public void addProductInCart(Product product) {
-//        this.products.add(product);
-//        product.setCart(this);
-//    }
-
-    public void addProductInCart(CartProduct cartProduct) {
-        cartProduct.setCart(this);
-        this.cartProducts.add(cartProduct);
+    public Cart(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
-
-    public void addCartProduct(Product product) {
+    public void addProductToCart(Product product) {
         CartProduct cartProduct = new CartProduct(product);
-        this.cartProducts.add(cartProduct);
+        cartProducts.add(cartProduct);
         cartProduct.setCart(this);
-
     }
-
-//    public void deleteProductInCart(Product product) {
-//        this.products.remove(product);
-//        product.setCart(null);
-//    }
 
     public void deleteProductInCart(CartProduct cartProduct) {
+        log.info("deleteProductInCart()");
+        for (CartProduct product : cartProducts) {
+            log.info("CartProductName = {}",product.getProduct().getProductName());
+        }
         this.cartProducts.remove(cartProduct);
-        cartProduct.setCart(null);
+
+        log.info("After Remove");
+
+        for (CartProduct product : cartProducts) {
+            log.info("CartProductName = {}",product.getProduct().getProductName());
+        }
+
     }
 
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
     }
+
 }
