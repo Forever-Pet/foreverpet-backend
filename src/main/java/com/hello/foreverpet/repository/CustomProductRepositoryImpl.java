@@ -34,7 +34,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     @Override
     public List<Product> findProductOrderBySold() {
         return jpaQueryFactory.selectFrom(product)
-                .orderBy(product.numberOfSold.asc())
+                .orderBy(product.numberOfSold.desc())
                 .fetch();
     }
 
