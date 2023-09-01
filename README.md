@@ -263,10 +263,6 @@
   </table>
 </div>
 
-
-
-
-
 - **Java17** 를 선택한 이유는 SpringBoot3 를 사용하기 위한 최소 버전이 17버전 이였고 람다와 스트림을 활용할수 있는 모던자바 버전이기에 선택하였습니다.
 - **SpringBoot3** 를 사용하여 초기 개발설정을 편리하게 할수 있었습니다.start.spring.io 에서 필요한 라이브러리 의존성을 추가하고 프로젝트를 시작하였습니다.
 - **Spring Security** 를 사용하여 인증인가 구현을 하였고 OAuth 를 사용하여 소셜 로그인 구현을 하였습니다.
@@ -275,6 +271,12 @@
 - **QueryDsl** 을 사용하여 JPA 로 처리하지 못하는 동적쿼리 나 DTO조회 등을 구현하였습니다.
 - **OAuth** 을 사용하여 Kakao 로그인 API를 활용하여 kakao 계정을 사용하여 접근할수 있도록 구현하였습니다.
 - **MariaDB** 를 사용하였습니다. RDBMS 중 하나를 선택하기로 의견이 모였고 AWS RDS 를 사용할 것이기에 동일 사양 대비 가격이 저렴하고 MySQL 과 문법이 같은 MariaDB 를 택하였습니다.
+
+## ERD
+![foreverpetERD](https://github.com/Forever-Pet/foreverpet-backend/assets/74821906/76ee02ea-78ba-43dd-8ec1-2ef43b341edf)
+
+
+
 
 ## CICD
 
