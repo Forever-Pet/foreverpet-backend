@@ -289,3 +289,11 @@
 - **CodeDeploy** : main.yml 파일 설정에 따라 AWS CodeDeploy 를 사용하여 zip 파일 내의 appspec.yml 을 실행합니다.
 - **deploy.sh** : appspec.yml 파일에 설정된 EC2 인스턴스 경로에 S3 에 업로드 되어있던 zip 파일을 업로드 하며 hooks 로 등록된 deploy.sh 를 실행시켜 프로젝트를 빌드한다.
 
+
+
+## More
+- Admin 페이지와 기능 구현하여 User , Admin 의 기능 나누기
+- Enum 처리 되어있는 Category 를 Admin 페이지 에서 컨트롤 가능하게 변경하기
+- 각 쿼리문 최적화 하기
+- 각 기능에 대한 단위 , 통합 테스트 코드 작성해보기
+- 
