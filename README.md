@@ -1,13 +1,48 @@
+
+
+
 <div align="center">
   
 # 반려 동물을 위한 쇼핑몰 - 포에버펫
-
-
 
 ## 배포 링크
 
 [포에버펫](http://ec2-13-209-75-154.ap-northeast-2.compute.amazonaws.com:3000/) 에서 이용하실 수 있어요. <br>
 [포에버펫API](http://ec2-15-164-206-172.ap-northeast-2.compute.amazonaws.com) 에서 이용하실 수 있어요.
+
+</div>
+
+### Back-End
+
+<summary>✅ 역할</summary>
+
+<div markdown="1"> 
+   
+- 김창모 : GitHub Actions 과 AWS 를 활용하여 프로젝트의 CICD 파이프라인구현과 AWS RDS 에 MariaDB 생성 ,초기 라이브러리 의존성 세팅 및 상품의 CRUD 를 포함하여 상품 이름검색 , 카테고리 검색 , 신상품 정렬 , 판매순 정렬 을 구현하였고 유저의 장바구니 , 찜목록 , 로그인한 유저의 상품정보 API 를 구현하였습니다.
+
+- 김상복 : 소셜 로그인을 구현하기 위해 OAuth 및 Kakao API를 사용하였고
+  Spring Security 와 JWT 토큰을 활용하여 로그인 과
+  로그인 보안을 구현하였습니다.
+  그 외 유저 정보 조회, 회원가입, 비밀번호 변경, 이메일 중복 확인 기능을 구현하였습니다
+
+- 이준형 : 상품 주문 파트를 담당하여 구현하였고 상품주문 시 결제는 아임포트의 API 의 특성을 파악하여 프론트엔드 개발자님과의 의견공유를 통해 결제 로직을 구현하였습니다. 그외의 주문취소, 회원주문내역확인 API 를 구현하였습니다.
+
+<div align="center">
+
+## 🌈 Members
+
+|                                             [창모](https://github.com/cmong0516)                                              |                                              [상복](https://github.com/AiRn33)                                              |                                               [준형](https://github.com/AlreadyBold)                                                |
+| :-----------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: |
+| <img src="https://avatars.githubusercontent.com/u/74821906?v=4" width=200px alt="_"/> | <img src="https://github.com/EUN-HA-CHOI/ForeverPet/assets/97012561/6087df6c-1820-411a-9e3f-2dabda35bd6f" width=200px alt="_"/> | <img src="https://avatars.githubusercontent.com/u/101548340?v=4" width=200px alt="_"/> |
+|                                                           백엔드                                                            |                                                           백엔드                                                            |                                                           백엔드                                                            |
+
+</div>
+
+
+</div>
+
+
+<div align="center">
 
 
 ## ✨ Intro
@@ -189,23 +224,6 @@
 
 <br/>
 
-### Back-End
-
-<summary>✅ 역할</summary>
-
-<div markdown="1"> 
-   
-- 김창모 : GitHub Actions 과 AWS 를 활용하여 프로젝트의 CICD 파이프라인구현과 AWS RDS 에 MariaDB 생성 ,초기 라이브러리 의존성 세팅 및 상품의 CRUD 를 포함하여 상품 이름검색 , 카테고리 검색 , 신상품 정렬 , 판매순 정렬 을 구현하였고 유저의 장바구니 , 찜목록 , 로그인한 유저의 상품정보 API 를 구현하였습니다.
-
-- 김상복 : 소셜 로그인을 구현하기 위해 OAuth 및 Kakao API를 사용하였고
-  Spring Security 와 JWT 토큰을 활용하여 로그인 과
-  로그인 보안을 구현하였습니다.
-  그 외 유저 정보 조회, 회원가입, 비밀번호 변경, 이메일 중복 확인 기능을 구현하였습니다
-
-- 이준형 : 상품 주문 파트를 담당하여 구현하였고 상품주문 시 결제는 아임포트의 API 의 특성을 파악하여 프론트엔드 개발자님과의 의견공유를 통해 결제 로직을 구현하였습니다. 그외의 주문취소, 회원주문내역확인 API 를 구현하였습니다. 
-
-</div>
-
 <br>
 <br>
 
@@ -269,13 +287,3 @@
 - **CodeDeploy** : main.yml 파일 설정에 따라 AWS CodeDeploy 를 사용하여 zip 파일 내의 appspec.yml 을 실행합니다.
 - **deploy.sh** : appspec.yml 파일에 설정된 EC2 인스턴스 경로에 S3 에 업로드 되어있던 zip 파일을 업로드 하며 hooks 로 등록된 deploy.sh 를 실행시켜 프로젝트를 빌드한다.
 
-<div align="center">
-
-## 🌈 Members
-
-|                                             [창모](https://github.com/cmong0516)                                              |                                              [상복](https://github.com/AiRn33)                                              |                                               [준형](https://github.com/AlreadyBold)                                                |
-| :-----------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------: |
-| <img src="https://avatars.githubusercontent.com/u/74821906?v=4" width=200px alt="_"/> | <img src="https://github.com/EUN-HA-CHOI/ForeverPet/assets/97012561/6087df6c-1820-411a-9e3f-2dabda35bd6f" width=200px alt="_"/> | <img src="https://avatars.githubusercontent.com/u/101548340?v=4" width=200px alt="_"/> |
-|                                                           백엔드                                                            |                                                           백엔드                                                            |                                                           백엔드                                                            |
-
-</div>
