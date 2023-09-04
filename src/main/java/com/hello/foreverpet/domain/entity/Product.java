@@ -33,27 +33,45 @@ public class Product extends BaseTimeEntity {
     @NotNull
     @Column(length = 500)
     private String productDescription;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private Categories categories;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
+
     @NotNull
     private Long productPrice;
 
     private Long numberOfSold;
 
     private String productImage;
-
+    @NotNull
     private String brandName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Wish wish;
 
+//    @Builder
+//    public Product(String productName, String productDescription, Categories categories, Long productPrice,
+//                   String productImage, String brandName) {
+//        this.productName = productName;
+//        this.productDescription = productDescription;
+//        this.categories = categories;
+//        this.productPrice = productPrice;
+//        this.numberOfSold = 0L;
+//        this.productImage = productImage;
+//        this.brandName = brandName;
+//    }
+
     @Builder
-    public Product(String productName, String productDescription, Categories categories, Long productPrice,
+    public Product(String productName, String productDescription, String category, Long productPrice,
                    String productImage, String brandName) {
         this.productName = productName;
         this.productDescription = productDescription;
-        this.categories = categories;
+        this.category = new Category(category);
         this.productPrice = productPrice;
         this.numberOfSold = 0L;
         this.productImage = productImage;

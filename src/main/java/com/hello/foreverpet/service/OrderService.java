@@ -11,7 +11,7 @@ import com.hello.foreverpet.domain.entity.Order;
 import com.hello.foreverpet.domain.entity.OrderProduct;
 import com.hello.foreverpet.domain.entity.Payment;
 import com.hello.foreverpet.domain.entity.UserInfo;
-import com.hello.foreverpet.domain.exception.user.OrderNotFoundException;
+import com.hello.foreverpet.domain.exception.OrderNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.jwt.TokenProvider;
 import com.hello.foreverpet.repository.CustomOrderRepository;

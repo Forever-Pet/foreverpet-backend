@@ -1,9 +1,9 @@
 package com.hello.foreverpet.handler;
 
 import com.hello.foreverpet.domain.dto.response.ErrorResponse;
-import com.hello.foreverpet.domain.exception.user.AlreadyExistProductException;
-import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
-import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
+import com.hello.foreverpet.domain.exception.AlreadyExistProductException;
+import com.hello.foreverpet.domain.exception.ProductNotFoundException;
+import com.hello.foreverpet.domain.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;

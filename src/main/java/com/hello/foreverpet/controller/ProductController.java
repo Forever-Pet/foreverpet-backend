@@ -5,6 +5,7 @@ import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import com.hello.foreverpet.domain.dto.response.ErrorResponse;
 import com.hello.foreverpet.domain.dto.response.LoginUserProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
+import com.hello.foreverpet.service.CategoryService;
 import com.hello.foreverpet.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
     private final ProductService productService;
+    private final CategoryService categoryService;
 
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "API 정상 작동",content = @Content(schema = @Schema(implementation = ProductResponse.class))),
@@ -105,5 +107,11 @@ public class ProductController {
     @GetMapping("/products/login")
     public ResponseEntity<List<LoginUserProductResponse>> loginUserGetAllProducts(HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(productService.loginUserGetAllProducts(httpServletRequest));
+    }
+
+    @Operation(summary = "카테고리 추가", description = "상품 카테고리를 추가합니다.")
+    @PostMapping("/admin/category/add")
+    public void newCategory(@RequestParam String category) {
+        categoryService.addCategory(category);
     }
 }

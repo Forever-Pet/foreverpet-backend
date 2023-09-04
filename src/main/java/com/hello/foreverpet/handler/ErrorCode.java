@@ -31,6 +31,9 @@ public enum ErrorCode {
 
     // order
     ORDER_FOUND_ERROR(500,"Or001","주문 정보를 찾을수 없습니다."),
+
+    // category
+    CATEGORY_NOT_FOUND(500, "c001", "카테고리 정보를 찾을수 없습니다."),
     ;
 
     private final int status;

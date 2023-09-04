@@ -1,6 +1,6 @@
 package com.hello.foreverpet.domain.dto.request;
 
-import com.hello.foreverpet.domain.dto.Categories;
+import com.hello.foreverpet.domain.entity.Category;
 import com.hello.foreverpet.domain.entity.Product;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
@@ -32,7 +32,7 @@ public class NewProductRequest {
     public Product toEntity() {
         return Product.builder().productName(this.productName)
                 .productDescription(this.productDescription)
-                .categories(Categories.valueOf(this.categories))
+                .category(this.categories)
                 .productPrice(this.productPrice)
                 .productImage(this.productImage)
                 .brandName(this.brandName)

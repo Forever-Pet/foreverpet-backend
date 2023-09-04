@@ -3,8 +3,10 @@ package com.hello.foreverpet.service;
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.entity.Authority;
 import com.hello.foreverpet.repository.AuthorityJpaRepository;
+import com.hello.foreverpet.repository.CategoryRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import jakarta.annotation.PostConstruct;
+import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +19,15 @@ public class InitDataService {
     private final ProductService productService;
     private final ProductJpaRepository productJpaRepository;
     private final AuthorityJpaRepository authorityJpaRepository;
+    private final CategoryService categoryService;
 
     @PostConstruct
     public void init() {
 
+        // 카테고리 정보 추가
+        categoryInit();
+
         String[] productNames = {
-                // 은하님 스낵
                 "고위드테일 소고기 크런칩 85g",
                 "고위드테일x포에버펫 슈퍼바이츠 70g",
                 "고위드테일 슈퍼바 25g",
@@ -33,7 +38,6 @@ public class InitDataService {
                 "포포네 단호박 코코넛 파운드",
                 "포포네 가지가지치킨비스킷",
                 "씽크라이크펫 비건 해피트릿",
-                // 솜사탕님 비타
                 "강아지 뉴트리션 트릿 관절케어 300g",
                 "후디스펫 장케어 유산균 산양유 60g",
                 "하트업 강아지 심장 면역 영양제",
@@ -44,7 +48,6 @@ public class InitDataService {
                 "강아지 뉴트리바운드 필수 영양소 공급 영양제",
                 "강아지 하루 한포 종합 멀티 영양제 30p",
                 "초유단백질 강아지 영양제",
-                // 엘라님 간식
                 "아침애 수제사료 오리&연어&감자 1.8kg",
                 "네츄럴코어 에코 9a 시니어 오리&고구마 6kg",
                 "로얄캐닌 푸들 어덜트 3kg 피모관리",
@@ -58,7 +61,6 @@ public class InitDataService {
         };
 
         String[] productDescriptions = {
-                //은
                 "소고기 중 지방이 적은 홍두깨살 만을 이용하여 만들어진 바삭한 소고기 크런칩이랍니다. 호주산 신선한 소고기를 이용하여 기력회복에 좋아요. 고위드테일만의 저온건조로 더 바삭하고 맛있는 간식이 탄생한답니다.",
                 "고위드테일의 슈퍼바가 더 작아졌어요. 국내산 무항생제 오리 안심을 베이스로 만든 고단백 간식, 슈퍼바이츠는 외출 시에 간편하게 휴대하여 든든한 식사 대용으로 급여할 수 있어요. 약 1cm의 트릿으로 아이들의 노즈워크에 활용하거나, 훈련용 보상 간식으로 주기 알맞은 간식입니다. ",
                 "쫀쫀한 고위드테일만의 슈퍼바를 소개해요, 아이들이 좋아하는 오리고기를 베이스로 만들어낸 슈퍼바는 불포화지방산이 가득한 오리고기 뿐 만이 아니라 소화에 도움이 되는 단호박, 그리고 미네랄이 함유되어 있는 맥주효모와 올리브오일이 더해져 더 쫀쫀한 식감의 바 형태 간식이 만들어졌답니다. 작게 자르는 데에도 어려움이 없어 아이들의 노즈워크에 활용하거나, 스틱형태로 잘라 껌처럼 급여도 가능한 만능 간식이에요.",
@@ -69,8 +71,6 @@ public class InitDataService {
                 "푹 찐 단호박에 락토프리 우유와 코코넛을 구워낸 파운드입니다. ,케롭&시금치 천연 재료로 건강하게 급여 가능합니다. ,부드러운 식감으로 전 연령 급여 가능합니다. ,무첨가 무방부제인 건강한 간식입니다. ,떡과 빵의 중간 식감으로 쫀득하고 부드러운 식감입니다.",
                 "잘게 다진 국내산 닭가슴살에 스팀 한 가지를 골고루 섞은 바삭하게 만든 비스킷입니다. ,훈련 및 산책용 트릿으로 주기 좋습니다. ,가지 껍질에 함유된 나스닌이 색소 효과를 주었으며 콜레스테롤 수치 상승을 억제해 줍니다. ,체내 독소 배출을 촉진시켜 줍니다.",
                 "말랑하고 부드러운 식감의 트릿입니다. ,휴먼 그레이드 원료로 제작된 저알러지, 저칼로리 간식입니다. ,뛰어난 기호성으로 아이들의 즐거움을 더해줍니다. ,고양이 친구들도 급여가 가능합니다.",
-
-                //솜
                 "연골을 구성하는 필수 성분인 글루코사민 첨가로 관절 건강에 도움을 줍니다.",
                 "반려동물이 좋아하는 고소하고 상큼한 밀크 요거트 맛으로 소화력이 좋습니다.",
                 "산소 이용률을 높여 심장 세포 에너지 생성에 도움을 주는 영양제 입니다.",
@@ -81,8 +81,6 @@ public class InitDataService {
                 "수분공급, 회복에 필요한 필수 영양소 공급, 장의 운동을 도와주는 프리바이오틱 공급 !",
                 "눈물 자국 피모 관리, 전체적인 관리, 종합 건강관리 포함하여 외적인 관리가 필요한 아이에겐 추천하는 제품 입니다 !",
                 "나의 아이의 근력 감소로 인해 면역력이 취약하여 잘 걷지 못한다면 ? 이 제품으로 4배 이상의 단백질을 보충 해주세요 !",
-
-                //엘
                 "아침애 수제사료 오리&연어&감자는 천연 기능성 원료에 정성을 담아 국내 생산으로 만든 천연 수제 사료입니다. 신선한 생고기와 생선, 곡물로 비타민과 미네랄이 조화를 이뤄 기호성을 높였으며, 연어를 첨가해 건강한 피부&피모 개선에 도움을 주고, 블루베리를 함유하여 눈, 뇌세포의 노화 예방에 도움을 줍니다. 천연 항상화제를 넣어 면역 시스템 유지에도 좋습니다. 200g 9봉지로 개별 포장되어 있어 청결하고 안전하게 보관할 수 있습니다.",
                 "네츄럴코어 에코 9a 시니어 오리&고구마 9세 이상은 치아와 잇몸이 약하고 소화능력이 떨어지며 관절이 약한 노령견용 사료로 미국 USDA와 유럽 ECOCERT로부터 유기농 인증을 획득한 믿을 수 있는 유기농 식품으로 농약, 화학비료, 인공색소, 방부제 및 GMO로부터 안전한 제품입니다.",
                 "로얄캐닌 푸들 어덜트는 곱슬한 피모를 더욱 생기있게 가꿔주는데 도움을 주는 사료로, 생후 10개월 이상의 푸들을 위한 전용사료입니다. 풍부한 오메가3지방산(EPA & DHA) 보라지 오일 함유로 푸들의 풍성한 털 피모를 건강하게 유지할 수 있도록하며, 단백질 성분은 털 피모가 아름답게 자랄 수 있도록 하며, 적당한 근육량유지를 도와주고, 일반 단백질원에 특수발효처리를 하여 소화흡수도가 매우 높은 L.I.P.단백질을 사용하여 변 냄새를 줄여줍니다. ",
@@ -97,7 +95,6 @@ public class InitDataService {
         };
 
         int[] productPrices = {
-                //은
                 15000,
                 89000,
                 28500,
@@ -108,7 +105,6 @@ public class InitDataService {
                 7200,
                 5400,
                 5300,
-                //솜
                 15000,
                 42900,
                 62700,
@@ -119,7 +115,6 @@ public class InitDataService {
                 29500,
                 40000,
                 39900,
-                //엘
                 27000,
                 66000,
                 54000,
@@ -133,7 +128,6 @@ public class InitDataService {
         };
 
         String[] productImages = {
-                //은
                 "https://wooof.co.kr/web/product/medium/202206/6612fd4ff0065b5692e3ec2bfe6cd018.png",
                 "https://wooof.co.kr/web/product/medium/202304/2993742da638d3724cf51eac79d59e71.png",
                 "https://wooof.co.kr/web/product/medium/202107/f570b196f1f64dde5fdaa7c5a42768a4.jpg",
@@ -144,7 +138,6 @@ public class InitDataService {
                 "https://wooof.co.kr/web/product/medium/202301/0366aa95e19704f6db900e561c07d9d0.jpg",
                 "https://wooof.co.kr/web/product/medium/202301/cee33236b5acb28b785f3ed630f61f0f.jpg",
                 "https://wooof.co.kr/web/product/medium/202304/3378d590e72ee236db9a5b365a7feb5b.png",
-                //솜
                 "https://thumbnail6.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/602398423909261-db455970-13a0-43c7-9c21-e332d13bd21d.jpg",
                 "https://thumbnail6.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/2517005899731778-8cd724b9-156c-4a03-a852-8777bc1e9556.jpg",
                 "https://thumbnail7.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/fe70/d2516fca4fc60f44bc401994f7cc8fc71e57483c07625801d881c787f3a2.png",
@@ -155,7 +148,6 @@ public class InitDataService {
                 "https://thumbnail10.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/971940325732852-dd6521d5-923f-4833-99b9-ed8e61fd0b94.jpg",
                 "https://thumbnail8.coupangcdn.com/thumbnails/remote/492x492ex/image/retail/images/2022/03/31/10/8/45d53c32-e1f8-472c-ba89-c5f1e9f65933.jpg",
                 "https://thumbnail9.coupangcdn.com/thumbnails/remote/492x492ex/image/vendor_inventory/44a7/3c6387c41e5a0d3333feef993e4faff4b9bc0cc9815e31b48ad4c3cd15cf.png",
-                //엘
                 "https://img.dogpre.com/mobile/dogpre/product/41/40576_original_01892171.png",
                 "https://img.dogpre.com/mobile/dogpre/product/18/17551_detail_01141911.png",
                 "https://img.dogpre.com/mobile/dogpre/product/82/81863_detail_01549482.png",
@@ -169,7 +161,6 @@ public class InitDataService {
 
         };
         String[] brandName = {
-                //은
                 "고위드테일",
                 "고위드테일",
                 "고위드테일",
@@ -180,7 +171,6 @@ public class InitDataService {
                 "단호박",
                 "포포네",
                 "씽크라이크펫",
-                //솜
                 "Tamsaa",
                 "foodis",
                 "DOCTOR BY",
@@ -191,7 +181,6 @@ public class InitDataService {
                 "Virbac",
                 "Penovis",
                 "DOCTOR BY",
-                //엘
                 "아침애",
                 "네츄럴코어",
                 "로얄캐닌",
@@ -207,6 +196,8 @@ public class InitDataService {
         String[] categories = {"SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK", "SNACK",
                 "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA",
                 "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD"};
+
+
 
         if (productJpaRepository.findAll().isEmpty()) {
             for (int i = 0; i < productNames.length; i++) {
@@ -241,6 +232,15 @@ public class InitDataService {
             auth.setAuthorityName("ROLE_ADMIN");
             authorityJpaRepository.save(auth);
         }
+
+    }
+
+    public void categoryInit() {
+
+        String[] categories = {"SNACK", "VITA", "FOOD"};
+
+        Arrays.stream(categories)
+                .forEach(categoryService::addCategory);
 
     }
 }
