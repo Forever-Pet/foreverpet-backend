@@ -2,11 +2,10 @@ package com.hello.foreverpet.service;
 
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.entity.Authority;
+import com.hello.foreverpet.domain.entity.Category;
 import com.hello.foreverpet.repository.AuthorityJpaRepository;
-import com.hello.foreverpet.repository.CategoryRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import jakarta.annotation.PostConstruct;
-import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -237,10 +236,15 @@ public class InitDataService {
 
     public void categoryInit() {
 
-        String[] categories = {"SNACK", "VITA", "FOOD"};
+        String[] categories = {"SNACK", "BITA", "FOOD"};
 
-        Arrays.stream(categories)
-                .forEach(categoryService::addCategory);
+        for (String category : categories) {
+            Category byName = categoryService.findByName(category);
+
+            if (byName == null) {
+                categoryService.addCategory(category);
+            }
+        }
 
     }
 }

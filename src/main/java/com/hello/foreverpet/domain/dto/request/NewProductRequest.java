@@ -29,10 +29,10 @@ public class NewProductRequest {
     @NotNull
     private String brandName;
 
-    public Product toEntity() {
+    public Product toEntity(Category category) {
         return Product.builder().productName(this.productName)
                 .productDescription(this.productDescription)
-                .category(this.categories)
+                .category(category)
                 .productPrice(this.productPrice)
                 .productImage(this.productImage)
                 .brandName(this.brandName)

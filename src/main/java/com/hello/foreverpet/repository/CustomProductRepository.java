@@ -1,8 +1,6 @@
 package com.hello.foreverpet.repository;
 
-import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.response.CartProductResponse;
-import com.hello.foreverpet.domain.entity.CartProduct;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
 import java.util.List;
@@ -16,7 +14,7 @@ public interface CustomProductRepository {
 
     List<Product> findProductOrderByNew();
 
-    List<Product> findProductByCategories(Categories categories);
+    List<Product> findProductByCategories(String categoryName);
 
     List<CartProductResponse> getCartProductResponsesByUserId(UserInfo userInfo);
 }

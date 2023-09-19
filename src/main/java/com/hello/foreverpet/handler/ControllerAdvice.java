@@ -1,6 +1,7 @@
 package com.hello.foreverpet.handler;
 
 import com.hello.foreverpet.domain.dto.response.ErrorResponse;
+import com.hello.foreverpet.domain.exception.AlreadyExistCategoryException;
 import com.hello.foreverpet.domain.exception.AlreadyExistProductException;
 import com.hello.foreverpet.domain.exception.ProductNotFoundException;
 import com.hello.foreverpet.domain.exception.UserNotFoundException;
@@ -50,6 +51,13 @@ public class ControllerAdvice {
         return new ResponseEntity<>(response, HttpStatusCode.valueOf(e.getErrorCode().getStatus()));
     }
 
+    @ExceptionHandler(AlreadyExistCategoryException.class)
+    public ResponseEntity<ErrorResponse> alreadyExistCategoryExceptionHandler(AlreadyExistCategoryException e) {
+        ErrorResponse response = new ErrorResponse(ErrorCode.CATEGORY_ALREADY_EXIST);
+
+        return new ResponseEntity<>(response, HttpStatusCode.valueOf(e.getErrorCode().getStatus()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleOtherExceptions(Exception ex) {
         log.error("Unhandled exception occurred", ex);
@@ -57,4 +65,7 @@ public class ControllerAdvice {
         ErrorResponse response = new ErrorResponse(ErrorCode.ALL_ERROR);
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+
+
 }

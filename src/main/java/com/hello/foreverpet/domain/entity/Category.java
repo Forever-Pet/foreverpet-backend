@@ -28,4 +28,8 @@ public class Category {
         this.name = name;
         products = new ArrayList<>();
     }
+
+    public void updateCategory(String categoryName) {
+        this.name = categoryName;
+    }
 }

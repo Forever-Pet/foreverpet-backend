@@ -1,6 +1,5 @@
 package com.hello.foreverpet.domain.dto.response;
 
-import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.entity.Product;
 import java.time.LocalDateTime;
 import lombok.Data;
@@ -10,7 +9,7 @@ public class LoginUserProductResponse {
     private Long id;
     private String productName;
     private String productDescription;
-    private Categories categories;
+    private String categoryName;
     private Long productPrice;
     private Long numberOfSold;
     private String productImage;
@@ -24,7 +23,7 @@ public class LoginUserProductResponse {
         this.id = product.getProductId();
         this.productName = product.getProductName();
         this.productDescription = product.getProductDescription();
-        this.categories = product.getCategories();
+        this.categoryName = product.getCategory().getName();
         this.productPrice = product.getProductPrice();
         this.numberOfSold = product.getNumberOfSold();
         this.productImage = product.getProductImage();
