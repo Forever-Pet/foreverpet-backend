@@ -3,6 +3,7 @@ package com.hello.foreverpet.handler;
 import com.hello.foreverpet.domain.dto.response.ErrorResponse;
 import com.hello.foreverpet.domain.exception.AlreadyExistCategoryException;
 import com.hello.foreverpet.domain.exception.AlreadyExistProductException;
+import com.hello.foreverpet.domain.exception.CategoryNotFoundException;
 import com.hello.foreverpet.domain.exception.ProductNotFoundException;
 import com.hello.foreverpet.domain.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -51,8 +52,16 @@ public class ControllerAdvice {
         return new ResponseEntity<>(response, HttpStatusCode.valueOf(e.getErrorCode().getStatus()));
     }
 
+    @ExceptionHandler(CategoryNotFoundException.class)
+    public ResponseEntity<ErrorResponse> categoryNotFoundExceptionHandler(CategoryNotFoundException e) {
+        ErrorResponse response = new ErrorResponse(ErrorCode.CATEGORY_NOT_FOUND);
+
+        return new ResponseEntity<>(response, HttpStatusCode.valueOf(e.getErrorCode().getStatus()));
+    }
+
     @ExceptionHandler(AlreadyExistCategoryException.class)
     public ResponseEntity<ErrorResponse> alreadyExistCategoryExceptionHandler(AlreadyExistCategoryException e) {
+
         ErrorResponse response = new ErrorResponse(ErrorCode.CATEGORY_ALREADY_EXIST);
 
         return new ResponseEntity<>(response, HttpStatusCode.valueOf(e.getErrorCode().getStatus()));

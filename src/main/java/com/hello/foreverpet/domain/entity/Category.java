@@ -24,12 +24,23 @@ public class Category {
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 
+    private boolean active;
+
     public Category(String name) {
         this.name = name;
         products = new ArrayList<>();
+        this.active = true;
     }
 
     public void updateCategory(String categoryName) {
         this.name = categoryName;
+    }
+
+    public void unActive() {
+        this.active = false;
+    }
+
+    public void active() {
+        this.active = true;
     }
 }
