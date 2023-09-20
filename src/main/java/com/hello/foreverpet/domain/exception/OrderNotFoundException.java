@@ -1,12 +1,15 @@
-package com.hello.foreverpet.domain.exception.user;
+package com.hello.foreverpet.domain.exception;
 
 import com.hello.foreverpet.handler.ErrorCode;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class AlreadyExistProductException extends IllegalArgumentException{
+public class OrderNotFoundException extends RuntimeException{
 
     private final ErrorCode errorCode;
+
 }
+

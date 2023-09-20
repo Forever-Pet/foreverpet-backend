@@ -3,12 +3,9 @@ package com.hello.foreverpet.domain.entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import com.hello.foreverpet.auditing.BaseTimeEntity;
-import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -33,27 +30,46 @@ public class Product extends BaseTimeEntity {
     @NotNull
     @Column(length = 500)
     private String productDescription;
+
+//    @NotNull
+//    @Enumerated(EnumType.STRING)
+//    private Categories categories;
+
+
     @NotNull
-    @Enumerated(EnumType.STRING)
-    private Categories categories;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Category category;
+
     @NotNull
     private Long productPrice;
 
     private Long numberOfSold;
 
     private String productImage;
-
+    @NotNull
     private String brandName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Wish wish;
 
+//    @Builder
+//    public Product(String productName, String productDescription, Categories categories, Long productPrice,
+//                   String productImage, String brandName) {
+//        this.productName = productName;
+//        this.productDescription = productDescription;
+//        this.categories = categories;
+//        this.productPrice = productPrice;
+//        this.numberOfSold = 0L;
+//        this.productImage = productImage;
+//        this.brandName = brandName;
+//    }
+
     @Builder
-    public Product(String productName, String productDescription, Categories categories, Long productPrice,
+    public Product(String productName, String productDescription, Category category, Long productPrice,
                    String productImage, String brandName) {
         this.productName = productName;
         this.productDescription = productDescription;
-        this.categories = categories;
+        this.category = category;
         this.productPrice = productPrice;
         this.numberOfSold = 0L;
         this.productImage = productImage;
@@ -63,7 +79,7 @@ public class Product extends BaseTimeEntity {
     public Product updateProductByUpdateRequest(UpdateProductRequest updateProductRequest) {
         this.productName = updateProductRequest.getProductName();
         this.productDescription = updateProductRequest.getProductDescription();
-        this.categories = Categories.valueOf(updateProductRequest.getCategories());
+        this.category = new Category();
         this.productPrice = updateProductRequest.getProductPrice();
         this.productImage = updateProductRequest.getProductImage();
         this.brandName = updateProductRequest.getBrandName();

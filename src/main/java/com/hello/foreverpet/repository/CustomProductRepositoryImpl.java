@@ -3,7 +3,6 @@ package com.hello.foreverpet.repository;
 import static com.hello.foreverpet.domain.entity.QCartProduct.cartProduct;
 import static com.hello.foreverpet.domain.entity.QProduct.product;
 
-import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.response.CartProductResponse;
 import com.hello.foreverpet.domain.dto.response.QCartProductResponse;
 import com.hello.foreverpet.domain.entity.Product;
@@ -46,10 +45,10 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     }
 
     @Override
-    public List<Product> findProductByCategories(Categories categories) {
+    public List<Product> findProductByCategories(String categoryName) {
         return jpaQueryFactory.selectFrom(product)
                 .where(
-                        eqCategories(categories)
+                        eqCategories(categoryName)
                 )
                 .fetch();
     }
@@ -63,7 +62,7 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
                         cartProduct.product.productId,
                         cartProduct.product.productName,
                         cartProduct.product.productDescription,
-                        cartProduct.product.categories,
+                        cartProduct.product.category.name,
                         cartProduct.product.productPrice,
                         cartProduct.product.numberOfSold,
                         cartProduct.product.productImage,
@@ -100,9 +99,9 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
         return null;
     }
 
-    private BooleanExpression eqCategories(Categories categories) {
-        if (categories != null) {
-            return product.categories.eq(categories);
+    private BooleanExpression eqCategories(String categoryName) {
+        if (categoryName != null) {
+            return product.category.name.eq(categoryName);
         }
         return null;
     }

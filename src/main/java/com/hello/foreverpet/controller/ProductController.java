@@ -5,6 +5,7 @@ import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import com.hello.foreverpet.domain.dto.response.ErrorResponse;
 import com.hello.foreverpet.domain.dto.response.LoginUserProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
+import com.hello.foreverpet.service.CategoryService;
 import com.hello.foreverpet.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -32,10 +33,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProductController {
 
     private final ProductService productService;
+    private final CategoryService categoryService;
 
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "API 정상 작동",content = @Content(schema = @Schema(implementation = ProductResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 에러",content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
+            @ApiResponse(responseCode = "200", description = "API 정상 작동", content = @Content(schema = @Schema(implementation = ProductResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 에러", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))}
     )
     @Operation(summary = "상품 등록", description = "상품을 등록합니다.")
     @PostMapping("/products")
@@ -103,7 +105,26 @@ public class ProductController {
 
     @Operation(summary = "로그인 유저 모든 상품 조회", description = "로그인한 유저의 모든 상품 조회")
     @GetMapping("/products/login")
-    public ResponseEntity<List<LoginUserProductResponse>> loginUserGetAllProducts(HttpServletRequest httpServletRequest) {
+    public ResponseEntity<List<LoginUserProductResponse>> loginUserGetAllProducts(
+            HttpServletRequest httpServletRequest) {
         return ResponseEntity.ok(productService.loginUserGetAllProducts(httpServletRequest));
+    }
+
+    @Operation(summary = "카테고리 추가", description = "상품 카테고리를 추가합니다.")
+    @PostMapping("/admin/category/add")
+    public void newCategory(@RequestParam String category) {
+        categoryService.addCategory(category);
+    }
+
+    @Operation(summary = "카테고리 수정", description = "상품 카테고리를 수정합니다.")
+    @PostMapping("/admin/category/update/{id}")
+    public void updateCategory(@PathVariable Long id, @RequestParam String category) {
+        categoryService.updateCategory(id, category);
+    }
+
+    @Operation(summary = "카테고리 삭제", description = "상품 카테고리를 삭제합니다.")
+    @PostMapping("/admin/category/delete")
+    public void deleteCategory(@RequestParam String category) {
+        categoryService.deleteCategory(category);
     }
 }

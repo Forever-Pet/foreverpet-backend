@@ -1,18 +1,20 @@
 package com.hello.foreverpet.service;
 
-import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.dto.request.NewProductRequest;
 import com.hello.foreverpet.domain.dto.request.UpdateProductRequest;
 import com.hello.foreverpet.domain.dto.response.LoginUserProductResponse;
 import com.hello.foreverpet.domain.dto.response.ProductResponse;
 import com.hello.foreverpet.domain.entity.CartProduct;
+import com.hello.foreverpet.domain.entity.Category;
 import com.hello.foreverpet.domain.entity.Product;
 import com.hello.foreverpet.domain.entity.UserInfo;
-import com.hello.foreverpet.domain.exception.user.AlreadyExistProductException;
-import com.hello.foreverpet.domain.exception.user.ProductNotFoundException;
-import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
+import com.hello.foreverpet.domain.exception.AlreadyExistProductException;
+import com.hello.foreverpet.domain.exception.CategoryNotFoundException;
+import com.hello.foreverpet.domain.exception.ProductNotFoundException;
+import com.hello.foreverpet.domain.exception.UserNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.jwt.TokenProvider;
+import com.hello.foreverpet.repository.CategoryRepository;
 import com.hello.foreverpet.repository.CustomProductRepository;
 import com.hello.foreverpet.repository.ProductJpaRepository;
 import com.hello.foreverpet.repository.UserInfoJpaRepository;
@@ -30,13 +32,19 @@ public class ProductService {
     private final CustomProductRepository customProductRepository;
     private final UserInfoJpaRepository userInfoJpaRepository;
     private final TokenProvider tokenProvider;
+    private final CategoryRepository categoryRepository;
 
     @Transactional
     public ProductResponse createProduct(NewProductRequest newProductRequest) {
         if (productJpaRepository.findByProductName(newProductRequest.getProductName()).isPresent()) {
             throw new AlreadyExistProductException(ErrorCode.ALREADY_EXIST_PRODUCT_EXCEPTION);
         }
-        Product newProduct = newProductRequest.toEntity();
+
+        Category category = categoryRepository.findByName(newProductRequest.getCategories())
+                .orElseThrow(() -> new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+
+        Product newProduct = newProductRequest.toEntity(category);
+
         productJpaRepository.save(newProduct);
 
         return new ProductResponse(newProduct);
@@ -85,9 +93,8 @@ public class ProductService {
                 .map(ProductResponse::new).toList();
     }
 
-    public List<ProductResponse> productByCategories(String categories) {
-        Categories wantFindCategories = Categories.valueOf(categories);
-        return customProductRepository.findProductByCategories(wantFindCategories).stream()
+    public List<ProductResponse> productByCategories(String categoryName) {
+        return customProductRepository.findProductByCategories(categoryName).stream()
                 .map(ProductResponse::new).toList();
     }
 
@@ -95,7 +102,7 @@ public class ProductService {
 
         UserInfo userInfo = getUserInfo(httpServletRequest);
 
-        List<Product> cart = getCartProducts(userInfo.getUserId()).stream().map(cartProduct -> cartProduct.getProduct())
+        List<Product> cart = getCartProducts(userInfo.getUserId()).stream().map(CartProduct::getProduct)
                 .toList();
 
         List<Product> wish = getWishProducts(userInfo.getUserId());

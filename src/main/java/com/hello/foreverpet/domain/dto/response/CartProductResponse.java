@@ -1,6 +1,5 @@
 package com.hello.foreverpet.domain.dto.response;
 
-import com.hello.foreverpet.domain.dto.Categories;
 import com.hello.foreverpet.domain.entity.CartProduct;
 import com.querydsl.core.annotations.QueryProjection;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,7 +13,7 @@ public class CartProductResponse {
     private Long productId;
     private String productName;
     private String productDescription;
-    private Categories categories;
+    private String categoryName;
     private Long productPrice;
     private Long numberOfSold;
     private String productImage;
@@ -28,7 +27,7 @@ public class CartProductResponse {
         this.id = cartProduct.getId();
         this.productName = cartProduct.getProduct().getProductName();
         this.productDescription = cartProduct.getProduct().getProductDescription();
-        this.categories = cartProduct.getProduct().getCategories();
+        this.categoryName = cartProduct.getProduct().getCategory().getName();
         this.productPrice = cartProduct.getProduct().getProductPrice();
         this.numberOfSold = cartProduct.getProduct().getNumberOfSold();
         this.productImage = cartProduct.getProduct().getProductImage();
@@ -44,7 +43,7 @@ public class CartProductResponse {
             Long productId,
             String productName,
             String productDescription,
-            Categories categories,
+            String categoryName,
             Long productPrice,
             Long numberOfSold,
             String productImage,
@@ -57,7 +56,7 @@ public class CartProductResponse {
         this.productId = productId;
         this.productName = productName;
         this.productDescription = productDescription;
-        this.categories = categories;
+        this.categoryName = categoryName;
         this.productPrice = productPrice;
         this.numberOfSold = numberOfSold;
         this.productImage = productImage;

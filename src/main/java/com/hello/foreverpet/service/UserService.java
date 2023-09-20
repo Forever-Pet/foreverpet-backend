@@ -9,7 +9,7 @@ import com.hello.foreverpet.domain.dto.response.UserLoginResponse;
 import com.hello.foreverpet.domain.dto.response.UserPasswordResponse;
 import com.hello.foreverpet.domain.entity.Authority;
 import com.hello.foreverpet.domain.entity.UserInfo;
-import com.hello.foreverpet.domain.exception.user.UserNotFoundException;
+import com.hello.foreverpet.domain.exception.UserNotFoundException;
 import com.hello.foreverpet.handler.ErrorCode;
 import com.hello.foreverpet.jwt.JwtFilter;
 import com.hello.foreverpet.jwt.TokenProvider;
