@@ -196,8 +196,6 @@ public class InitDataService {
                 "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA", "BITA",
                 "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD", "FOOD"};
 
-
-
         if (productJpaRepository.findAll().isEmpty()) {
             for (int i = 0; i < productNames.length; i++) {
                 NewProductRequest newProductRequest = NewProductRequest.builder()
@@ -216,7 +214,7 @@ public class InitDataService {
 
         Optional<Authority> userAuth = authorityJpaRepository.findAuthRole("ROLE_USER");
 
-        if(userAuth.isEmpty()){
+        if (userAuth.isEmpty()) {
             Authority auth = new Authority();
             auth.setAuthorityName("ROLE_USER");
             authorityJpaRepository.save(auth);
@@ -226,7 +224,7 @@ public class InitDataService {
 
         Optional<Authority> userAdmin = authorityJpaRepository.findAuthRole("ROLE_ADMIN");
 
-        if(userAdmin.isEmpty()){
+        if (userAdmin.isEmpty()) {
             Authority auth = new Authority();
             auth.setAuthorityName("ROLE_ADMIN");
             authorityJpaRepository.save(auth);
@@ -239,11 +237,9 @@ public class InitDataService {
         String[] categories = {"SNACK", "BITA", "FOOD"};
 
         for (String category : categories) {
-            Category byName = categoryService.findByName(category);
 
-            if (byName == null) {
-                categoryService.addCategory(category);
-            }
+            categoryService.addCategory(category);
+
         }
 
     }
